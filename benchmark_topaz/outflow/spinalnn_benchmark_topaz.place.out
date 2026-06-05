@@ -1,0 +1,125 @@
+           
+           Efinix FPGA Placement and Routing.
+           Version: 2025.2.288.2.10 
+           Compiled: Dec 18 2025.
+           
+           Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+
+           
+           The Tool Is Based on VPR of University of Toronto,
+           a free open source code under MIT license.
+           
+INFO     : Reading core interface constraints file "outflow/spinalnn_benchmark_topaz.interface.csv" [DBMsg::CoreInterfaceConstraintsFileReading]
+INFO     : Successfully read core interface constraints file "outflow/spinalnn_benchmark_topaz.interface.csv" [DBMsg::CoreInterfaceConstraintsFileLoadSuccess]
+INFO     : Packed 818 lut->ffs and 0 ff->luts out of 1116 (298 were lonely) [PackerMsg::CellPackingStatistics]
+INFO     : XLR count after merging: 1937
+INFO     : Netlist has 818 luts, 1116 ffs and 821 adders [PackerMsg::NetlistStatistics]
+INFO     : Packed into 1937 clusters with 2.287042(1.0005163) inputs(outputs) per cluster for a total of 4430(1938) inputs(outputs) [PackerMsg::ClusterPackingStatistics]
+INFO     : Packed into 1937 xlrs with 2.287042(1.0005163) inputs(outputs) per xlr for a total of 4430(1938) inputs(outputs) [PackerMsg::XLRPackingStatistics]
+INFO     : Packed 3 fracturable DSPs into 3 clusters [PackerMsg::DSPPackingStatistics]
+INFO     : Packing took 0.172615496 seconds [FlowMsg::StageDuration]
+INFO     :     Packing took 0.23 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Packing virtual memory usage: begin = 191.432 MB, end = 251.332 MB, delta = 59.9 MB [FlowMsg::VMUsage]
+INFO     : Packing resident set memory usage: begin = 109.196 MB, end = 118.116 MB, delta = 8.92 MB [FlowMsg::RSSUsage]
+INFO     :     Packing peak resident set memory usage = 118.116 MB [FlowMsg::RSSUsage::Peak]
+INFO     : SDC file 'timing.sdc' parsed successfully.
+INFO     : Reading core interface constraints file "outflow/spinalnn_benchmark_topaz.interface.csv" [DBMsg::CoreInterfaceConstraintsFileReading]
+INFO     : Successfully read core interface constraints file "outflow/spinalnn_benchmark_topaz.interface.csv" [DBMsg::CoreInterfaceConstraintsFileLoadSuccess]
+WARNING  : IO cell "activation_in_data[7]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_data[0]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_valid" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_ready" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_data[0]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_data[2]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_data[4]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_data[2]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_valid" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "clk" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_data[3]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_data[7]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_data[1]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_data[5]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "reset" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_data[4]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_data[5]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_ready" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_data[1]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_data[6]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_in_data[3]" has no assigned placement; it will be placed randomly
+WARNING  : IO cell "activation_out_data[6]" has no assigned placement; it will be placed randomly
+INFO     : 22 IO cells will have random placement
+INFO     : Counting 1 clocks that are not assigned to clock resources as global clocks.
+INFO     : Reading core interface constraints file "outflow/spinalnn_benchmark_topaz.interface.csv" [DBMsg::CoreInterfaceConstraintsFileReading]
+INFO     : Successfully read core interface constraints file "outflow/spinalnn_benchmark_topaz.interface.csv" [DBMsg::CoreInterfaceConstraintsFileLoadSuccess]
+INFO     : Counting 1 clocks that are not assigned to clock resources as global clocks.
+INFO     : Starting Global Placer with 14 threads ...
+            ----------     -------  --------------     -------
+             Iteration       WHPWL Worst Slack (ps) Convergence
+            ----------     -------  --------------     -------
+INFO     :           1      201334            3964         3.4%
+INFO     :           2      139807            4143         6.1%
+INFO     :           3      111677            4188         9.0%
+INFO     :           4       98320            4026        11.9%
+INFO     :           5       84159            4076        15.4%
+INFO     :           6       80925            3972        17.9%
+INFO     :           7       76890            3860        20.4%
+INFO     :           8       71336            3809        24.3%
+INFO     :           9       63648            3745        34.9%
+INFO     :          10       59991            3370        52.4%
+INFO     :          11       57244            3306        71.7%
+INFO     :          12       56593            3149        83.0%
+INFO     :          13       56303            3162        88.1%
+INFO     :          14       55292            3145        90.3%
+INFO     :          15       55374            3115        90.8%
+INFO     :          16       55132            3276        90.8%
+INFO     :          17       54666            3285        91.9%
+INFO     :          18       54334            3285        93.0%
+INFO     :          19       54279            3173        95.2%
+INFO     :          20       51525            3285        98.8%
+INFO     :          21       51365            3349        99.3%
+INFO     :          22       51400            3349        99.8%
+INFO     :          23       51335            3348        99.8%
+INFO     :          24       51387            3348        99.9%
+INFO     :          25       51388            3348        99.9%
+INFO     :          26       51435            3348       100.0%
+INFO     : Starting Annealer
+            ----------     -------  --------------     -------
+             Iteration       WHPWL  Delay Max (ps)     R Limit
+            ----------     -------  --------------     -------
+INFO     :           0       22070            3197        30.0
+INFO     :           1       22692            3065        29.4
+INFO     :           2       22117            2971        28.3
+INFO     :           3       21640            2806        27.0
+INFO     :           4       21257            2882        25.7
+INFO     :           5       21071            2908        24.3
+INFO     :           6       21080            2941        22.8
+INFO     :           7       21033            2951        21.3
+INFO     :           8       20741            2697        19.8
+INFO     :           9       20277            2880        18.4
+INFO     :          10       19941            2866        17.1
+INFO     :          11       19533            2839        15.8
+INFO     :          12       19341            2642        14.5
+INFO     :          13       19224            2697        13.4
+INFO     :          14       18928            2764        12.4
+INFO     :          15       18542            2777        11.4
+INFO     :          16       18411            2777        10.4
+INFO     :          17       18263            2769         9.6
+INFO     :          18       18110            2765         8.8
+INFO     :          19       18022            2772         8.0
+INFO     :          20       17779            2772         7.4
+INFO     :          21       17654            2739         6.7
+INFO     :          22       17562            2833         6.2
+INFO     :          23       17512            2833         5.6
+INFO     :          24       17569            2833         5.1
+INFO     : Placement successful: 1977 cells are placed
+INFO     : Peak congestion smeared over 4x4 of the chip is 0.704076 at 59,110
+INFO     : Peak congestion smeared over 1/16 of the chip is 0.38971 at 65,139
+INFO     : Peak congestion smeared over 1/4 of the chip is 0.122385 at 26,123
+INFO     : Congestion-weighted HPWL per net: 9.75403
+INFO     : Placement took 1.608724731 seconds [FlowMsg::StageDuration]
+INFO     :     Placement took 4.98 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Placement virtual memory usage: begin = 336.212 MB, end = 347.48 MB, delta = 11.268 MB [FlowMsg::VMUsage]
+INFO     : Placement resident set memory usage: begin = 201.236 MB, end = 176.132 MB, delta = -25.104 MB [FlowMsg::RSSUsage]
+INFO     :     Placement peak resident set memory usage = 206.136 MB [FlowMsg::RSSUsage::Peak]
+INFO     : Post-placement cluster-level checks is successful
+INFO     : Post-placement primitive-level checks is successful

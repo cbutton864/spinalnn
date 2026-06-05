@@ -1,0 +1,17 @@
+INFO     : Efinix FPGA Bitstream Generator.
+INFO     : Version: 2025.2.288.2.10 
+INFO     : Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+INFO     : Compiled: Dec 18 2025.
+INFO     : Using source file "/home/curtis-button/projects/spinalnn/benchmark/work_pnr/spinalnn_benchmark.lbf"
+INFO     : Generating HEX programming file for device "T20F169", family "Trion"
+INFO     : Using periphery source file "outflow/spinalnn_benchmark.lpf"
+INFO     : Generating bit file: "outflow/spinalnn_benchmark.bit"
+INFO     : HEX Generation Options Summary:
+INFO     : 	Listing options specified to bitstream generation:
+INFO     : 	enable_remote_update                     = off
+INFO     : Finished generating "outflow/spinalnn_benchmark.hex"
+INFO     : Efinix Bitstream Generator took 0.376799364 seconds [FlowMsg::StageDuration]
+INFO     :     Efinix Bitstream Generator took 0.36 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Efinix Bitstream Generator virtual memory usage: begin = 35.724 MB, end = 86.036 MB, delta = 50.312 MB [FlowMsg::VMUsage]
+INFO     : Efinix Bitstream Generator resident set memory usage: begin = 15.248 MB, end = 71.036 MB, delta = 55.788 MB [FlowMsg::RSSUsage]
+INFO     :     Efinix Bitstream Generator peak resident set memory usage = 150.604 MB [FlowMsg::RSSUsage::Peak]

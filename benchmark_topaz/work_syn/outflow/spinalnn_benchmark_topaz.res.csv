@@ -1,0 +1,8 @@
+sep=\t
+Module Resource Usage Distribution Estimates
+Generated at: Jun 03, 2026 22:05:12
+
+Note: some resources maybe grouped under different hierarchy due to optimization and LUT mapping
+
+Module	        FFs	      SRLs	      ADDs	      LUTs	    COMB4s	      RAMs	 DSP/MULTs
+SpinalNNTop:SpinalNNTop  	1116(1116)	     0(0)	 821(821)	 816(816)	     0(0)	   22(22)	   18(18)	

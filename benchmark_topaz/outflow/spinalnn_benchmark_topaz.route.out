@@ -1,0 +1,79 @@
+INFO     : SDC file 'timing.sdc' parsed successfully.
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Router Setup
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : [Setup Parallel Routing Scheduler]
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Route Circuit with 14 threads
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Overridding delay budgets for 0 synchronizer-related pins
+INFO     : Iter  1: overlap=3160    heapops=377143     (0%) cpd=2965  frr=1.00  msec=123
+INFO     : [Setup Delay Budgets | 42.0 ms]
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Hold Fixing
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Total min wire delay:    761307
+INFO     : Hold fix wire delay:          0
+INFO     : Hold fix delay ratio:     0.00%
+INFO     : Pins requiring hold fix:  0.00%
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Iter  2: overlap=971     heapops=261987     (43%) cpd=3296  frr=1.11  msec=51
+INFO     : Iter  3: overlap=355     heapops=147520     (61%) cpd=3442  frr=1.16  msec=35
+INFO     : [Rebuild Parallel Routing Scheduler]
+INFO     : Iter  4: overlap=87      heapops=69050      (75%) cpd=3442  frr=1.16  msec=27
+INFO     : Iter  5: overlap=12      heapops=26136      (80%) cpd=3442  frr=1.16  msec=20
+INFO     : Iter  6: overlap=2       heapops=12520      (81%) cpd=3442  frr=1.16  msec=17
+INFO     : Iter  7: overlap=0       heapops=9497       (81%) cpd=3442  frr=1.16  msec=16
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Routing Result
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Routing Succeeded in 0.34 seconds taking 7 iterations! 
+INFO     : 
+INFO     : First iteration critical path delay = 2.965 ns 
+INFO     : Last iteration critical path delay  = 3.442 ns (ratio = 1.16)
+INFO     : Max Routing Heap Size = 942
+INFO     : Routing trace written to file 'outflow/spinalnn_benchmark_topaz.troutingtraces' 
+INFO     : ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFO     : Routing took 1.070221662 seconds [FlowMsg::StageDuration]
+INFO     :     Routing took 3.12 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Routing virtual memory usage: begin = 347.48 MB, end = 536.136 MB, delta = 188.656 MB [FlowMsg::VMUsage]
+INFO     : Routing resident set memory usage: begin = 199.004 MB, end = 248.076 MB, delta = 49.072 MB [FlowMsg::RSSUsage]
+INFO     :     Routing peak resident set memory usage = 295.764 MB [FlowMsg::RSSUsage::Peak]
+           ***** Beginning stage final timing analysis ... *****
+INFO     : SDC file 'timing.sdc' parsed successfully.
+Maximum possible analyzed clocks frequency
+ Clock Name  Period (ns)  Frequency (MHz)     Edge
+    clk         3.568        280.269         (R-R)
+
+Geomean max period: 3.568
+
+Setup (Max) Clock Relationship
+  Launch Clock    Capture Clock   Constraint (ns)     Slack (ns)          Edge
+      clk              clk             6.667            3.099            (R-R)
+
+Hold (Min) Clock Relationship
+  Launch Clock    Capture Clock   Constraint (ns)     Slack (ns)          Edge
+      clk              clk             0.000            0.026            (R-R)
+
+INFO     : Write Timing Report to "outflow/spinalnn_benchmark_topaz.timing.rpt" ...
+INFO     : final timing analysis took 0.111633782 seconds [FlowMsg::StageDuration]
+INFO     :     final timing analysis took 0.15 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : final timing analysis virtual memory usage: begin = 536.136 MB, end = 536.136 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : final timing analysis resident set memory usage: begin = 290.816 MB, end = 291.204 MB, delta = 0.388 MB [FlowMsg::RSSUsage]
+INFO     :     final timing analysis peak resident set memory usage = 295.764 MB [FlowMsg::RSSUsage::Peak]
+           ***** Ending stage final timing analysis *****
+           
+           ***** Beginning stage bitstream generation ... *****
+INFO     : Reading core interface constraints file "outflow/spinalnn_benchmark_topaz.interface.csv" [DBMsg::CoreInterfaceConstraintsFileReading]
+INFO     : Successfully read core interface constraints file "outflow/spinalnn_benchmark_topaz.interface.csv" [DBMsg::CoreInterfaceConstraintsFileLoadSuccess]
+INFO     : Finished writing bitstream file work_pnr/spinalnn_benchmark_topaz.lbf.
+INFO     : Bitstream generation took 1.195280239 seconds [FlowMsg::StageDuration]
+INFO     :     Bitstream generation took 1.17 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Bitstream generation virtual memory usage: begin = 536.136 MB, end = 579.44 MB, delta = 43.304 MB [FlowMsg::VMUsage]
+INFO     : Bitstream generation resident set memory usage: begin = 246.356 MB, end = 342.284 MB, delta = 95.928 MB [FlowMsg::RSSUsage]
+INFO     :     Bitstream generation peak resident set memory usage = 342.284 MB [FlowMsg::RSSUsage::Peak]
+INFO     : The entire flow of EFX_PNR took 5.377673396 seconds [FlowMsg::StageDuration]
+INFO     :     The entire flow of EFX_PNR took 10.78 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : The entire flow of EFX_PNR virtual memory usage: begin = 127.776 MB, end = 579.44 MB, delta = 451.664 MB [FlowMsg::VMUsage]
+INFO     : The entire flow of EFX_PNR resident set memory usage: begin = 40.12 MB, end = 342.284 MB, delta = 302.164 MB [FlowMsg::RSSUsage]
+INFO     :     The entire flow of EFX_PNR peak resident set memory usage = 342.284 MB [FlowMsg::RSSUsage::Peak]

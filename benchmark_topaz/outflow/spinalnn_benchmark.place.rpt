@@ -1,0 +1,125 @@
+
+Efinix FPGA Placement and Routing.
+Version: 2025.2.288.2.10 
+Date: Wed Jun  3 21:53:18 2026
+
+Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+ 
+Family: Trion 
+Device: T20F169
+Top-level Entity Name: spinalnn_benchmark
+Elapsed time for packing: 0 hours 0 minutes 0 seconds
+
+---------- Resource Summary (begin) ----------
+Inputs: 12 / 455 (2.64%)
+Outputs: 10 / 639 (1.56%)
+Clocks: 1 / 16 (6.25%)
+Logic Elements: 1224 / 19728 (6.20%)
+	LE: LUTs/Adders: 1191 / 19728 (6.04%)
+	LE: Registers: 640 / 13920 (4.60%)
+Memory Blocks: 35 / 204 (17.16%)
+Multipliers: 14 / 36 (38.89%)
+---------- Resource Summary (end) ----------
+
+
+---------- DSP Block Information (begin) ----------
+
++--------------+-------+-------+-------+-----------+------------+-----------+------------+-----------+------------+
+|     NAME     | A_REG | B_REG | O_REG | RSTA_SYNC | RSTA_VALUE | RSTB_SYNC | RSTB_VALUE | RSTO_SYNC | RSTO_VALUE |
++--------------+-------+-------+-------+-----------+------------+-----------+------------+-----------+------------+
+|   mult_24    | true  | true  | true  |   false   |   false    |   false   |   false    |   false   |   false    |
+|   mult_91    | true  | true  | true  |   false   |   false    |   false   |   false    |   false   |   false    |
+|   mult_146   | true  | true  | true  |   false   |   false    |   false   |   false    |   false   |   false    |
+| n5138_pp_1x0 | true  | false | false |   false   |   false    |   false   |   false    |   false   |   false    |
+|   mult_83    | true  | false | false |   false   |   false    |   false   |   false    |   false   |   false    |
+|   mult_16    | true  | false | false |   false   |   false    |   false   |   false    |   false   |   false    |
+| n6286_pp_0x1 | true  | false | false |   false   |   false    |   false   |   false    |   false   |   false    |
+| n3787_pp_1x0 | true  | false | false |   false   |   false    |   false   |   false    |   false   |   false    |
+| n6286_pp_1x1 | true  | false | true  |   false   |   false    |   false   |   false    |   false   |   false    |
+| n6286_pp_1x0 | true  | false | false |   false   |   false    |   false   |   false    |   false   |   false    |
+|    mult_6    | true  | false | false |   false   |   false    |   false   |   false    |   false   |   false    |
+| n6286_pp_0x0 | true  | false | true  |   false   |   false    |   false   |   false    |   false   |   false    |
+| n5138_pp_0x0 | true  | false | true  |   false   |   false    |   false   |   false    |   false   |   false    |
+| n3787_pp_0x0 | true  | false | true  |   false   |   false    |   false   |   false    |   false   |   false    |
++--------------+-------+-------+-------+-----------+------------+-----------+------------+-----------+------------+
+
+----------- DSP Block Information (end) ----------
+
+
+---------- Memory Block Information (begin) ----------
+
++--------------------------+------+------------+-------------+--------------+------------+
+|           NAME           | MODE | READ_WIDTH | WRITE_WIDTH |  WRITE_MODE  | OUTPUT_REG |
++--------------------------+------+------------+-------------+--------------+------------+
+| conv2_weightRom_0__D$b12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|  conv1_inputBuf_0__D$1   | SDP  |     4      |      4      |  READ_FIRST  |   false    |
+| conv2_weightRom_0__D$c12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|  conv2_weightRom_0__D$2  | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|  conv2_inputBuf_0__D$12  | SDP  |     2      |      2      |  READ_FIRST  |   false    |
+| linear1_weightRom__D$c12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+| linear1_weightRom__D$b12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|   pool2_inputBuf__D$1    | SDP  |     4      |      4      |  READ_FIRST  |   false    |
+| linear1_weightRom__D$12  | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|  linear1_weightRom__D$2  | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+| conv2_weightRom_0__D$g1  | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|   pool1_inputBuf__D$3    | SDP  |     8      |      8      |  READ_FIRST  |   false    |
+|  conv2_inputBuf_0__D$2   | SDP  |     2      |      2      |  READ_FIRST  |   false    |
+|   pool1_inputBuf__D$02   | SDP  |     1      |      1      |  READ_FIRST  |   false    |
+|  conv2_inputBuf_0__D$c1  | SDP  |     2      |      2      |  READ_FIRST  |   false    |
+| conv2_inputBuf_0__D$b12  | SDP  |     2      |      2      |  READ_FIRST  |   false    |
+| conv2_weightRom_0__D$d12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+| conv2_weightRom_0__D$e12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+| conv2_weightRom_0__D$f12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|     linear1_inputBuf     | SDP  |     8      |      8      |  READ_FIRST  |   false    |
+|   pool2_inputBuf__D$2    | SDP  |     4      |      4      |  READ_FIRST  |   false    |
+| linear1_weightRom__D$d12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+| linear1_weightRom__D$e12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+| linear1_weightRom__D$f12 | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+| linear1_weightRom__D$g1  | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|  conv1_inputBuf_0__D$2   | SDP  |     4      |      4      |  READ_FIRST  |   false    |
+|    conv1_weightRom_0     | SDP  |     8      |      8      | READ_UNKNOWN |   false    |
+|  pool1_inputBuf__D$0g1   | SDP  |     1      |      1      |  READ_FIRST  |   false    |
+| conv2_weightRom_0__D$12  | SDP  |     1      |      1      | READ_UNKNOWN |   false    |
+|  pool1_inputBuf__D$0e12  | SDP  |     1      |      1      |  READ_FIRST  |   false    |
+|  pool1_inputBuf__D$0d12  | SDP  |     1      |      1      |  READ_FIRST  |   false    |
+|  pool1_inputBuf__D$0c12  | SDP  |     1      |      1      |  READ_FIRST  |   false    |
+|  pool1_inputBuf__D$0b12  | SDP  |     1      |      1      |  READ_FIRST  |   false    |
+|  pool1_inputBuf__D$012   | SDP  |     1      |      1      |  READ_FIRST  |   false    |
+|  pool1_inputBuf__D$0f12  | SDP  |     1      |      1      |  READ_FIRST  |   false    |
++--------------------------+------+------------+-------------+--------------+------------+
+
+----------- Memory Block Information (end) ----------
+
+
+---------- IO Placement Summary (begin) ----------
+
++------------------------+--------------+
+|  Unassigned Core Pins  | Input/Output |
++------------------------+--------------+
+|  activation_in_valid   |    Input     |
+|  activation_in_ready   |    Output    |
+| activation_in_data[7]  |    Input     |
+| activation_in_data[6]  |    Input     |
+| activation_in_data[5]  |    Input     |
+| activation_in_data[4]  |    Input     |
+| activation_in_data[3]  |    Input     |
+| activation_in_data[2]  |    Input     |
+| activation_in_data[1]  |    Input     |
+| activation_in_data[0]  |    Input     |
+|  activation_out_valid  |    Output    |
+|  activation_out_ready  |    Input     |
+| activation_out_data[7] |    Output    |
+| activation_out_data[6] |    Output    |
+| activation_out_data[5] |    Output    |
+| activation_out_data[4] |    Output    |
+| activation_out_data[3] |    Output    |
+| activation_out_data[2] |    Output    |
+| activation_out_data[1] |    Output    |
+| activation_out_data[0] |    Output    |
+|          clk           |    Input     |
+|         reset          |    Input     |
++------------------------+--------------+
+
+----------- IO Placement Summary (end) ----------
+
+Elapsed time for placement: 0 hours 0 minutes 2 seconds

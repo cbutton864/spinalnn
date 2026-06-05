@@ -1,0 +1,27 @@
+
+Efinix FPGA Placement and Routing.
+Version: 2025.2.288.2.10 
+Date: Wed Jun  3 22:05:46 2026
+
+Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+ 
+Family: Topaz 
+Device: Tz50F256
+Top-level Entity Name: spinalnn_benchmark_topaz
+Elapsed time for routing: 0 hours 0 minutes 1 seconds
+
+
+---------- GBUFCE Assignments (begin) ----------
+
+
++-----------+----------+----------+
+| Clock Net | GBUFCE_X | GBUFCE_Y |
++-----------+----------+----------+
+|    clk    |   111    |    1     |
++-----------+----------+----------+
+
+
+----------- GBUFCE Assignments (end) ----------
+
+
+Elapsed time for Latest PnR Run: 0 hours 0 minutes 5 seconds

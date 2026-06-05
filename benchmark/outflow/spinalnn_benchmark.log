@@ -1,0 +1,560 @@
+Running: efx_run_map.py spinalnn_benchmark --family Trion --device T20F169 --project_xml /home/curtis-button/projects/spinalnn/benchmark/spinalnn_benchmark.xml --output_dir outflow --opt root=SpinalNNTop --opt veri_options=verilog_mode=verilog_2k,vhdl_mode=vhdl_2008 work-dir=work_syn write_efx_verilog=on
+running synthesis
+Running: /home/curtis-button/eda/efinity/2025.2/bin/efx_map --project spinalnn_benchmark --family Trion --device T20F169 --output-dir outflow --project-xml /home/curtis-button/projects/spinalnn/benchmark/spinalnn_benchmark.xml --binary-db outflow/spinalnn_benchmark.vdb --root=SpinalNNTop --veri_options=verilog_mode=verilog_2k,vhdl_mode=vhdl_2008 --work-dir=work_syn --write-efx-verilog=outflow/spinalnn_benchmark.map.v
+INFO     : Efinix FPGA Synthesis.
+INFO     : Version: 2025.2.288.2.10
+INFO     : Compiled: Dec 18 2025.
+INFO     : 
+INFO     : Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+
+INFO     : Reading project database "/home/curtis-button/projects/spinalnn/benchmark/spinalnn_benchmark.xml" [FlowMsg::ProjectDatabaseReading]
+INFO     : Analyzing Verilog file '/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v' [VERI-1482]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(8): compiling module 'EFX_IBUF' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(16): compiling module 'EFX_OBUF' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(23): compiling module 'EFX_IO_BUF' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(33): compiling module 'EFX_CLKOUT' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(41): compiling module 'EFX_IREG' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(51): compiling module 'EFX_OREG' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(60): compiling module 'EFX_IOREG' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(75): compiling module 'EFX_IDDIO' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(87): compiling module 'EFX_ODDIO' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(99): compiling module 'EFX_GPIO_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(124): compiling module 'EFX_GPIO_V2' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(149): compiling module 'EFX_GPIO_V3' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(186): compiling module 'EFX_PLL_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(205): compiling module 'EFX_PLL_V2' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(231): compiling module 'EFX_PLL_V3' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(279): compiling module 'EFX_OSC_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(285): compiling module 'EFX_OSC_V3' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(294): compiling module 'EFX_FPLL_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(348): compiling module 'EFX_JTAG_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(357): compiling module 'EFX_JTAG_CTRL' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(364): compiling module 'EFX_LVDS_RX_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(381): compiling module 'EFX_LVDS_TX_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(399): compiling module 'EFX_LVDS_RX_V2' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(426): compiling module 'EFX_LVDS_TX_V2' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(446): compiling module 'EFX_LVDS_BIDIR_V2' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(485): compiling module 'EFX_MIPI_TX_LN_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(508): compiling module 'EFX_MIPI_RX_LN_V1' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v(543): compiling module 'EFX_MIPI_RX_CLK_LN_V1' [VERI-1018]
+INFO     : Reading project database "/home/curtis-button/projects/spinalnn/benchmark/spinalnn_benchmark.xml" [FlowMsg::ProjectDatabaseReading]
+INFO     : ***** Beginning Analysis ... *****
+INFO     : default VHDL library search path is now "/home/curtis-button/eda/efinity/2025.2/sim_models/vhdl/packages/vhdl_2008" [VHDL-1504]
+INFO     : Analyzing Verilog file '/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v' [VERI-1482]
+INFO     : Analyzing Verilog file '/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v' [VERI-1482]
+INFO     : Analyzing Verilog file '/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v' [VERI-1482]
+INFO     : Analyzing Verilog file '/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_peri_lib.v' [VERI-1482]
+INFO     : Analyzing Verilog file '/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v' [VERI-1482]
+INFO     : Analysis took 0.010167049 seconds [FlowMsg::StageDuration]
+INFO     :     Analysis took 0 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Analysis virtual memory usage: begin = 131.668 MB, end = 131.668 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : Analysis resident set memory usage: begin = 74.244 MB, end = 75.64 MB, delta = 1.396 MB [FlowMsg::RSSUsage]
+INFO     :     Analysis peak resident set memory usage = 75.64 MB [FlowMsg::RSSUsage::Peak]
+INFO     : ***** Ending Analysis ... *****
+INFO     : ***** Beginning Elaboration ... *****
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(6): compiling module 'SpinalNNTop' [VERI-1018]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(428): extracting RAM for identifier 'conv1_inputBuf_0' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(429): extracting RAM for identifier 'conv1_weightRom_0' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(430): extracting RAM for identifier 'conv1_biasRom' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(431): extracting RAM for identifier 'pool1_inputBuf' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(432): extracting RAM for identifier 'conv2_inputBuf_0' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(433): extracting RAM for identifier 'conv2_weightRom_0' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(434): extracting RAM for identifier 'conv2_biasRom' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(435): extracting RAM for identifier 'pool2_inputBuf' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(436): extracting RAM for identifier 'linear1_inputBuf' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(437): extracting RAM for identifier 'linear1_weightRom' [VERI-2571]
+INFO     : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(438): extracting RAM for identifier 'linear1_biasRom' [VERI-2571]
+WARNING  : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(429): net 'conv1_weightRom_0' does not have a driver [VDB-1002]
+WARNING  : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(430): net 'conv1_biasRom' does not have a driver [VDB-1002]
+WARNING  : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(433): net 'conv2_weightRom_0' does not have a driver [VDB-1002]
+WARNING  : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(434): net 'conv2_biasRom' does not have a driver [VDB-1002]
+WARNING  : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(437): net 'linear1_weightRom' does not have a driver [VDB-1002]
+WARNING  : /home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v(438): net 'linear1_biasRom' does not have a driver [VDB-1002]
+INFO     : Elaboration took 0.022762268 seconds [FlowMsg::StageDuration]
+INFO     :     Elaboration took 0.03 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Elaboration virtual memory usage: begin = 131.668 MB, end = 140.884 MB, delta = 9.216 MB [FlowMsg::VMUsage]
+INFO     : Elaboration resident set memory usage: begin = 75.852 MB, end = 84.524 MB, delta = 8.672 MB [FlowMsg::RSSUsage]
+INFO     :     Elaboration peak resident set memory usage = 84.524 MB [FlowMsg::RSSUsage::Peak]
+INFO     : ***** Ending Elaboration ... *****
+INFO     : ... Setting Synthesis Option: mode=speed
+INFO     : ***** Beginning Reading Mapping Library ... *****
+INFO     : Analyzing Verilog file '/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v' [VERI-1482]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(8): compiling module 'EFX_ADD' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(21): compiling module 'EFX_FF' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(38): compiling module 'EFX_COMB4' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(48): compiling module 'EFX_GBUFCE' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(57): compiling module 'EFX_LUT4' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(65): compiling module 'EFX_MULT' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(100): compiling module 'EFX_DSP48' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(156): compiling module 'EFX_DSP24' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(209): compiling module 'EFX_DSP12' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(262): compiling module 'EFX_RAM_4K' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(322): compiling module 'EFX_RAM_5K' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(394): compiling module 'EFX_DPRAM_5K' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(499): compiling module 'RAMB5' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(561): compiling module 'EFX_RAM_10K' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(653): compiling module 'EFX_RAM10' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(754): compiling module 'EFX_DPRAM10' [VERI-1018]
+INFO     : /home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v(884): compiling module 'EFX_SRL8' [VERI-1018]
+INFO     : Reading Mapping Library took 0.005261414 seconds [FlowMsg::StageDuration]
+INFO     :     Reading Mapping Library took 0 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Reading Mapping Library virtual memory usage: begin = 140.884 MB, end = 140.884 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : Reading Mapping Library resident set memory usage: begin = 85.288 MB, end = 85.288 MB, delta = 0 MB [FlowMsg::RSSUsage]
+INFO     :     Reading Mapping Library peak resident set memory usage = 85.288 MB [FlowMsg::RSSUsage::Peak]
+INFO     : ***** Ending Reading Mapping Library ... *****
+INFO     : ... Pre-synthesis checks begin
+WARNING  : Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:73) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:101) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:103) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:146) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:179) [EFX-0200]
+WARNING  : Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:181) [EFX-0200]
+INFO     : ... Memory 'conv1_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:428) [EFX-0677]
+INFO     : ... Memory 'pool1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:431) [EFX-0677]
+INFO     : ... Memory 'conv2_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:432) [EFX-0677]
+INFO     : ... Memory 'pool2_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:435) [EFX-0677]
+INFO     : ... Memory 'linear1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:436) [EFX-0677]
+INFO     : ... Pre-synthesis checks end (Real time : 1s CPU user time : 0s CPU sys time : 0s MEM : 85480KB)
+INFO     : ... NameSpace init begin
+INFO     : ... NameSpace init end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 85480KB)
+INFO     : ... Mapping design "SpinalNNTop"
+INFO     : ... Hierarchical pre-synthesis "SpinalNNTop" begin
+WARNING  : Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:430) because read port is not synchronous. [EFX-0657]
+WARNING  : Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:434) because read port is not synchronous. [EFX-0657]
+WARNING  : Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:438) because read port is not synchronous. [EFX-0657]
+INFO     : ... Clock Enable Synthesis Performed on 207 flops.
+INFO     : ... Performed 1 retime moves after multiplier decomposition.
+INFO     : ... Hierarchical pre-synthesis "SpinalNNTop" end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 102848KB)
+INFO     : ... Flat optimizations begin
+INFO     : ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 102848KB)
+INFO     : ... Flat synthesis begin
+INFO     : ... Flat synthesis end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 103016KB)
+INFO     : ... Flat optimizations begin
+INFO     : ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 103016KB)
+INFO     : ... Check and break combinational loops begin
+INFO     : ... Check and break combinational loops end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 103016KB)
+INFO     : ... Sequential Optimization begin
+INFO     : ... Clock Network 'clk' with 525 loads will be considered for sequential optimization.
+INFO     : ... Sequential Optimization deduced 248 equivalent points.
+INFO     : ... Sequential Optimization end (Real time : 0s CPU user time : 1s CPU sys time : 0s MEM : 118524KB)
+INFO     : ... Setup for logic synthesis begin
+INFO     : ... Setup for logic synthesis end (Real time : 0s CPU user time : 1s CPU sys time : 0s MEM : 118524KB)
+INFO     : ... LUT mapping begin
+INFO     : ... LS, strategy: 3, nd: 602, ed: 1827, lv: 4, pw: 1772.14
+INFO     : ... LUT mapping end (Real time : 1s CPU user time : 2s CPU sys time : 0s MEM : 172096KB)
+INFO     : ... Post-synthesis Verific netlist creation begin
+INFO     : ... Post-synthesis Verific netlist creation end (Real time : 0s CPU user time : 2s CPU sys time : 0s MEM : 172096KB)
+INFO     : ... Postmap Retiming Optimization begin
+INFO     : ... Clock Network 'clk~clk' with 513 loads will be considered for retiming optimization.
+INFO     : ... Performed 1 retime moves.
+INFO     : ... Postmap Retiming Optimization end (Real time : 0s CPU user time : 2s CPU sys time : 0s MEM : 172096KB)
+INFO     : ***** Beginning VDB Netlist Checker ... *****
+INFO     : VDB Netlist Checker took 0.002056017 seconds [FlowMsg::StageDuration]
+INFO     :     VDB Netlist Checker took 0.01 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : VDB Netlist Checker virtual memory usage: begin = 319.7 MB, end = 319.7 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : VDB Netlist Checker resident set memory usage: begin = 129.704 MB, end = 129.896 MB, delta = 0.192 MB [FlowMsg::RSSUsage]
+INFO     :     VDB Netlist Checker peak resident set memory usage = 172.096 MB [FlowMsg::RSSUsage::Peak]
+INFO     : ***** Ending VDB Netlist Checker ... *****
+INFO     : Resource Summary 
+INFO     : =============================== 
+INFO     : EFX_ADD         : 	581
+INFO     : EFX_LUT4        : 	602
+INFO     : EFX_MULT        : 	14
+INFO     : EFX_FF          : 	431
+INFO     : EFX_RAM_5K      : 	35
+INFO     : EFX_GBUFCE      : 	1
+INFO     : =============================== 
+INFO     : ... Post-Map Verilog Writer begin
+INFO     : Writing netlist 'SpinalNNTop' to Verilog file 'outflow/spinalnn_benchmark.map.v' [VDB-1030]
+INFO     : ... Post-Map Verilog Writer end (Real time : 0s CPU user time : 2s CPU sys time : 0s MEM : 172096KB)
+INFO     : The entire flow of EFX_MAP took 2.334687095 seconds [FlowMsg::StageDuration]
+INFO     :     The entire flow of EFX_MAP took 2.51 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : The entire flow of EFX_MAP virtual memory usage: begin = 94.484 MB, end = 319.7 MB, delta = 225.216 MB [FlowMsg::VMUsage]
+INFO     : The entire flow of EFX_MAP resident set memory usage: begin = 29.528 MB, end = 136.296 MB, delta = 106.768 MB [FlowMsg::RSSUsage]
+INFO     :     The entire flow of EFX_MAP peak resident set memory usage = 172.096 MB [FlowMsg::RSSUsage::Peak]
+Stage completed: map
+Running: efx_run_pt_unified.py spinalnn_benchmark Trion T20F169 --output_dir outflow --timing_model C4 --project_xml spinalnn_benchmark.xml
+Running: /home/curtis-button/eda/efinity/2025.2/bin/python3 /home/curtis-button/eda/efinity/2025.2/scripts/efx_run_pt_unified.py spinalnn_benchmark Trion T20F169 --output_dir outflow --timing_model C4 --project_xml spinalnn_benchmark.xml
+Load design file spinalnn_benchmark.peri.xml
+Writing out summary report file
+Writing out pinout file
+Writing out interface config file
+Writing out timing related file
+Writing out verilog template file
+Writing out option register file
+Writing out boundary scan description file
+Writing out LPF
+Stage completed: interface
+Running: efx_run_pnr.py spinalnn_benchmark --prj /home/curtis-button/projects/spinalnn/benchmark/spinalnn_benchmark.xml --family Trion --device T20F169 --timing_model C4 --output_dir outflow --opt sdc_file=timing.sdc
+Running: /home/curtis-button/eda/efinity/2025.2/bin/efx_pnr --circuit spinalnn_benchmark --family Trion --device T20F169 --operating_conditions C4 --vdb_file outflow/spinalnn_benchmark.vdb --use_vdb_file on --prj /home/curtis-button/projects/spinalnn/benchmark/spinalnn_benchmark.xml --output_dir outflow --place_file outflow/spinalnn_benchmark.place --route_file outflow/spinalnn_benchmark.route --sync_file outflow/spinalnn_benchmark.interface.csv --generate_prevpr_netlist off --sdc_file=timing.sdc
+INFO     : Reading project database "/home/curtis-button/projects/spinalnn/benchmark/spinalnn_benchmark.xml" [FlowMsg::ProjectDatabaseReading]
+INFO     : Maximum concurrency has been set to 14 [FlowMsg::MaxThreads]
+           
+           Efinix FPGA Placement and Routing.
+           Version: 2025.2.288.2.10 
+           Compiled: Dec 18 2025.
+           
+           Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+
+           
+           The Tool Is Based on VPR of University of Toronto,
+           a free open source code under MIT license.
+           
+           
+INFO     : Running Placement and Routing for Family "Trion", Device "T20F169" ...
+           
+           ***** Beginning stage netlist pre-processing ... *****
+INFO     : Successfully read in VDB netlist file outflow/spinalnn_benchmark.vdb [DBMsg::VdbFileRead]
+INFO     : ***** Beginning VDB Netlist Checker ... *****
+INFO     : VDB Netlist Checker took 0.00256572 seconds [FlowMsg::StageDuration]
+INFO     :     VDB Netlist Checker took 0 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : VDB Netlist Checker virtual memory usage: begin = 208.724 MB, end = 266.136 MB, delta = 57.412 MB [FlowMsg::VMUsage]
+INFO     : VDB Netlist Checker resident set memory usage: begin = 123.996 MB, end = 124.828 MB, delta = 0.832 MB [FlowMsg::RSSUsage]
+INFO     :     VDB Netlist Checker peak resident set memory usage = 150.604 MB [FlowMsg::RSSUsage::Peak]
+INFO     : ***** Ending VDB Netlist Checker ... *****
+INFO     : Reading core interface constraints file "outflow/spinalnn_benchmark.interface.csv" [DBMsg::CoreInterfaceConstraintsFileReading]
+INFO     : Successfully read core interface constraints file "outflow/spinalnn_benchmark.interface.csv" [DBMsg::CoreInterfaceConstraintsFileLoadSuccess]
+INFO     : Found 0 constant generator nets [DBMsg::NetlistConstGeneratorCount]
+INFO     : Pass 0: Swept away 0 nets with no fanout [DBMsg::NetlistNetsSweptThisPass]
+INFO     : Pass 0: Swept away 0 blocks with no fanout [DBMsg::NetlistBlocksSweptThisPass]
+INFO     : Swept away 0 nets and 0 blocks in total [DBMsg::NetlistTotalSwept]
+INFO     : Removed 0 LUT buffers [DBMsg::NetlistRemovedLUTBuffers]
+INFO     : Successfully read in VDB netlist file outflow/spinalnn_benchmark.vdb [DBMsg::VdbFileRead]
+INFO     : Netlist pre-processing took 0.014132792 seconds [FlowMsg::StageDuration]
+INFO     :     Netlist pre-processing took 0.02 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Netlist pre-processing virtual memory usage: begin = 208.724 MB, end = 266.136 MB, delta = 57.412 MB [FlowMsg::VMUsage]
+INFO     : Netlist pre-processing resident set memory usage: begin = 122.86 MB, end = 125.208 MB, delta = 2.348 MB [FlowMsg::RSSUsage]
+INFO     :     Netlist pre-processing peak resident set memory usage = 150.604 MB [FlowMsg::RSSUsage::Peak]
+           ***** Ending stage netlist pre-processing *****
+           
+           ***** Beginning stage pre-packing ... *****
+           ***** Ending stage pre-packing *****
+           
+           ***** Beginning stage packing ... *****
+INFO     : Generate proto netlist for file "work_pnr/spinalnn_benchmark.net_proto" took 0.000975 seconds
+INFO     : Creating IO constraints file 'work_pnr/spinalnn_benchmark.io_place'
+INFO     : Packing took 0.003667468 seconds [FlowMsg::StageDuration]
+INFO     :     Packing took 0.01 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Packing virtual memory usage: begin = 266.136 MB, end = 266.136 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : Packing resident set memory usage: begin = 126.356 MB, end = 126.724 MB, delta = 0.368 MB [FlowMsg::RSSUsage]
+INFO     :     Packing peak resident set memory usage = 150.604 MB [FlowMsg::RSSUsage::Peak]
+           ***** Ending stage packing *****
+           
+INFO     : Read proto netlist file work_pnr/spinalnn_benchmark.net_proto
+INFO     : Read proto netlist for file "work_pnr/spinalnn_benchmark.net_proto" took 0.000568 seconds
+INFO     : Setup net and block data structure took 0.012019 seconds
+INFO     : Reading core interface constraints file "outflow/spinalnn_benchmark.interface.csv" [DBMsg::CoreInterfaceConstraintsFileReading]
+INFO     : Successfully read core interface constraints file "outflow/spinalnn_benchmark.interface.csv" [DBMsg::CoreInterfaceConstraintsFileLoadSuccess]
+           ***** Beginning stage packed netlist loading ... *****
+INFO     : Read proto netlist file work_pnr/spinalnn_benchmark.net_proto
+INFO     : Read proto netlist for file "work_pnr/spinalnn_benchmark.net_proto" took 0.00061 seconds
+INFO     : Setup net and block data structure took 0.012019 seconds
+INFO     : Packed netlist loading took 0.012899996 seconds [FlowMsg::StageDuration]
+INFO     :     Packed netlist loading took 0.01 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Packed netlist loading virtual memory usage: begin = 266.136 MB, end = 266.136 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : Packed netlist loading resident set memory usage: begin = 129.092 MB, end = 129.092 MB, delta = 0 MB [FlowMsg::RSSUsage]
+INFO     :     Packed netlist loading peak resident set memory usage = 150.604 MB [FlowMsg::RSSUsage::Peak]
+           ***** Ending stage packed netlist loading *****
+           
+           ***** Beginning stage pre-placement ... *****
+           
+           ***** Ending stage pre-placement *****
+           
+INFO     : SDC file 'timing.sdc' parsed successfully.
+           ***** Beginning stage initial placement ... *****
+INFO     : Reading core interface constraints file "outflow/spinalnn_benchmark.interface.csv" [DBMsg::CoreInterfaceConstraintsFileReading]
+INFO     : Successfully read core interface constraints file "outflow/spinalnn_benchmark.interface.csv" [DBMsg::CoreInterfaceConstraintsFileLoadSuccess]
+INFO     : Writing IO placement constraints to "outflow/spinalnn_benchmark.interface.io" [DBMsg::IOPlacementConstraintsFileWriting]
+INFO     : Reading placement constraints from 'outflow/spinalnn_benchmark.interface.io'.
+INFO     : Reading placement constraints from 'work_pnr/spinalnn_benchmark.io_place'.
+WARNING  : activation_in_valid has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_ready has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_data[7] has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_data[6] has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_data[5] has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_data[4] has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_data[3] has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_data[2] has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_data[1] has no assigned placement; it will be placed randomly.
+WARNING  : activation_in_data[0] has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_valid has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_ready has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_data[7] has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_data[6] has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_data[5] has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_data[4] has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_data[3] has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_data[2] has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_data[1] has no assigned placement; it will be placed randomly.
+WARNING  : activation_out_data[0] has no assigned placement; it will be placed randomly.
+WARNING  : clk has no assigned placement; it will be placed randomly.
+WARNING  : reset has no assigned placement; it will be placed randomly.
+INFO     : 22 IOs will have random placement.
+           ***** Ending stage initial placement *****
+           
+           ***** Beginning stage placement ... *****
+INFO     : Chip::LoadDelayLookupTable
+INFO     : Starting Global Placer with 14 threads ...
+            ----------     -------  --------------     -------
+             Iteration       WHPWL Worst Slack (ps) Convergence
+            ----------     -------  --------------     -------
+INFO     :           1      780343           -1908         7.3%
+INFO     :           2      648007           -2008        10.9%
+INFO     :           3      609800           -1850        11.9%
+INFO     :           4      490755           -1850        12.4%
+INFO     :           5      266357           -1850        13.0%
+INFO     :           6      166344           -1850        13.2%
+INFO     :           7      139495           -1850        13.5%
+INFO     :           8       95546           -2266        13.8%
+INFO     :           9       89107           -1850        17.8%
+INFO     :          10       65552           -2092        22.4%
+INFO     :          11       48211           -2698        29.8%
+INFO     :          12       39657           -3123        42.9%
+INFO     :          13       38006           -3881        54.7%
+INFO     :          14       35926           -3671        62.9%
+INFO     :          15       35854           -3650        66.3%
+INFO     :          16       34564           -3881        68.1%
+INFO     :          17       34419           -4018        69.1%
+INFO     :          18       34318           -3892        71.2%
+INFO     :          19       33853           -3894        71.2%
+INFO     :          20       33603           -4143        71.5%
+INFO     :          21       33614           -4140        73.0%
+INFO     :          22       33764           -3645        73.7%
+INFO     :          23       33808           -3850        74.6%
+INFO     :          24       33991           -4002        76.5%
+INFO     :          25       33059           -4099        78.5%
+INFO     :          26       33071           -4325        79.2%
+INFO     :          27       32981           -4099        81.3%
+INFO     :          28       32848           -4350        81.4%
+INFO     :          29       32794           -4350        81.5%
+INFO     :          30       32620           -4350        82.5%
+INFO     :          31       32910           -4350        83.1%
+INFO     :          32       32807           -4350        84.9%
+INFO     :          33       32873           -3892        84.9%
+INFO     :          34       32823           -3863        84.9%
+INFO     :          35       32717           -3860        85.8%
+INFO     :          36       32695           -3943        86.7%
+INFO     :          37       32808           -3943        87.4%
+INFO     :          38       32704           -3743        88.3%
+INFO     :          39       32365           -4342        89.8%
+INFO     :          40       32594           -3884        90.4%
+INFO     :          41       32518           -3940        91.3%
+INFO     :          42       32590           -4166        91.9%
+INFO     :          43       32663           -4166        92.8%
+INFO     :          44       32720           -4162        93.9%
+INFO     :          45       32812           -4198        94.3%
+INFO     :          46       32879           -4198        94.6%
+INFO     :          47       33076           -4198        96.0%
+INFO     :          48       31896           -4546        98.5%
+INFO     :          49       31893           -4546        99.4%
+INFO     :          50       31978           -4428        99.6%
+INFO     :          51       31985           -4460        99.9%
+INFO     :          52       31919           -4460       100.0%
+INFO     :          53       31954           -4460       100.0%
+INFO     :          54       31983           -4460       100.0%
+INFO     : Starting Annealer
+            ----------     -------  --------------     -------
+             Iteration       WHPWL  Delay Max (ps)     R Limit
+            ----------     -------  --------------     -------
+INFO     :           0        7363           11061        30.0
+INFO     :           1        7137           10801        30.0
+INFO     :           2        6174           10487        30.0
+INFO     :           3        5641           10487        30.0
+INFO     :           4        5423           10583        30.0
+INFO     :           5        5157           10359        30.0
+INFO     :           6        4927           10325        30.0
+INFO     :           7        4951           10250        30.0
+INFO     :           8        4870           10250        29.6
+INFO     :           9        4852           10238        28.8
+INFO     :          10        4683           10238        28.2
+INFO     :          11        4522            9238        27.9
+INFO     :          12        4439            9238        27.0
+INFO     :          13        4434            9238        25.9
+INFO     :          14        4455            9238        24.8
+INFO     :          15        4431            9238        23.6
+INFO     :          16        4379            9238        22.4
+INFO     :          17        4321            9238        21.3
+INFO     :          18        4336            9388        20.3
+INFO     :          19        4341            9388        19.3
+INFO     :          20        4247            9388        18.4
+INFO     :          21        4204            9388        17.4
+INFO     :          22        4184            9388        16.4
+INFO     :          23        4133            9388        15.4
+INFO     :          24        4038            9388        14.6
+INFO     :          25        4070            9388        13.7
+INFO     :          26        4004            9388        12.9
+INFO     :          27        4005            9388        12.2
+INFO     :          28        3963            9388        11.5
+INFO     :          29        3979            9388        10.8
+INFO     :          30        3966            9388        10.1
+INFO     :          31        3964            9388         9.5
+INFO     :          32        3951            9388         8.9
+INFO     :          33        3893            9388         8.5
+INFO     :          34        3898            9388         7.9
+INFO     :          35        3906            9388         7.4
+INFO     :          36        3865            9388         7.0
+INFO     :          37        3858            9388         6.5
+INFO     :          38        3822            9388         6.1
+INFO     :          39        3851            9388         5.7
+INFO     :          40        3879            9388         5.4
+INFO     :          41        3821            9388         5.1
+INFO     :          42        3842            9388         4.7
+INFO     :          43        3844            9388         4.5
+INFO     :          44        3863            9338         4.2
+INFO     :          45        3857            9338         3.9
+INFO     :          46        3819            9388         3.6
+INFO     :          47        3777            9388         3.4
+INFO     : Placement successful: 1244 cells are placed
+INFO     : Peak congestion smeared over 4x4 of the chip is 0.253021 at 96,155
+INFO     : Peak congestion smeared over 1/16 of the chip is 0.141251 at 37,189
+INFO     : Peak congestion smeared over 1/4 of the chip is 0.0827592 at 67,188
+INFO     : Congestion-weighted HPWL per net: 11.7678
+INFO     : Reading placement constraints from 'outflow/spinalnn_benchmark.qplace'.
+INFO     : Finished Realigning Types (283 blocks needed type change)
+INFO     : Completed placement consistency check successfully.
+INFO     : Successfully created FPGA place file 'outflow/spinalnn_benchmark.place'
+INFO     : Placement took 1.873555726 seconds [FlowMsg::StageDuration]
+INFO     :     Placement took 5.89 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Placement virtual memory usage: begin = 266.136 MB, end = 343.688 MB, delta = 77.552 MB [FlowMsg::VMUsage]
+INFO     : Placement resident set memory usage: begin = 130.196 MB, end = 164.12 MB, delta = 33.924 MB [FlowMsg::RSSUsage]
+INFO     :     Placement peak resident set memory usage = 164.12 MB [FlowMsg::RSSUsage::Peak]
+           ***** Ending stage placement *****
+           
+           
+           Efinix FPGA Placement and Routing.
+           Version: 2025.2.288.2.10 
+           Compiled: Dec 18 2025.
+           
+           Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+
+           
+           The Tool Is Based on VPR of University of Toronto,
+           a free open source code under MIT license.
+           
+           
+INFO     : Running Placement and Routing for Family "Trion", Device "T20F169" ...
+           
+           ***** Beginning stage Routing graph generation ... *****
+INFO     : Read ipin pattern from /home/curtis-button/eda/efinity/2025.2/arch/./routing/ipin_oph.xml
+INFO     : Finished parsing ipin pattern file '/home/curtis-button/eda/efinity/2025.2/arch/./routing/ipin_oph.xdb'.
+INFO     : Finished parsing switch_block file '/home/curtis-button/eda/efinity/2025.2/arch/./routing/sb_connectivity_subset.xdb'.
+INFO     : BuildGraph process took 0.977860162 seconds [FlowMsg::StageDuration]
+INFO     :     BuildGraph process took 0.93 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : BuildGraph process virtual memory usage: begin = 343.688 MB, end = 523.864 MB, delta = 180.176 MB [FlowMsg::VMUsage]
+INFO     : BuildGraph process resident set memory usage: begin = 164.676 MB, end = 386.024 MB, delta = 221.348 MB [FlowMsg::RSSUsage]
+INFO     :     BuildGraph process peak resident set memory usage = 386.024 MB [FlowMsg::RSSUsage::Peak]
+INFO     : check rr_graph process took 0.034956163 seconds [FlowMsg::StageDuration]
+INFO     :     check rr_graph process took 0.03 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : check rr_graph process virtual memory usage: begin = 523.864 MB, end = 523.864 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : check rr_graph process resident set memory usage: begin = 386.024 MB, end = 386.024 MB, delta = 0 MB [FlowMsg::RSSUsage]
+INFO     :     check rr_graph process peak resident set memory usage = 386.024 MB [FlowMsg::RSSUsage::Peak]
+INFO     : Generated 1177069 RR nodes and 4453493 RR edges [DBMsg::DatabaseRoutingGraphStats]
+INFO     : This design has 0 global control net(s). See outflow/spinalnn_benchmark.route.rpt for details.
+INFO     : Routing graph took 1.040470071 seconds [FlowMsg::StageDuration]
+INFO     :     Routing graph took 1 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Routing graph virtual memory usage: begin = 343.688 MB, end = 523.864 MB, delta = 180.176 MB [FlowMsg::VMUsage]
+INFO     : Routing graph resident set memory usage: begin = 164.12 MB, end = 386.212 MB, delta = 222.092 MB [FlowMsg::RSSUsage]
+INFO     :     Routing graph peak resident set memory usage = 386.212 MB [FlowMsg::RSSUsage::Peak]
+           ***** Ending stage Routing graph generation *****
+           
+           ***** Beginning stage routing ... *****
+INFO     : SDC file 'timing.sdc' parsed successfully.
+INFO     :  ---------      -------     --------------      -------------
+INFO     :  Iteration      Overuse     Crit Path (ns)      Calc Time (s)
+INFO     :  ---------      -------     --------------      -------------
+INFO     :          1         4505              11.34              0.662
+INFO     :          2          584              11.04              0.253
+INFO     :          3          232              11.04               0.16
+INFO     :          4          102              11.06              0.311
+INFO     :          5           67              11.04               1.09
+INFO     :          6           40              11.06               0.38
+INFO     :          7           24              11.16             0.0418
+INFO     :          8            5              11.09             0.0513
+INFO     :          9           10              11.06             0.0424
+INFO     :         10            4              11.06              0.043
+INFO     :         11            0              11.06             0.0394
+           
+INFO     : Successfully routed netlist after 11 routing iterations and 15777628 heapops
+INFO     : Completed net delay value cross check successfully.
+           ***** Beginning stage routing check ... *****
+           ***** Ending stage routing check *****
+           
+INFO     : Serial number (magic cookie) for the routing is: 458314006
+INFO     : Netlist fully routed.
+INFO     : Successfully created FPGA route file 'outflow/spinalnn_benchmark.route'
+INFO     : Routing took 3.232398809 seconds [FlowMsg::StageDuration]
+INFO     :     Routing took 3.36 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Routing virtual memory usage: begin = 523.864 MB, end = 560.648 MB, delta = 36.784 MB [FlowMsg::VMUsage]
+INFO     : Routing resident set memory usage: begin = 386.212 MB, end = 424.352 MB, delta = 38.14 MB [FlowMsg::RSSUsage]
+INFO     :     Routing peak resident set memory usage = 424.352 MB [FlowMsg::RSSUsage::Peak]
+           ***** Ending stage routing *****
+           
+           ***** Beginning stage final timing analysis ... *****
+INFO     : SDC file 'timing.sdc' parsed successfully.
+Maximum possible analyzed clocks frequency
+ Clock Name  Period (ns)  Frequency (MHz)     Edge
+    clk         11.175        89.485         (R-R)
+
+Geomean max period: 11.175
+
+Setup (Max) Clock Relationship
+  Launch Clock    Capture Clock   Constraint (ns)     Slack (ns)          Edge
+      clk              clk             6.667            -4.508           (R-R)
+
+Hold (Min) Clock Relationship
+  Launch Clock    Capture Clock   Constraint (ns)     Slack (ns)          Edge
+      clk              clk             0.000            0.086            (R-R)
+
+WARNING  : Clock domain between clk (rising) and clk (rising) may not meet (slack: -4.508 ns) the setup (max) timing requirement
+INFO     : Write Timing Report to "outflow/spinalnn_benchmark.timing.rpt" ...
+INFO     : final timing analysis took 0.066459677 seconds [FlowMsg::StageDuration]
+INFO     :     final timing analysis took 0.08 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : final timing analysis virtual memory usage: begin = 560.648 MB, end = 560.648 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : final timing analysis resident set memory usage: begin = 424.548 MB, end = 424.908 MB, delta = 0.36 MB [FlowMsg::RSSUsage]
+INFO     :     final timing analysis peak resident set memory usage = 424.908 MB [FlowMsg::RSSUsage::Peak]
+           ***** Ending stage final timing analysis *****
+           
+           ***** Beginning stage bitstream generation ... *****
+INFO     : Reading core interface constraints file "outflow/spinalnn_benchmark.interface.csv" [DBMsg::CoreInterfaceConstraintsFileReading]
+INFO     : Successfully read core interface constraints file "outflow/spinalnn_benchmark.interface.csv" [DBMsg::CoreInterfaceConstraintsFileLoadSuccess]
+INFO     : Finished writing bitstream file work_pnr/spinalnn_benchmark.lbf.
+INFO     : Bitstream generation took 0.202256454 seconds [FlowMsg::StageDuration]
+INFO     :     Bitstream generation took 0.21 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Bitstream generation virtual memory usage: begin = 560.648 MB, end = 560.648 MB, delta = 0 MB [FlowMsg::VMUsage]
+INFO     : Bitstream generation resident set memory usage: begin = 424.908 MB, end = 425.68 MB, delta = 0.772 MB [FlowMsg::RSSUsage]
+INFO     :     Bitstream generation peak resident set memory usage = 425.68 MB [FlowMsg::RSSUsage::Peak]
+INFO     : The entire flow of EFX_PNR took 6.966654579 seconds [FlowMsg::StageDuration]
+INFO     :     The entire flow of EFX_PNR took 11.07 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : The entire flow of EFX_PNR virtual memory usage: begin = 127.776 MB, end = 560.648 MB, delta = 432.872 MB [FlowMsg::VMUsage]
+INFO     : The entire flow of EFX_PNR resident set memory usage: begin = 39.932 MB, end = 425.68 MB, delta = 385.748 MB [FlowMsg::RSSUsage]
+INFO     :     The entire flow of EFX_PNR peak resident set memory usage = 425.68 MB [FlowMsg::RSSUsage::Peak]
+Stage completed: pnr
+Running: efx_run_pgm.py spinalnn_benchmark --family Trion --device T20F169 --output_dir outflow --opt mode=active width=1 enable_roms=smart bitstream_compression=on
+/home/curtis-button/eda/efinity/2025.2/bin/efx_pgm --interface_designer_settings outflow/spinalnn_benchmark_or.ini --periph outflow/spinalnn_benchmark.lpf --family Trion --device T20F169 --source /home/curtis-button/projects/spinalnn/benchmark/work_pnr/spinalnn_benchmark.lbf --dest outflow/spinalnn_benchmark.hex --mode=active --width=1 --enable_roms=smart --bitstream_compression=on
+INFO     : Efinix FPGA Bitstream Generator.
+INFO     : Version: 2025.2.288.2.10 
+INFO     : Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+INFO     : Compiled: Dec 18 2025.
+INFO     : Using source file "/home/curtis-button/projects/spinalnn/benchmark/work_pnr/spinalnn_benchmark.lbf"
+INFO     : Generating HEX programming file for device "T20F169", family "Trion"
+INFO     : Using periphery source file "outflow/spinalnn_benchmark.lpf"
+INFO     : Generating bit file: "outflow/spinalnn_benchmark.bit"
+INFO     : HEX Generation Options Summary:
+INFO     : 	Listing options specified to bitstream generation:
+INFO     : 	enable_remote_update                     = off
+INFO     : Finished generating "outflow/spinalnn_benchmark.hex"
+INFO     : Efinix Bitstream Generator took 0.376799364 seconds [FlowMsg::StageDuration]
+INFO     :     Efinix Bitstream Generator took 0.36 seconds (approximately) in total CPU time [FlowMsg::StageDuration::CPUTime]
+INFO     : Efinix Bitstream Generator virtual memory usage: begin = 35.724 MB, end = 86.036 MB, delta = 50.312 MB [FlowMsg::VMUsage]
+INFO     : Efinix Bitstream Generator resident set memory usage: begin = 15.248 MB, end = 71.036 MB, delta = 55.788 MB [FlowMsg::RSSUsage]
+INFO     :     Efinix Bitstream Generator peak resident set memory usage = 150.604 MB [FlowMsg::RSSUsage::Peak]
+Stage completed: pgm

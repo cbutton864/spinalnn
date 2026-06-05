@@ -1,0 +1,433 @@
+
+///////////////////////////////////
+// Efinity Synthesis Started 
+// Jun 03, 2026 17:13:57
+///////////////////////////////////
+
+[EFX-0012 VERI-INFO] default VHDL library search path is now "/home/curtis-button/eda/efinity/2025.2/sim_models/vhdl/packages/vhdl_2008" (VHDL-1504) 
+[EFX-0012 VERI-INFO] compiling module 'SpinalNNTop' (VERI-1018) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:6)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_inputBuf_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:437)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_weightRom_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:438)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:439)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'pool1_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:440)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_inputBuf_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:441)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_weightRom_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:442)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:443)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'pool2_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:444)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:445)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_weightRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:446)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:447)
+[EFX-0011 VERI-WARNING] net 'conv1_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:438)
+[EFX-0011 VERI-WARNING] net 'conv1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:439)
+[EFX-0011 VERI-WARNING] net 'conv2_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:442)
+[EFX-0011 VERI-WARNING] net 'conv2_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:443)
+[EFX-0011 VERI-WARNING] net 'linear1_weightRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:446)
+[EFX-0011 VERI-WARNING] net 'linear1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:447)
+[EFX-0000 INFO] ... Setting Synthesis Option: mode=speed
+[EFX-0012 VERI-INFO] compiling module 'EFX_ADD' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:8)
+[EFX-0012 VERI-INFO] compiling module 'EFX_FF' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:21)
+[EFX-0012 VERI-INFO] compiling module 'EFX_COMB4' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:38)
+[EFX-0012 VERI-INFO] compiling module 'EFX_GBUFCE' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:48)
+[EFX-0012 VERI-INFO] compiling module 'EFX_LUT4' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:57)
+[EFX-0012 VERI-INFO] compiling module 'EFX_MULT' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:65)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP48' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:100)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP24' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:156)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP12' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:209)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_4K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:262)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_5K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:322)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DPRAM_5K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:394)
+[EFX-0012 VERI-INFO] compiling module 'RAMB5' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:499)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_10K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:561)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM10' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:653)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DPRAM10' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:754)
+[EFX-0012 VERI-INFO] compiling module 'EFX_SRL8' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:884)
+[EFX-0000 INFO] ... Pre-synthesis checks begin
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:73)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:101)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:103)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:146)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:179)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:181)
+[EFX-0677 INFO] ... Memory 'conv1_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:437)
+[EFX-0677 INFO] ... Memory 'pool1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:440)
+[EFX-0677 INFO] ... Memory 'conv2_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:441)
+[EFX-0677 INFO] ... Memory 'pool2_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:444)
+[EFX-0677 INFO] ... Memory 'linear1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:445)
+[EFX-0000 INFO] ... Pre-synthesis checks end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 85736KB)
+[EFX-0000 INFO] ... NameSpace init begin
+[EFX-0000 INFO] ... NameSpace init end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 85920KB)
+[EFX-0000 INFO] ... Mapping design "SpinalNNTop"
+[EFX-0000 INFO] ... Hierarchical pre-synthesis "SpinalNNTop" begin
+[EFX-0657 WARNING] Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:439) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:443) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:447) because read port is not synchronous.
+[EFX-0000 INFO] ... Clock Enable Synthesis Performed on 207 flops.
+[EFX-0000 INFO] ... Performed 1 retime moves after multiplier decomposition.
+[EFX-0000 INFO] ... Hierarchical pre-synthesis "SpinalNNTop" end (Real time : 1s CPU user time : 0s CPU sys time : 0s MEM : 103064KB)
+[EFX-0000 INFO] ... Flat optimizations begin
+[EFX-0000 INFO] ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 103064KB)
+[EFX-0000 INFO] ... Flat synthesis begin
+[EFX-0000 INFO] ... Flat synthesis end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 103384KB)
+[EFX-0000 INFO] ... Flat optimizations begin
+[EFX-0000 INFO] ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 103384KB)
+[EFX-0000 INFO] ... Check and break combinational loops begin
+[EFX-0000 INFO] ... Check and break combinational loops end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 103384KB)
+[EFX-0000 INFO] ... Sequential Optimization begin
+[EFX-0000 INFO] ... Clock Network 'clk' with 601 loads will be considered for sequential optimization.
+[EFX-0000 INFO] ... Sequential Optimization deduced 247 equivalent points.
+[EFX-0000 INFO] ... Sequential Optimization end (Real time : 0s CPU user time : 1s CPU sys time : 0s MEM : 119192KB)
+[EFX-0000 INFO] ... Setup for logic synthesis begin
+[EFX-0000 INFO] ... Setup for logic synthesis end (Real time : 0s CPU user time : 1s CPU sys time : 0s MEM : 119192KB)
+[EFX-0000 INFO] ... LUT mapping begin
+[EFX-0000 INFO] ... LS, strategy: 3, nd: 607, ed: 1847, lv: 4, pw: 1821.08
+[EFX-0000 INFO] ... LUT mapping end (Real time : 1s CPU user time : 2s CPU sys time : 0s MEM : 174420KB)
+[EFX-0000 INFO] ... Post-synthesis Verific netlist creation begin
+[EFX-0000 INFO] ... Post-synthesis Verific netlist creation end (Real time : 0s CPU user time : 2s CPU sys time : 0s MEM : 174420KB)
+[EFX-0000 INFO] ... Postmap Retiming Optimization begin
+[EFX-0000 INFO] ... Clock Network 'clk~clk' with 589 loads will be considered for retiming optimization.
+[EFX-0000 INFO] ... Performed 2 retime moves.
+[EFX-0000 INFO] ... Postmap Retiming Optimization end (Real time : 0s CPU user time : 2s CPU sys time : 0s MEM : 174420KB)
+[EFX-0000 INFO] Resource Summary 
+[EFX-0000 INFO] =============================== 
+[EFX-0000 INFO] EFX_ADD         : 	581
+[EFX-0000 INFO] EFX_LUT4        : 	607
+[EFX-0000 INFO] EFX_MULT        : 	14
+[EFX-0000 INFO] EFX_FF          : 	576
+[EFX-0000 INFO] EFX_RAM_5K      : 	35
+[EFX-0000 INFO] EFX_GBUFCE      : 	1
+[EFX-0000 INFO] =============================== 
+[EFX-0000 INFO] ... Post-Map Verilog Writer begin
+[EFX-0000 INFO] ... Post-Map Verilog Writer end (Real time : 0s CPU user time : 2s CPU sys time : 0s MEM : 174420KB)
+
+///////////////////////////////////
+// Efinity Synthesis Started 
+// Jun 03, 2026 21:43:19
+///////////////////////////////////
+
+[EFX-0012 VERI-INFO] default VHDL library search path is now "/home/curtis-button/eda/efinity/2025.2/sim_models/vhdl/packages/vhdl_2008" (VHDL-1504) 
+[EFX-0012 VERI-INFO] compiling module 'SpinalNNTop' (VERI-1018) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:6)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_inputBuf_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:518)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_weightRom_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:519)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:520)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'pool1_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:521)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_inputBuf_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:522)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_weightRom_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:523)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:524)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'pool2_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:525)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:526)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_weightRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:527)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:528)
+[EFX-0011 VERI-WARNING] net 'conv1_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:519)
+[EFX-0011 VERI-WARNING] net 'conv1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:520)
+[EFX-0011 VERI-WARNING] net 'conv2_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:523)
+[EFX-0011 VERI-WARNING] net 'conv2_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:524)
+[EFX-0011 VERI-WARNING] net 'linear1_weightRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:527)
+[EFX-0011 VERI-WARNING] net 'linear1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:528)
+[EFX-0000 INFO] ... Setting Synthesis Option: mode=speed
+[EFX-0012 VERI-INFO] compiling module 'EFX_ADD' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:8)
+[EFX-0012 VERI-INFO] compiling module 'EFX_FF' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:21)
+[EFX-0012 VERI-INFO] compiling module 'EFX_COMB4' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:38)
+[EFX-0012 VERI-INFO] compiling module 'EFX_GBUFCE' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:48)
+[EFX-0012 VERI-INFO] compiling module 'EFX_LUT4' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:57)
+[EFX-0012 VERI-INFO] compiling module 'EFX_MULT' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:65)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP48' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:100)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP24' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:156)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP12' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:209)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_4K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:262)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_5K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:322)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DPRAM_5K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:394)
+[EFX-0012 VERI-INFO] compiling module 'RAMB5' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:499)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_10K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:561)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM10' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:653)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DPRAM10' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:754)
+[EFX-0012 VERI-INFO] compiling module 'EFX_SRL8' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:884)
+[EFX-0000 INFO] ... Pre-synthesis checks begin
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:81)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:109)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:111)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:162)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:195)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:197)
+[EFX-0677 INFO] ... Memory 'conv1_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:518)
+[EFX-0677 INFO] ... Memory 'pool1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:521)
+[EFX-0677 INFO] ... Memory 'conv2_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:522)
+[EFX-0677 INFO] ... Memory 'pool2_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:525)
+[EFX-0677 INFO] ... Memory 'linear1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:526)
+[EFX-0000 INFO] ... Pre-synthesis checks end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 89336KB)
+[EFX-0000 INFO] ... NameSpace init begin
+[EFX-0000 INFO] ... NameSpace init end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 89336KB)
+[EFX-0000 INFO] ... Mapping design "SpinalNNTop"
+[EFX-0000 INFO] ... Hierarchical pre-synthesis "SpinalNNTop" begin
+[EFX-0657 WARNING] Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:520) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:524) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:528) because read port is not synchronous.
+[EFX-0000 INFO] ... Clock Enable Synthesis Performed on 253 flops.
+[EFX-0000 INFO] ... Hierarchical pre-synthesis "SpinalNNTop" end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 96508KB)
+[EFX-0000 INFO] ... Flat optimizations begin
+[EFX-0000 INFO] ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 96508KB)
+[EFX-0000 INFO] ... Flat synthesis begin
+[EFX-0000 INFO] ... Flat synthesis end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 96828KB)
+[EFX-0000 INFO] ... Flat optimizations begin
+[EFX-0000 INFO] ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97148KB)
+[EFX-0000 INFO] ... Check and break combinational loops begin
+[EFX-0000 INFO] ... Check and break combinational loops end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97308KB)
+[EFX-0000 INFO] ... Sequential Optimization begin
+[EFX-0000 INFO] ... Clock Network 'clk' with 978 loads will be considered for sequential optimization.
+[EFX-0000 INFO] ... Sequential Optimization deduced 248 equivalent points.
+[EFX-0000 INFO] ... Sequential Optimization end (Real time : 0s CPU user time : 1s CPU sys time : 0s MEM : 121084KB)
+[EFX-0000 INFO] ... Setup for logic synthesis begin
+[EFX-0000 INFO] ... Setup for logic synthesis end (Real time : 0s CPU user time : 1s CPU sys time : 0s MEM : 121084KB)
+[EFX-0000 INFO] ... LUT mapping begin
+[EFX-0000 INFO] ... LS, strategy: 3, nd: 878, ed: 2714, lv: 4, pw: 2604.01
+[EFX-0000 INFO] ... LUT mapping end (Real time : 2s CPU user time : 3s CPU sys time : 0s MEM : 181132KB)
+[EFX-0000 INFO] ... Post-synthesis Verific netlist creation begin
+[EFX-0000 INFO] ... Post-synthesis Verific netlist creation end (Real time : 0s CPU user time : 3s CPU sys time : 0s MEM : 181324KB)
+[EFX-0000 INFO] ... Postmap Retiming Optimization begin
+[EFX-0000 INFO] ... Clock Network 'clk~clk' with 968 loads will be considered for retiming optimization.
+[EFX-0000 INFO] ... Performed 5 retime moves.
+[EFX-0000 INFO] ... Postmap Retiming Optimization end (Real time : 0s CPU user time : 3s CPU sys time : 0s MEM : 181324KB)
+[EFX-0000 INFO] Resource Summary 
+[EFX-0000 INFO] =============================== 
+[EFX-0000 INFO] EFX_ADD         : 	713
+[EFX-0000 INFO] EFX_LUT4        : 	878
+[EFX-0000 INFO] EFX_MULT        : 	18
+[EFX-0000 INFO] EFX_FF          : 	686
+[EFX-0000 INFO] EFX_RAM_5K      : 	35
+[EFX-0000 INFO] EFX_GBUFCE      : 	1
+[EFX-0000 INFO] =============================== 
+[EFX-0000 INFO] ... Post-Map Verilog Writer begin
+[EFX-0000 INFO] ... Post-Map Verilog Writer end (Real time : 0s CPU user time : 3s CPU sys time : 0s MEM : 181324KB)
+
+///////////////////////////////////
+// Efinity Synthesis Started 
+// Jun 03, 2026 21:46:52
+///////////////////////////////////
+
+[EFX-0012 VERI-INFO] default VHDL library search path is now "/home/curtis-button/eda/efinity/2025.2/sim_models/vhdl/packages/vhdl_2008" (VHDL-1504) 
+[EFX-0012 VERI-INFO] compiling module 'SpinalNNTop' (VERI-1018) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:6)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_inputBuf_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:524)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_weightRom_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:525)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:526)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'pool1_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:527)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_inputBuf_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:528)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_weightRom_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:529)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:530)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'pool2_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:531)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:532)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_weightRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:533)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:534)
+[EFX-0011 VERI-WARNING] net 'conv1_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:525)
+[EFX-0011 VERI-WARNING] net 'conv1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:526)
+[EFX-0011 VERI-WARNING] net 'conv2_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:529)
+[EFX-0011 VERI-WARNING] net 'conv2_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:530)
+[EFX-0011 VERI-WARNING] net 'linear1_weightRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:533)
+[EFX-0011 VERI-WARNING] net 'linear1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:534)
+[EFX-0000 INFO] ... Setting Synthesis Option: mode=speed
+[EFX-0012 VERI-INFO] compiling module 'EFX_ADD' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:8)
+[EFX-0012 VERI-INFO] compiling module 'EFX_FF' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:21)
+[EFX-0012 VERI-INFO] compiling module 'EFX_COMB4' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:38)
+[EFX-0012 VERI-INFO] compiling module 'EFX_GBUFCE' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:48)
+[EFX-0012 VERI-INFO] compiling module 'EFX_LUT4' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:57)
+[EFX-0012 VERI-INFO] compiling module 'EFX_MULT' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:65)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP48' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:100)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP24' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:156)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP12' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:209)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_4K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:262)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_5K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:322)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DPRAM_5K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:394)
+[EFX-0012 VERI-INFO] compiling module 'RAMB5' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:499)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_10K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:561)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM10' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:653)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DPRAM10' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:754)
+[EFX-0012 VERI-INFO] compiling module 'EFX_SRL8' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:884)
+[EFX-0000 INFO] ... Pre-synthesis checks begin
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:81)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:109)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:111)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:162)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:195)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:197)
+[EFX-0677 INFO] ... Memory 'conv1_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:524)
+[EFX-0677 INFO] ... Memory 'pool1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:527)
+[EFX-0677 INFO] ... Memory 'conv2_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:528)
+[EFX-0677 INFO] ... Memory 'pool2_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:531)
+[EFX-0677 INFO] ... Memory 'linear1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:532)
+[EFX-0000 INFO] ... Pre-synthesis checks end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 89416KB)
+[EFX-0000 INFO] ... NameSpace init begin
+[EFX-0000 INFO] ... NameSpace init end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 89416KB)
+[EFX-0000 INFO] ... Mapping design "SpinalNNTop"
+[EFX-0000 INFO] ... Hierarchical pre-synthesis "SpinalNNTop" begin
+[EFX-0657 WARNING] Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:526) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:530) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:534) because read port is not synchronous.
+[EFX-0000 INFO] ... Clock Enable Synthesis Performed on 253 flops.
+[EFX-0000 INFO] ... Hierarchical pre-synthesis "SpinalNNTop" end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97100KB)
+[EFX-0000 INFO] ... Flat optimizations begin
+[EFX-0000 INFO] ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97100KB)
+[EFX-0000 INFO] ... Flat synthesis begin
+[EFX-0000 INFO] ... Flat synthesis end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97260KB)
+[EFX-0000 INFO] ... Flat optimizations begin
+[EFX-0000 INFO] ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97260KB)
+[EFX-0000 INFO] ... Check and break combinational loops begin
+[EFX-0000 INFO] ... Check and break combinational loops end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97260KB)
+[EFX-0000 INFO] ... Sequential Optimization begin
+[EFX-0000 INFO] ... Clock Network 'clk' with 1074 loads will be considered for sequential optimization.
+[EFX-0000 INFO] ... Sequential Optimization deduced 247 equivalent points.
+[EFX-0000 INFO] ... Sequential Optimization end (Real time : 1s CPU user time : 1s CPU sys time : 0s MEM : 123180KB)
+[EFX-0000 INFO] ... Setup for logic synthesis begin
+[EFX-0000 INFO] ... Setup for logic synthesis end (Real time : 0s CPU user time : 1s CPU sys time : 0s MEM : 123180KB)
+[EFX-0000 INFO] ... LUT mapping begin
+[EFX-0000 INFO] ... LS, strategy: 3, nd: 808, ed: 2492, lv: 4, pw: 2756.67
+[EFX-0000 INFO] ... LUT mapping end (Real time : 1s CPU user time : 2s CPU sys time : 0s MEM : 188804KB)
+[EFX-0000 INFO] ... Post-synthesis Verific netlist creation begin
+[EFX-0000 INFO] ... Post-synthesis Verific netlist creation end (Real time : 0s CPU user time : 2s CPU sys time : 0s MEM : 188804KB)
+[EFX-0000 INFO] ... Postmap Retiming Optimization begin
+[EFX-0000 INFO] ... Clock Network 'clk~clk' with 1064 loads will be considered for retiming optimization.
+[EFX-0000 INFO] ... Performed 5 retime moves.
+[EFX-0000 INFO] ... Postmap Retiming Optimization end (Real time : 1s CPU user time : 3s CPU sys time : 0s MEM : 188804KB)
+[EFX-0000 INFO] Resource Summary 
+[EFX-0000 INFO] =============================== 
+[EFX-0000 INFO] EFX_ADD         : 	812
+[EFX-0000 INFO] EFX_LUT4        : 	807
+[EFX-0000 INFO] EFX_MULT        : 	18
+[EFX-0000 INFO] EFX_FF          : 	686
+[EFX-0000 INFO] EFX_RAM_5K      : 	35
+[EFX-0000 INFO] EFX_GBUFCE      : 	1
+[EFX-0000 INFO] =============================== 
+[EFX-0000 INFO] ... Post-Map Verilog Writer begin
+[EFX-0000 INFO] ... Post-Map Verilog Writer end (Real time : 0s CPU user time : 3s CPU sys time : 0s MEM : 188804KB)
+
+///////////////////////////////////
+// Efinity Synthesis Started 
+// Jun 03, 2026 21:49:56
+///////////////////////////////////
+
+[EFX-0012 VERI-INFO] default VHDL library search path is now "/home/curtis-button/eda/efinity/2025.2/sim_models/vhdl/packages/vhdl_2008" (VHDL-1504) 
+[EFX-0012 VERI-INFO] compiling module 'SpinalNNTop' (VERI-1018) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:6)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_inputBuf_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:530)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_weightRom_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:531)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv1_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:532)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'pool1_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:533)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_inputBuf_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:534)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_weightRom_0' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:535)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'conv2_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:536)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'pool2_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:537)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_inputBuf' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:538)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_weightRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:539)
+[EFX-0012 VERI-INFO] extracting RAM for identifier 'linear1_biasRom' (VERI-2571) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:540)
+[EFX-0011 VERI-WARNING] net 'conv1_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:531)
+[EFX-0011 VERI-WARNING] net 'conv1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:532)
+[EFX-0011 VERI-WARNING] net 'conv2_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:535)
+[EFX-0011 VERI-WARNING] net 'conv2_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:536)
+[EFX-0011 VERI-WARNING] net 'linear1_weightRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:539)
+[EFX-0011 VERI-WARNING] net 'linear1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:540)
+[EFX-0000 INFO] ... Setting Synthesis Option: mode=speed
+[EFX-0012 VERI-INFO] compiling module 'EFX_ADD' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:8)
+[EFX-0012 VERI-INFO] compiling module 'EFX_FF' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:21)
+[EFX-0012 VERI-INFO] compiling module 'EFX_COMB4' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:38)
+[EFX-0012 VERI-INFO] compiling module 'EFX_GBUFCE' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:48)
+[EFX-0012 VERI-INFO] compiling module 'EFX_LUT4' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:57)
+[EFX-0012 VERI-INFO] compiling module 'EFX_MULT' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:65)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP48' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:100)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP24' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:156)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DSP12' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:209)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_4K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:262)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_5K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:322)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DPRAM_5K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:394)
+[EFX-0012 VERI-INFO] compiling module 'RAMB5' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:499)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM_10K' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:561)
+[EFX-0012 VERI-INFO] compiling module 'EFX_RAM10' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:653)
+[EFX-0012 VERI-INFO] compiling module 'EFX_DPRAM10' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:754)
+[EFX-0012 VERI-INFO] compiling module 'EFX_SRL8' (VERI-1018) (/home/curtis-button/eda/efinity/2025.2/sim_models/maplib/efinix_maplib.v:884)
+[EFX-0000 INFO] ... Pre-synthesis checks begin
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:79)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:107)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:109)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:112)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:112)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:112)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:112)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:158)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:191)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:193)
+[EFX-0677 INFO] ... Memory 'conv1_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:530)
+[EFX-0677 INFO] ... Memory 'pool1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:533)
+[EFX-0677 INFO] ... Memory 'conv2_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:534)
+[EFX-0677 INFO] ... Memory 'pool2_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:537)
+[EFX-0677 INFO] ... Memory 'linear1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:538)
+[EFX-0000 INFO] ... Pre-synthesis checks end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 90072KB)
+[EFX-0000 INFO] ... NameSpace init begin
+[EFX-0000 INFO] ... NameSpace init end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 90072KB)
+[EFX-0000 INFO] ... Mapping design "SpinalNNTop"
+[EFX-0000 INFO] ... Hierarchical pre-synthesis "SpinalNNTop" begin
+[EFX-0657 WARNING] Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:532) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:536) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:540) because read port is not synchronous.
+[EFX-0000 INFO] ... Clock Enable Synthesis Performed on 256 flops.
+[EFX-0000 INFO] ... Hierarchical pre-synthesis "SpinalNNTop" end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97436KB)
+[EFX-0000 INFO] ... Flat optimizations begin
+[EFX-0000 INFO] ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97436KB)
+[EFX-0000 INFO] ... Flat synthesis begin
+[EFX-0000 INFO] ... Flat synthesis end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97436KB)
+[EFX-0000 INFO] ... Flat optimizations begin
+[EFX-0000 INFO] ... Flat optimizations end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97436KB)
+[EFX-0000 INFO] ... Check and break combinational loops begin
+[EFX-0000 INFO] ... Check and break combinational loops end (Real time : 0s CPU user time : 0s CPU sys time : 0s MEM : 97436KB)
+[EFX-0000 INFO] ... Sequential Optimization begin
+[EFX-0000 INFO] ... Clock Network 'clk' with 1295 loads will be considered for sequential optimization.
+[EFX-0000 INFO] ... Sequential Optimization deduced 279 equivalent points.
+[EFX-0000 INFO] ... Sequential Optimization end (Real time : 1s CPU user time : 1s CPU sys time : 0s MEM : 125628KB)
+[EFX-0000 INFO] ... Setup for logic synthesis begin
+[EFX-0000 INFO] ... Setup for logic synthesis end (Real time : 0s CPU user time : 1s CPU sys time : 0s MEM : 125628KB)
+[EFX-0000 INFO] ... LUT mapping begin
+[EFX-0000 INFO] ... LS, strategy: 3, nd: 819, ed: 2549, lv: 4, pw: 2857.10
+[EFX-0000 INFO] ... LUT mapping end (Real time : 1s CPU user time : 2s CPU sys time : 0s MEM : 184080KB)
+[EFX-0000 INFO] ... Post-synthesis Verific netlist creation begin
+[EFX-0000 INFO] ... Post-synthesis Verific netlist creation end (Real time : 0s CPU user time : 2s CPU sys time : 0s MEM : 184080KB)
+[EFX-0000 INFO] ... Postmap Retiming Optimization begin
+[EFX-0000 INFO] ... Clock Network 'clk~clk' with 1285 loads will be considered for retiming optimization.
+[EFX-0000 INFO] ... Performed 2 retime moves.
+[EFX-0000 INFO] ... Postmap Retiming Optimization end (Real time : 0s CPU user time : 3s CPU sys time : 0s MEM : 184080KB)
+[EFX-0000 INFO] Resource Summary 
+[EFX-0000 INFO] =============================== 
+[EFX-0000 INFO] EFX_ADD         : 	812
+[EFX-0000 INFO] EFX_LUT4        : 	818
+[EFX-0000 INFO] EFX_MULT        : 	18
+[EFX-0000 INFO] EFX_FF          : 	704
+[EFX-0000 INFO] EFX_RAM_5K      : 	35
+[EFX-0000 INFO] EFX_GBUFCE      : 	1
+[EFX-0000 INFO] =============================== 
+[EFX-0000 INFO] ... Post-Map Verilog Writer begin
+[EFX-0000 INFO] ... Post-Map Verilog Writer end (Real time : 0s CPU user time : 3s CPU sys time : 0s MEM : 184080KB)

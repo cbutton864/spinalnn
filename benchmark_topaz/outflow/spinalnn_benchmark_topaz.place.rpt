@@ -1,0 +1,72 @@
+
+Efinix FPGA Placement and Routing.
+Version: 2025.2.288.2.10 
+Date: Wed Jun  3 22:05:43 2026
+
+Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+ 
+Family: Topaz 
+Device: Tz50F256
+Top-level Entity Name: spinalnn_benchmark_topaz
+
+---------- Module Resource Usage Distribution Estimates (begin) ----------
+
+'Module Resource Usage Distribution Estimates' table printed in: outflow/spinalnn_benchmark_topaz-hierarchical_stats.rpt
+
+----------- Module Resource Usage Distribution Estimates (end) ----------
+
+Elapsed time for packing: 0 hours 0 minutes 0 seconds
+
+---------- IO Placement Summary (begin) ----------
+
++------------------------+--------------+
+|  Unassigned Core Pins  | Input/Output |
++------------------------+--------------+
+|  activation_in_valid   |    Input     |
+|  activation_in_ready   |    Output    |
+| activation_in_data[7]  |    Input     |
+| activation_in_data[6]  |    Input     |
+| activation_in_data[5]  |    Input     |
+| activation_in_data[4]  |    Input     |
+| activation_in_data[3]  |    Input     |
+| activation_in_data[2]  |    Input     |
+| activation_in_data[1]  |    Input     |
+| activation_in_data[0]  |    Input     |
+|  activation_out_valid  |    Output    |
+|  activation_out_ready  |    Input     |
+| activation_out_data[7] |    Output    |
+| activation_out_data[6] |    Output    |
+| activation_out_data[5] |    Output    |
+| activation_out_data[4] |    Output    |
+| activation_out_data[3] |    Output    |
+| activation_out_data[2] |    Output    |
+| activation_out_data[1] |    Output    |
+| activation_out_data[0] |    Output    |
+|          clk           |    Input     |
+|         reset          |    Input     |
++------------------------+--------------+
+
+----------- IO Placement Summary (end) ----------
+
+---------- Resource Summary (begin) ----------
+Inputs: 12 / 1733 (0.69%)
+Outputs: 10 / 2316 (0.43%)
+Global Clocks (GBUF): 1 / 32 (3.12%)
+Regional Clocks (RBUF): 0 / 32 (0.00%)
+	RBUF: Core: 0 / 16 (0.00%)
+	RBUF: Periphery: 0 / 8 (0.00%)
+	RBUF: Multi-Region: 0 / 8 (0.00%)
+XLRs: 1937 / 55786 (3.47%)
+	XLRs needed for Logic: 349 / 55786 (0.63%)
+	XLRs needed for Logic + FF: 469 / 55786 (0.84%)
+	XLRs needed for Adder: 472 / 55786 (0.85%)
+	XLRs needed for Adder + FF: 349 / 55786 (0.63%)
+	XLRs needed for FF: 298 / 55786 (0.53%)
+	XLRs needed for SRL8: 0 / 12380 (0.00%)
+	XLRs needed for SRL8 + FF: 0 / 12380 (0.00%)
+	XLRs needed for Routing: 0 / 55786 (0.00%)
+Memory Blocks: 22 / 235 (9.36%)
+DSP Blocks: 18 / 140 (12.86%)
+---------- Resource Summary (end) ----------
+
+Elapsed time for placement: 0 hours 0 minutes 1 seconds

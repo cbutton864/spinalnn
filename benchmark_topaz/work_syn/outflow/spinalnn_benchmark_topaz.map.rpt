@@ -1,0 +1,548 @@
+Efinity Synthesis report for project spinalnn_benchmark_topaz
+Version: 2025.2.288.2.10
+Generated at: Jun 03, 2026 22:05:12
+Copyright (C) 2013 - 2025  All rights reserved.
+
+Top-level Entity Name : SpinalNNTop
+
+family : Topaz
+device : Tz50F256
+project : spinalnn_benchmark_topaz
+root : SpinalNNTop
+binary-db : outflow/spinalnn_benchmark_topaz.vdb
+insert-ios : 0
+insert-gclk : 0
+max-carry-cascade : 320
+max-dsp-cascade : 16
+max_mult : -1
+max_ram : -1
+mode : speed
+num_srl : -1
+output-dir : outflow
+project : spinalnn_benchmark_topaz
+project-xml : /home/curtis-button/projects/spinalnn/benchmark_topaz/spinalnn_benchmark_topaz.xml
+root : SpinalNNTop
+work-dir : work_syn
+write-efx-verilog : outflow/spinalnn_benchmark_topaz.map.v
+
+File List:
+
+/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v,t:verilog_2k
+
+### ### Report Section Start ### ###
+
+"MEM|SYN-0677" : ... Memory 'conv1_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:548)
+"MEM|SYN-0677" : ... Memory 'pool1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:551)
+"MEM|SYN-0677" : ... Memory 'conv2_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:552)
+"MEM|SYN-0677" : ... Memory 'pool2_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:555)
+"MEM|SYN-0677" : ... Memory 'linear1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:556)
+"MEM|SYN-0657" : Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:550) because read port is not synchronous.
+"MEM|SYN-0657" : Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:554) because read port is not synchronous.
+"MEM|SYN-0657" : Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:558) because read port is not synchronous.
+
+### ### EFX_FF CE enables (begin) ### ### ###
+Total number of enable signals: 51
+Total number of FFs with enable signals: 1089
+CE signal <ceg_net44>, number of controlling flip flops: 25
+CE signal <ceg_net2>, number of controlling flip flops: 5
+CE signal <ceg_net15>, number of controlling flip flops: 8
+CE signal <ceg_net4>, number of controlling flip flops: 3
+CE signal <ceg_net13>, number of controlling flip flops: 57
+CE signal <ceg_net14>, number of controlling flip flops: 25
+CE signal <ceg_net7>, number of controlling flip flops: 28
+CE signal <conv1_activationOut_fire>, number of controlling flip flops: 13
+CE signal <pool2_activationOut_fire>, number of controlling flip flops: 8
+CE signal <ceg_net65>, number of controlling flip flops: 56
+CE signal <io_activationIn_fire>, number of controlling flip flops: 10
+CE signal <ceg_net43>, number of controlling flip flops: 57
+CE signal <pool1_activationOut_fire>, number of controlling flip flops: 11
+CE signal <ceg_net24>, number of controlling flip flops: 4
+CE signal <ceg_net26>, number of controlling flip flops: 21
+CE signal <ceg_net28>, number of controlling flip flops: 5
+CE signal <ceg_net30>, number of controlling flip flops: 5
+CE signal <n15059>, number of controlling flip flops: 18
+CE signal <n15061>, number of controlling flip flops: 32
+CE signal <ceg_net10>, number of controlling flip flops: 33
+CE signal <ceg_net32>, number of controlling flip flops: 32
+CE signal <ceg_net35>, number of controlling flip flops: 4
+CE signal <ceg_net150>, number of controlling flip flops: 8
+CE signal <ceg_net54>, number of controlling flip flops: 4
+CE signal <pool1_computeReg>, number of controlling flip flops: 8
+CE signal <ceg_net45>, number of controlling flip flops: 8
+CE signal <ceg_net56>, number of controlling flip flops: 3
+CE signal <ceg_net58>, number of controlling flip flops: 3
+CE signal <ceg_net77>, number of controlling flip flops: 4
+CE signal <n15102>, number of controlling flip flops: 18
+CE signal <n15104>, number of controlling flip flops: 32
+CE signal <ceg_net79>, number of controlling flip flops: 8
+CE signal <ceg_net40>, number of controlling flip flops: 33
+CE signal <ceg_net81>, number of controlling flip flops: 32
+CE signal <conv2_activationOut_fire>, number of controlling flip flops: 10
+CE signal <ceg_net152>, number of controlling flip flops: 8
+CE signal <pool2_computeReg>, number of controlling flip flops: 8
+CE signal <ceg_net67>, number of controlling flip flops: 8
+CE signal <ceg_net85>, number of controlling flip flops: 4
+CE signal <ceg_net87>, number of controlling flip flops: 9
+CE signal <linear1_activationOut_fire>, number of controlling flip flops: 4
+CE signal <n15138>, number of controlling flip flops: 18
+CE signal <n15140>, number of controlling flip flops: 32
+CE signal <ceg_net62>, number of controlling flip flops: 33
+CE signal <ceg_net89>, number of controlling flip flops: 32
+CE signal <ceg_net92>, number of controlling flip flops: 1
+CE signal <ceg_net94>, number of controlling flip flops: 12
+CE signal <ceg_net66>, number of controlling flip flops: 26
+CE signal <ceg_net12>, number of controlling flip flops: 88
+CE signal <ceg_net42>, number of controlling flip flops: 88
+CE signal <ceg_net64>, number of controlling flip flops: 87
+### ### EFX_FF CE enables (end) ### ### ###
+
+### ### EFX_FF SR set/reset (begin) ### ### ###
+Total number of set/reset signals: 1
+Total number of FFs with set/reset signals: 1116
+SR signal <reset>, number of controlling flip flops: 1116
+### ### EFX_FF SR set/reset (end) ### ### ###
+
+### ### Memory Trimming Report (begin) ### ### ### 
+Memory instance 'pool1_inputBuf__D$b12' WE[1] tied off to 0.
+Memory instance 'pool2_inputBuf' WE[1] tied off to 0.
+Memory instance 'pool1_inputBuf__D$12' WE[1] tied off to 0.
+Memory instance 'conv2_inputBuf_0__D$1' WE[1] tied off to 0.
+Memory instance 'linear1_inputBuf' WE[1] tied off to 0.
+Memory instance 'pool1_inputBuf__D$d12' WE[1] tied off to 0.
+Memory instance 'pool1_inputBuf__D$2' WE[1] tied off to 0.
+Memory instance 'pool1_inputBuf__D$f12' WE[1] tied off to 0.
+Memory instance 'pool1_inputBuf__D$c12' WE[1] tied off to 0.
+Memory instance 'conv2_inputBuf_0__D$2' WE[1] tied off to 0.
+Memory instance 'pool1_inputBuf__D$e12' WE[1] tied off to 0.
+Memory instance 'pool1_inputBuf__D$g1' WE[1] tied off to 0.
+Memory instance 'conv1_inputBuf_0' WE[1] tied off to 0.
+### ### Memory Trimming Report (end) ### ### ### 
+
+### ### Sequential Elements Trimming Report (begin) ### ### ### 
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i19
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i20
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i21
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i22
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i23
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i24
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i25
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i26
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i27
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i28
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i29
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i30
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i31
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_911/i32
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_911/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i19
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i20
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i21
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i22
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i23
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i24
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i25
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i26
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i27
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i28
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i29
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i30
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i31
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_946/i32
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_946/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i19
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i20
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i21
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i22
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i23
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i24
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i25
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i26
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i27
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i28
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i29
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i30
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i31
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_980/i32
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_980/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" removed instance : dff_961/i3
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1789)" representative instance : dff_962/i3
+FF Output: conv2_part2Reg[20](=0)
+FF Output: conv2_part2Reg[19](=0)
+FF Output: conv1_part2Reg[31](=0)
+FF Output: conv1_part2Reg[30](=0)
+FF Output: conv1_part2Reg[29](=0)
+FF Output: conv1_part2Reg[28](=0)
+FF Output: conv1_part2Reg[27](=0)
+FF Output: conv1_part2Reg[26](=0)
+FF Output: conv1_part2Reg[25](=0)
+FF Output: conv1_part2Reg[24](=0)
+FF Output: conv1_part2Reg[23](=0)
+FF Output: conv1_part2Reg[22](=0)
+FF Output: conv1_part2Reg[21](=0)
+FF Output: conv1_part2Reg[20](=0)
+FF Output: conv1_part2Reg[19](=0)
+FF Output: conv1_part2Reg[18](=0)
+FF Output: conv1_part2Reg[17](=0)
+FF Output: conv1_part2Reg[16](=0)
+FF Output: conv1_part2Reg[15](=0)
+FF Output: conv1_part2Reg[14](=0)
+FF Output: conv1_part2Reg[13](=0)
+FF Output: conv1_part2Reg[12](=0)
+FF Output: conv1_part2Reg[11](=0)
+FF Output: conv1_part2Reg[10](=0)
+FF Output: conv1_part2Reg[9](=0)
+FF Output: conv1_part2Reg[8](=0)
+FF Output: conv1_part2Reg[7](=0)
+FF Output: conv1_part2Reg[6](=0)
+FF Output: conv1_part2Reg[5](=0)
+FF Output: conv1_part2Reg[4](=0)
+FF Output: conv1_part2Reg[3](=0)
+FF Output: conv1_part2Reg[2](=0)
+FF Output: conv1_part2Reg[1](=0)
+FF Output: conv1_part1Reg[63](=0)
+FF Output: conv1_part1Reg[62](=0)
+FF Output: conv1_part1Reg[61](=0)
+FF Output: conv1_part1Reg[60](=0)
+FF Output: conv1_part1Reg[59](=0)
+FF Output: conv1_part1Reg[58](=0)
+FF Output: conv1_part1Reg[57](=0)
+FF Output: conv1_part1Reg[56](=0)
+FF Output: conv1_part1Reg[55](=0)
+FF Output: conv1_part1Reg[54](=0)
+FF Output: conv1_part1Reg[53](=0)
+FF Output: conv1_part1Reg[52](=0)
+FF Output: conv1_part1Reg[51](=0)
+FF Output: conv2_part2Reg[18](=0)
+FF Output: conv2_part2Reg[17](=0)
+FF Output: conv2_part2Reg[2](=0)
+FF Output: conv2_part2Reg[16](=0)
+FF Output: conv2_part2Reg[15](=0)
+FF Output: conv2_part2Reg[14](=0)
+FF Output: conv2_part2Reg[1](=0)
+FF Output: conv2_part2Reg[13](=0)
+FF Output: conv2_part2Reg[12](=0)
+FF Output: conv2_part1Reg[63](=0)
+FF Output: conv2_part2Reg[11](=0)
+FF Output: conv2_part2Reg[10](=0)
+FF Output: conv2_part2Reg[9](=0)
+FF Output: conv2_part1Reg[62](=0)
+FF Output: conv2_part2Reg[8](=0)
+FF Output: conv2_part2Reg[7](=0)
+FF Output: conv2_part1Reg[61](=0)
+FF Output: conv2_part2Reg[6](=0)
+FF Output: conv2_part1Reg[60](=0)
+FF Output: conv2_part1Reg[59](=0)
+FF Output: conv2_part1Reg[58](=0)
+FF Output: conv2_part1Reg[57](=0)
+FF Output: conv2_part1Reg[56](=0)
+FF Output: conv1_part1Reg[50](=0)
+FF Output: conv2_part2Reg[5](=0)
+FF Output: conv2_part1Reg[55](=0)
+FF Output: conv2_part2Reg[4](=0)
+FF Output: conv2_part2Reg[3](=0)
+FF Output: conv2_part1Reg[52](=0)
+FF Output: conv2_part1Reg[51](=0)
+FF Output: conv2_part1Reg[50](=0)
+FF Output: conv2_part1Reg[54](=0)
+FF Output: conv2_part1Reg[53](=0)
+FF Output: conv1_pLL_Reg[0](=0)
+FF Output: conv1_pLH_Reg[0](=0)
+FF Output: conv1_pHL_Reg[0](=0)
+FF Output: conv1_pHH_Reg[0](=0)
+FF Output: conv1_pLL_Reg2[0](=0)
+FF Output: conv1_pHH_Reg2[0](=0)
+FF Output: conv1_part2Reg[0](=0)
+FF Output: conv2_pLL_Reg[0](=0)
+FF Output: conv2_pLH_Reg[0](=0)
+FF Output: conv2_pHL_Reg[0](=0)
+FF Output: conv2_pHH_Reg[0](=0)
+FF Output: conv2_pLL_Reg2[0](=0)
+FF Output: conv2_pHH_Reg2[0](=0)
+FF Output: conv2_part2Reg[0](=0)
+FF Output: linear1_pLL_Reg[0](=0)
+FF Output: linear1_pLH_Reg[0](=0)
+FF Output: linear1_pHL_Reg[0](=0)
+FF Output: linear1_pHH_Reg[0](=0)
+FF Output: linear1_pLL_Reg2[0](=0)
+FF Output: linear1_pHH_Reg2[0](=0)
+FF Output: linear1_part2Reg[0](=0)
+FF Output: conv2_part2Reg[21](=0)
+FF Output: conv2_part2Reg[22](=0)
+FF Output: conv2_part2Reg[23](=0)
+FF Output: conv2_part2Reg[24](=0)
+FF Output: conv2_part2Reg[25](=0)
+FF Output: conv2_part2Reg[26](=0)
+FF Output: conv2_part2Reg[27](=0)
+FF Output: conv2_part2Reg[28](=0)
+FF Output: conv2_part2Reg[29](=0)
+FF Output: conv2_part2Reg[30](=0)
+FF Output: conv2_part2Reg[31](=0)
+FF Output: conv2_part2Reg[32](=0)
+FF Output: linear1_part1Reg[50](=0)
+FF Output: linear1_part1Reg[51](=0)
+FF Output: linear1_part1Reg[52](=0)
+FF Output: linear1_part1Reg[53](=0)
+FF Output: linear1_part1Reg[54](=0)
+FF Output: linear1_part1Reg[55](=0)
+FF Output: linear1_part1Reg[56](=0)
+FF Output: linear1_part1Reg[57](=0)
+FF Output: linear1_part1Reg[58](=0)
+FF Output: linear1_part1Reg[59](=0)
+FF Output: linear1_part1Reg[60](=0)
+FF Output: linear1_part1Reg[61](=0)
+FF Output: linear1_part1Reg[62](=0)
+FF Output: linear1_part1Reg[63](=0)
+FF Output: linear1_part2Reg[1](=0)
+FF Output: linear1_part2Reg[2](=0)
+FF Output: linear1_part2Reg[3](=0)
+FF Output: linear1_part2Reg[4](=0)
+FF Output: linear1_part2Reg[5](=0)
+FF Output: linear1_part2Reg[6](=0)
+FF Output: linear1_part2Reg[7](=0)
+FF Output: linear1_part2Reg[8](=0)
+FF Output: linear1_part2Reg[9](=0)
+FF Output: linear1_part2Reg[10](=0)
+FF Output: linear1_part2Reg[11](=0)
+FF Output: linear1_part2Reg[12](=0)
+FF Output: linear1_part2Reg[13](=0)
+FF Output: linear1_part2Reg[14](=0)
+FF Output: linear1_part2Reg[15](=0)
+FF Output: linear1_part2Reg[16](=0)
+FF Output: linear1_part2Reg[17](=0)
+FF Output: linear1_part2Reg[18](=0)
+FF Output: linear1_part2Reg[19](=0)
+FF Output: linear1_part2Reg[20](=0)
+FF Output: linear1_part2Reg[21](=0)
+FF Output: linear1_part2Reg[22](=0)
+FF Output: linear1_part2Reg[23](=0)
+FF Output: linear1_part2Reg[24](=0)
+FF Output: linear1_part2Reg[25](=0)
+FF Output: linear1_part2Reg[26](=0)
+FF Output: linear1_part2Reg[27](=0)
+FF Output: linear1_part2Reg[28](=0)
+FF Output: linear1_part2Reg[29](=0)
+FF Output: linear1_part2Reg[30](=0)
+FF Output: linear1_part2Reg[31](=0)
+FF Output: linear1_part2Reg[32](=0)
+FF Output: conv1_pLL_Reg[1](=0)
+FF Output: conv1_pLL_Reg[2](=0)
+FF Output: conv1_pLL_Reg[3](=0)
+FF Output: conv1_pLL_Reg[4](=0)
+FF Output: conv1_pLL_Reg[5](=0)
+FF Output: conv1_pLL_Reg[6](=0)
+FF Output: conv1_pHL_Reg[1](=0)
+FF Output: conv1_pHL_Reg[2](=0)
+FF Output: conv1_pHL_Reg[3](=0)
+FF Output: conv1_pHL_Reg[4](=0)
+FF Output: conv1_pHL_Reg[5](=0)
+FF Output: conv1_pHL_Reg[6](=0)
+FF Output: conv1_pLL_Reg2[1](=0)
+FF Output: conv1_pLL_Reg2[2](=0)
+FF Output: conv1_pLL_Reg2[3](=0)
+FF Output: conv1_pLL_Reg2[4](=0)
+FF Output: conv1_pLL_Reg2[5](=0)
+FF Output: conv1_pLL_Reg2[6](=0)
+FF Output: conv2_pLL_Reg[1](=0)
+FF Output: conv2_pLL_Reg[2](=0)
+FF Output: conv2_pLL_Reg[3](=0)
+FF Output: conv2_pLL_Reg[4](=0)
+FF Output: conv2_pLL_Reg[5](=0)
+FF Output: conv2_pLL_Reg[6](=0)
+FF Output: conv2_pHL_Reg[1](=0)
+FF Output: conv2_pHL_Reg[2](=0)
+FF Output: conv2_pHL_Reg[3](=0)
+FF Output: conv2_pHL_Reg[4](=0)
+FF Output: conv2_pHL_Reg[5](=0)
+FF Output: conv2_pHL_Reg[6](=0)
+FF Output: conv2_pLL_Reg2[1](=0)
+FF Output: conv2_pLL_Reg2[2](=0)
+FF Output: conv2_pLL_Reg2[3](=0)
+FF Output: conv2_pLL_Reg2[4](=0)
+FF Output: conv2_pLL_Reg2[5](=0)
+FF Output: conv2_pLL_Reg2[6](=0)
+FF Output: linear1_pLL_Reg[1](=0)
+FF Output: linear1_pLL_Reg[2](=0)
+FF Output: linear1_pLL_Reg[3](=0)
+FF Output: linear1_pLL_Reg[4](=0)
+FF Output: linear1_pLL_Reg[5](=0)
+FF Output: linear1_pLL_Reg[6](=0)
+FF Output: linear1_pLL_Reg[7](=0)
+FF Output: linear1_pHL_Reg[1](=0)
+FF Output: linear1_pHL_Reg[2](=0)
+FF Output: linear1_pHL_Reg[3](=0)
+FF Output: linear1_pHL_Reg[4](=0)
+FF Output: linear1_pHL_Reg[5](=0)
+FF Output: linear1_pHL_Reg[6](=0)
+FF Output: linear1_pHL_Reg[7](=0)
+FF Output: linear1_pLL_Reg2[1](=0)
+FF Output: linear1_pLL_Reg2[2](=0)
+FF Output: linear1_pLL_Reg2[3](=0)
+FF Output: linear1_pLL_Reg2[4](=0)
+FF Output: linear1_pLL_Reg2[5](=0)
+FF Output: linear1_pLL_Reg2[6](=0)
+FF Output: linear1_pLL_Reg2[7](=0)
+FF Output: conv1_part2Reg[32](=0)
+FF Output: conv1_pSumReg[0](=0)
+FF Output: conv1_part1Reg[0](=0)
+FF Output: conv1_part1Reg[1](=0)
+FF Output: conv1_part1Reg[2](=0)
+FF Output: conv1_part1Reg[3](=0)
+FF Output: conv1_part1Reg[4](=0)
+FF Output: conv1_part1Reg[5](=0)
+FF Output: conv1_part1Reg[6](=0)
+FF Output: conv2_pSumReg[0](=0)
+FF Output: conv2_part1Reg[0](=0)
+FF Output: conv2_part1Reg[1](=0)
+FF Output: conv2_part1Reg[2](=0)
+FF Output: conv2_part1Reg[3](=0)
+FF Output: conv2_part1Reg[4](=0)
+FF Output: conv2_part1Reg[5](=0)
+FF Output: conv2_part1Reg[6](=0)
+FF Output: linear1_pSumReg[0](=0)
+FF Output: linear1_part1Reg[0](=0)
+FF Output: linear1_part1Reg[1](=0)
+FF Output: linear1_part1Reg[2](=0)
+FF Output: linear1_part1Reg[3](=0)
+FF Output: linear1_part1Reg[4](=0)
+FF Output: linear1_part1Reg[5](=0)
+FF Output: linear1_part1Reg[6](=0)
+FF Output: linear1_part1Reg[7](=0)
+### ### Sequential Elements Trimming Report (end) ### ### ### 
+
+### ### Module Resource Usage Distribution Estimates (begin) ### ###
+
+**Note: some resources maybe grouped under different hierarchy due to optimization and LUT mapping
+
+Module                           FFs      SRLs      ADDs      LUTs    COMB4s      RAMs DSP/MULTs
+-------------------------        ---      ----      ----      ----      ----      ---- ---------
+SpinalNNTop:SpinalNNTop   1116(1116)      0(0)  821(821)  816(816)      0(0)    22(22)    18(18)
+
+### ### Module Resource Usage Distribution Estimates (end) ### ###
+
+
+### ### Clock Load Distribution Report (begin) ### ###
+
+ Clock      Flip-Flops      Shift-Regs    Memory PortsMultipliers/DSPs
+ -----      ----------      ----------    ----------------------------
+   clk            1116               0              35              18
+
+### ### Clock Load Distribution Report (end) ### ###
+
+### ### Memory Mapping Report (begin) ### ### ###
+
+1. conv2_weightRom_0 (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:553):
+	EFX_RAM10: conv2_weightRom_0__D$b12
+	EFX_RAM10: conv2_weightRom_0__D$2
+	EFX_RAM10: conv2_weightRom_0__D$12
+	EFX_RAM10: conv2_weightRom_0__D$c1
+
+2. linear1_weightRom (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:557):
+	EFX_RAM10: linear1_weightRom__D$b12
+	EFX_RAM10: linear1_weightRom__D$12
+	EFX_RAM10: linear1_weightRom__D$2
+	EFX_RAM10: linear1_weightRom__D$c1
+
+3. conv1_weightRom_0 (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:549):
+	EFX_RAM10: conv1_weightRom_0
+
+### ### Memory Mapping Report (end) ### ### ###
+
+### ### Resource Summary (begin) ### ### ### 
+INPUT  PORTS    : 	12
+OUTPUT PORTS    : 	10
+
+EFX_ADD         : 	821
+EFX_LUT4        : 	816
+   1-2  Inputs  : 	170
+   3    Inputs  : 	416
+   4    Inputs  : 	230
+EFX_DSP48       : 	15
+EFX_DSP24       : 	3
+EFX_FF          : 	1116
+EFX_RAM10       : 	22
+### ### Resource Summary (end) ### ### ###
+
+Plain synthesis (without verilog dump and post-map checks) time : 3s
+Elapsed synthesis time : 3s

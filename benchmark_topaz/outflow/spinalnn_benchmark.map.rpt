@@ -1,0 +1,310 @@
+Efinity Synthesis report for project spinalnn_benchmark
+Version: 2025.2.288.2.10
+Generated at: Jun 03, 2026 21:38:33
+Copyright (C) 2013 - 2025  All rights reserved.
+
+Top-level Entity Name : SpinalNNTop
+
+family : Trion
+device : T20F169
+project : spinalnn_benchmark
+root : SpinalNNTop
+binary-db : outflow/spinalnn_benchmark.vdb
+insert-ios : 0
+max-carry-cascade : 240
+max_mult : -1
+max_ram : -1
+mode : speed
+output-dir : outflow
+project : spinalnn_benchmark
+project-xml : /home/curtis-button/projects/spinalnn/benchmark/spinalnn_benchmark.xml
+root : SpinalNNTop
+work-dir : work_syn
+write-efx-verilog : outflow/spinalnn_benchmark.map.v
+
+File List:
+
+/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v,t:verilog_2k
+
+### ### Report Section Start ### ###
+
+"MEM|SYN-0677" : ... Memory 'conv1_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:468)
+"MEM|SYN-0677" : ... Memory 'pool1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:471)
+"MEM|SYN-0677" : ... Memory 'conv2_inputBuf_0' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:472)
+"MEM|SYN-0677" : ... Memory 'pool2_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:475)
+"MEM|SYN-0677" : ... Memory 'linear1_inputBuf' is not initialized, assuming empty initial contents. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:476)
+"MEM|SYN-0657" : Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:470) because read port is not synchronous.
+"MEM|SYN-0657" : Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:474) because read port is not synchronous.
+"MEM|SYN-0657" : Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:478) because read port is not synchronous.
+
+### ### EFX_FF CE enables (begin) ### ### ###
+Total number of enable signals: 41
+Total number of FFs with enable signals: 612
+CE signal <ceg_net2>, number of controlling flip flops: 32
+CE signal <ceg_net86>, number of controlling flip flops: 5
+CE signal <ceg_net42>, number of controlling flip flops: 54
+CE signal <ceg_net13>, number of controlling flip flops: 24
+CE signal <ceg_net14>, number of controlling flip flops: 8
+CE signal <ceg_net7>, number of controlling flip flops: 21
+CE signal <ceg_net10>, number of controlling flip flops: 28
+CE signal <conv1_activationOut_fire>, number of controlling flip flops: 13
+CE signal <pool2_activationOut_fire>, number of controlling flip flops: 8
+CE signal <ceg_net69>, number of controlling flip flops: 34
+CE signal <ceg_net21>, number of controlling flip flops: 3
+CE signal <io_activationIn_fire>, number of controlling flip flops: 10
+CE signal <pool1_activationOut_fire>, number of controlling flip flops: 11
+CE signal <ceg_net43>, number of controlling flip flops: 25
+CE signal <ceg_net92>, number of controlling flip flops: 3
+CE signal <ceg_net88>, number of controlling flip flops: 5
+CE signal <ceg_net30>, number of controlling flip flops: 5
+CE signal <n8834>, number of controlling flip flops: 32
+CE signal <ceg_net32>, number of controlling flip flops: 32
+CE signal <ceg_net90>, number of controlling flip flops: 4
+CE signal <ceg_net146>, number of controlling flip flops: 8
+CE signal <ceg_net94>, number of controlling flip flops: 3
+CE signal <ceg_net51>, number of controlling flip flops: 3
+CE signal <pool1_computeReg>, number of controlling flip flops: 8
+CE signal <ceg_net44>, number of controlling flip flops: 8
+CE signal <ceg_net96>, number of controlling flip flops: 3
+CE signal <ceg_net59>, number of controlling flip flops: 4
+CE signal <n8885>, number of controlling flip flops: 32
+CE signal <ceg_net61>, number of controlling flip flops: 8
+CE signal <ceg_net64>, number of controlling flip flops: 32
+CE signal <conv2_activationOut_fire>, number of controlling flip flops: 10
+CE signal <ceg_net148>, number of controlling flip flops: 8
+CE signal <ceg_net77>, number of controlling flip flops: 3
+CE signal <pool2_computeReg>, number of controlling flip flops: 8
+CE signal <ceg_net71>, number of controlling flip flops: 8
+CE signal <ceg_net79>, number of controlling flip flops: 9
+CE signal <linear1_activationOut_fire>, number of controlling flip flops: 4
+CE signal <ceg_net82>, number of controlling flip flops: 1
+CE signal <ceg_net84>, number of controlling flip flops: 12
+CE signal <ceg_net70>, number of controlling flip flops: 26
+CE signal <ceg_net12>, number of controlling flip flops: 57
+### ### EFX_FF CE enables (end) ### ### ###
+
+### ### EFX_FF SR set/reset (begin) ### ### ###
+Total number of set/reset signals: 1
+Total number of FFs with set/reset signals: 639
+SR signal <reset>, number of controlling flip flops: 639
+### ### EFX_FF SR set/reset (end) ### ### ###
+
+### ### Sequential Elements Trimming Report (begin) ### ### ### 
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i19
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i20
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i21
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i22
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i23
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i24
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i25
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i26
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i27
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i28
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i29
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i30
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i31
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_848/i32
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_848/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i19
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i20
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i21
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i22
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i23
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i24
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i25
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i26
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i27
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i28
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i29
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i30
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i31
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_873/i32
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_873/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_875/i64_brt_76
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_875/i64_brt_75
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_875/i64_brt_77
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_875/i64_brt_75
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_875/i64_brt_78
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_875/i64_brt_75
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_875/i64_brt_79
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_875/i64_brt_75
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_875/i64_brt_74
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_875/i64_brt_75
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i19
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i20
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i21
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i22
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i23
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i24
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i25
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i26
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i27
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i28
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i29
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i30
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i31
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_897/i32
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_897/i18
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_875/i64_brt_38
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_875/i64_brt_39
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_851/i63
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_851/i64
+FF|OPT : Flip-flop optimization by equivalence checking
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" removed instance : dff_878/i3
+@ "/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v (1624)" representative instance : dff_879/i3
+FF Output: n5138_pp_1x1[34]_q(=0)
+FF Output: n5138_pp_1x1[35]_q(=0)
+FF Output: n5138_pp_1x1[36]_q(=0)
+### ### Sequential Elements Trimming Report (end) ### ### ### 
+
+### ### Module Resource Usage Distribution Estimates (begin) ### ###
+
+**Note: some resources maybe grouped under different hierarchy due to optimization and LUT mapping
+
+Module                          FFs      ADDs      LUTs      RAMs DSP/MULTs
+-------------------------       ---      ----      ----      ---- ---------
+SpinalNNTop:SpinalNNTop    640(640)  561(561)  628(628)    35(35)    14(14)
+
+### ### Module Resource Usage Distribution Estimates (end) ### ###
+
+
+### ### Clock Load Distribution Report (begin) ### ###
+
+ Clock      Flip-Flops    Memory PortsMultipliers/DSPs
+ -----      ----------    ----------------------------
+   clk             640              53              14
+
+### ### Clock Load Distribution Report (end) ### ###
+
+### ### Memory Mapping Report (begin) ### ### ###
+
+1. conv2_weightRom_0 (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:473):
+	EFX_RAM_5K: conv2_weightRom_0__D$b12
+	EFX_RAM_5K: conv2_weightRom_0__D$2
+	EFX_RAM_5K: conv2_weightRom_0__D$12
+	EFX_RAM_5K: conv2_weightRom_0__D$c12
+	EFX_RAM_5K: conv2_weightRom_0__D$d12
+	EFX_RAM_5K: conv2_weightRom_0__D$e12
+	EFX_RAM_5K: conv2_weightRom_0__D$f12
+	EFX_RAM_5K: conv2_weightRom_0__D$g1
+
+2. conv1_weightRom_0 (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:469):
+	EFX_RAM_5K: conv1_weightRom_0
+
+3. linear1_weightRom (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:477):
+	EFX_RAM_5K: linear1_weightRom__D$b12
+	EFX_RAM_5K: linear1_weightRom__D$12
+	EFX_RAM_5K: linear1_weightRom__D$2
+	EFX_RAM_5K: linear1_weightRom__D$c12
+	EFX_RAM_5K: linear1_weightRom__D$d12
+	EFX_RAM_5K: linear1_weightRom__D$e12
+	EFX_RAM_5K: linear1_weightRom__D$f12
+	EFX_RAM_5K: linear1_weightRom__D$g1
+
+### ### Memory Mapping Report (end) ### ### ###
+
+### ### Resource Summary (begin) ### ### ### 
+INPUT  PORTS    : 	12
+OUTPUT PORTS    : 	10
+
+EFX_ADD         : 	561
+EFX_LUT4        : 	628
+   1-2  Inputs  : 	146
+   3    Inputs  : 	248
+   4    Inputs  : 	234
+EFX_MULT        : 	14
+EFX_FF          : 	640
+EFX_RAM_5K      : 	35
+EFX_GBUFCE      : 	1
+### ### Resource Summary (end) ### ### ###
+
+Plain synthesis (without verilog dump and post-map checks) time : 2s
+Elapsed synthesis time : 2s

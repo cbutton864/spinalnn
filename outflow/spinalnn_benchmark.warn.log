@@ -1,0 +1,120 @@
+
+///////////////////////////////////
+// Efinity Synthesis Started 
+// Jun 03, 2026 17:13:57
+///////////////////////////////////
+
+[EFX-0011 VERI-WARNING] net 'conv1_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:438)
+[EFX-0011 VERI-WARNING] net 'conv1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:439)
+[EFX-0011 VERI-WARNING] net 'conv2_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:442)
+[EFX-0011 VERI-WARNING] net 'conv2_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:443)
+[EFX-0011 VERI-WARNING] net 'linear1_weightRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:446)
+[EFX-0011 VERI-WARNING] net 'linear1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:447)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:73)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:101)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:103)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:106)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:146)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:179)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:181)
+[EFX-0657 WARNING] Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:439) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:443) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:447) because read port is not synchronous.
+
+///////////////////////////////////
+// Efinity Synthesis Started 
+// Jun 03, 2026 21:43:19
+///////////////////////////////////
+
+[EFX-0011 VERI-WARNING] net 'conv1_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:519)
+[EFX-0011 VERI-WARNING] net 'conv1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:520)
+[EFX-0011 VERI-WARNING] net 'conv2_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:523)
+[EFX-0011 VERI-WARNING] net 'conv2_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:524)
+[EFX-0011 VERI-WARNING] net 'linear1_weightRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:527)
+[EFX-0011 VERI-WARNING] net 'linear1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:528)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:81)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:109)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:111)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:162)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:195)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:197)
+[EFX-0657 WARNING] Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:520) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:524) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:528) because read port is not synchronous.
+
+///////////////////////////////////
+// Efinity Synthesis Started 
+// Jun 03, 2026 21:46:52
+///////////////////////////////////
+
+[EFX-0011 VERI-WARNING] net 'conv1_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:525)
+[EFX-0011 VERI-WARNING] net 'conv1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:526)
+[EFX-0011 VERI-WARNING] net 'conv2_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:529)
+[EFX-0011 VERI-WARNING] net 'conv2_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:530)
+[EFX-0011 VERI-WARNING] net 'linear1_weightRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:533)
+[EFX-0011 VERI-WARNING] net 'linear1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:534)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:81)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:109)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:111)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:114)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:162)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:195)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:197)
+[EFX-0657 WARNING] Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:526) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:530) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:534) because read port is not synchronous.
+
+///////////////////////////////////
+// Efinity Synthesis Started 
+// Jun 03, 2026 21:49:56
+///////////////////////////////////
+
+[EFX-0011 VERI-WARNING] net 'conv1_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:531)
+[EFX-0011 VERI-WARNING] net 'conv1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:532)
+[EFX-0011 VERI-WARNING] net 'conv2_weightRom_0' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:535)
+[EFX-0011 VERI-WARNING] net 'conv2_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:536)
+[EFX-0011 VERI-WARNING] net 'linear1_weightRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:539)
+[EFX-0011 VERI-WARNING] net 'linear1_biasRom' does not have a driver (VDB-1002) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:540)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:28)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:30)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv1_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:33)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:79)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_inputBuf_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:107)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_weightRom_0_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:109)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[3]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:112)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[2]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:112)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[1]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:112)
+[EFX-0200 WARNING] Removing redundant signal : _zz_conv2_accumReg_2[0]. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:112)
+[EFX-0200 WARNING] Removing redundant signal : _zz_pool2_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:158)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_inputBuf_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:191)
+[EFX-0200 WARNING] Removing redundant signal : _zz_linear1_weightRom_port. (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:193)
+[EFX-0657 WARNING] Mapping into logic memory block 'conv1_biasRom' (256 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:532) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'conv2_biasRom' (512 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:536) because read port is not synchronous.
+[EFX-0657 WARNING] Mapping into logic memory block 'linear1_biasRom' (320 bits) (/home/curtis-button/projects/spinalnn/rtl/flat/SpinalNNTop.v:540) because read port is not synchronous.

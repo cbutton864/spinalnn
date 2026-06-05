@@ -1,0 +1,23 @@
+
+Efinix FPGA Placement and Routing.
+Version: 2025.2.288.2.10 
+Date: Wed Jun  3 21:50:04 2026
+
+Copyright (C) 2013 - 2025 Efinix, Inc. All rights reserved.
+ 
+Family: Trion 
+Device: T20F169
+Top-level Entity Name: spinalnn_benchmark
+Elapsed time for routing: 0 hours 0 minutes 2 seconds
+
+---------- Global Control Information (begin) ----------
+
++-------+--------+---------------+--------------------------+
+|  NET  | DRIVER | GBUF LOCATION | GLOBAL_SINKS/TOTAL_SINKS |
++-------+--------+---------------+--------------------------+
+| reset | reset  |    (1,114)    |         703/739          |
++-------+--------+---------------+--------------------------+
+
+----------- Global Control Information (end) ----------
+
+Elapsed time for Latest PnR Run: 0 hours 0 minutes 7 seconds
