@@ -1,0 +1,19 @@
+{
+  "device":        "Ti180M484",
+  "model":         "models/repvgg_a0-int8.onnx",
+  "emitLogits":    true,
+  "buildMode":     "flat",
+  "macParallelism": "16",
+  "macParallelismOverrides": {
+    "_stem_reparam_conv_Conv_output_0_quantized": 3,
+    "_stages_stages_1_stages_1_1_reparam_conv_Conv_output_0_quantized": 32,
+    "_stages_stages_1_stages_1_2_reparam_conv_Conv_output_0_quantized": 32,
+    "_stages_stages_1_stages_1_3_reparam_conv_Conv_output_0_quantized": 32,
+    "_stages_stages_3_stages_3_0_reparam_conv_Conv_output_0_quantized": 32
+  },
+  "weightMode":    "stream",
+  "memoryStrategy": "line",
+  "bramBudgetPct":  80,
+  "targetFreqMhz":  150,
+  "outputDir":      "rtl/repvgg_a0"
+}

@@ -1,0 +1,8 @@
+date	label	benchmark	ram_blocks	fmax_mhz
+2026-06-10_0626	N1_singleclock	benchmark_squeezenet_stream	331	197.902
+2026-06-10_0631	N16max32_singleclock	benchmark_squeezenet_perLayer	713	137.665
+2026-06-10_0640	N16_singleclock	benchmark_squeezenet_perLayer	630	144.760
+2026-06-10_0732	N16_balanced_tree	benchmark_squeezenet_perLayer	630	171.527
+2026-06-10_0841	repvgg_a0_N16	benchmark_repvgg_a0	728	173.310
+2026-06-10_1506	repvgg_a0_N16_top4N32	benchmark_repvgg_a0	828	156.691
+2026-06-10_2214	dscnn_s_N8	benchmark_dscnn_s	128	206.868

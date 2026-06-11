@@ -54,4 +54,11 @@ object RequantScale {
     val mult = Math.round(m0 * (1L << 31))
     RequantScale(mult, n + 31)
   }
+
+  // Average-pool variant: folds the 1/area averaging division into the requant
+  // multiplier so the generated RTL needs only an integer multiply + shift -- never a
+  // hardware divider. The combined scale is M = scaleIn / (area * scaleOut), i.e. the
+  // same multiplier/shift encoding with the "weight" slot carrying the 1/area factor.
+  def forAverage(scaleIn: Float, area: Int, scaleOut: Float): RequantScale =
+    apply(scaleIn, 1.0f / area.toFloat, scaleOut)
 }

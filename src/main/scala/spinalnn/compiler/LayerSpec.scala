@@ -34,6 +34,9 @@ object LayerSpec {
     * `weights` are already quantized and transposed to [outCh, kH, kW, C_in].
     * Padding is realized inside the core by a zero-initialised input buffer, so
     * `inputShape` is the real (unpadded) input shape.
+    * `weightScales`, when present, gives one weight scale per output channel
+    * (modern per-channel INT8 quantization); `weightQuant.scale` is the per-tensor
+    * fallback used when it is absent.
     */
   case class Conv(
     name:        String,
@@ -52,11 +55,15 @@ object LayerSpec {
     weightQuant: QuantParams,
     outputQuant: QuantParams,
     weights:     Array[Byte],
-    biases:      Array[Int]
+    biases:      Array[Int],
+    weightScales: Option[Array[Float]] = None
   ) extends LayerSpec
 
-  /** Element-wise ReLU. Maps to ReLUPlugin. */
-  case class Relu(name: String, input: String, shape: TensorShape) extends LayerSpec
+  /** Element-wise ReLU or ReLU6. Maps to ReLUPlugin.
+    * `clampMax` = 127 for standard ReLU; = round(6 / outputScale) for ReLU6
+    * (capped at 127 if the scale is very small). */
+  case class Relu(name: String, input: String, shape: TensorShape,
+                  clampMax: Int = ActivationDType.maxVal) extends LayerSpec
 
   /** Spatial max pooling. Maps to MaxPoolPlugin. */
   case class MaxPool(
@@ -68,6 +75,79 @@ object LayerSpec {
     poolW:      Int,
     strideH:    Int,
     strideW:    Int
+  ) extends LayerSpec
+
+  /** Element-wise quantized addition of two synchronized streams (ONNX QLinearAdd).
+    * Both inputs must have the same spatial shape. Maps to AddPlugin (streaming pipeline,
+    * no BRAM). The requant scales M_A = s_A/s_C and M_B = s_B/s_C are computed at
+    * elaboration time.
+    */
+  case class Add(
+    name:        String,
+    inputs:      Seq[String],
+    inputShapes: Seq[TensorShape],
+    inputAQuant: QuantParams,
+    inputBQuant: QuantParams,
+    outputQuant: QuantParams
+  ) extends LayerSpec {
+    require(inputs.length == 2, "Add requires exactly two inputs")
+    require(inputShapes.length == 2 && inputShapes(0) == inputShapes(1),
+      "Add inputs must have identical shapes")
+    def shape: TensorShape = inputShapes(0)
+  }
+
+  /** Channel-wise concatenation of N upstream tensors (ONNX Concat, axis = channels).
+    * The first true multi-input op: `inputs` names every upstream `LayerSpec`, in order.
+    * All inputs must share spatial dims; output channels are the sum. Maps to
+    * ConcatPlugin (which takes a `Seq[Handle]`). Inputs must already be in the same
+    * quantization (the frontend folds the surrounding Dequantize/Quantize into the
+    * producing convs' output scales). */
+  case class Concat(
+    name:        String,
+    inputs:      Seq[String],
+    inputShapes: Seq[TensorShape]
+  ) extends LayerSpec {
+    require(inputs.length == inputShapes.length, "Concat inputs/inputShapes length mismatch")
+    def shape: TensorShape =
+      TensorShape(inputShapes.head.rows, inputShapes.head.cols, inputShapes.map(_.channels).sum)
+  }
+
+  /** Global average pooling over the full H x W plane (ONNX GlobalAveragePool /
+    * QLinearGlobalAveragePool). Output is 1 x 1 x C. The 1/area factor is folded into
+    * the requant multiplier inside the core. Maps to GlobalAveragePoolPlugin. */
+  case class GlobalAveragePool(
+    name:        String,
+    input:       String,
+    inputShape:  TensorShape,
+    inputQuant:  QuantParams,
+    outputQuant: QuantParams
+  ) extends LayerSpec {
+    def shape: TensorShape = TensorShape(1, 1, inputShape.channels)
+  }
+
+  /** INT8 depthwise (channel-wise) 2D convolution. ONNX `Conv` with `group = C_in`.
+    * `weights` are transposed to `[C, kH, kW]` (inCh=1 dropped). C_in = C_out.
+    * Per-channel weight scales are the default for modern exports.
+    */
+  case class DepthwiseConv(
+    name:         String,
+    input:        String,
+    inputShape:   TensorShape,
+    shape:        TensorShape,
+    kernelH:      Int,
+    kernelW:      Int,
+    strideH:      Int,
+    strideW:      Int,
+    padTop:       Int,
+    padBottom:    Int,
+    padLeft:      Int,
+    padRight:     Int,
+    inputQuant:   QuantParams,
+    weightQuant:  QuantParams,
+    outputQuant:  QuantParams,
+    weights:      Array[Byte],
+    biases:       Array[Int],
+    weightScales: Option[Array[Float]] = None
   ) extends LayerSpec
 
   /** Reshape H x W x C -> 1 x 1 x (H*W*C). Maps to FlattenPlugin (zero RTL). */

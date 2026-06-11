@@ -4,13 +4,55 @@ This roadmap acts as a stable handover and tracking checklist for future develop
 
 ---
 
+## ── NEAR-TERM SPRINT (June 2026) ──
+
+Five concrete steps agreed as the immediate execution path. Do these in order.
+
+- [x] **Step 1 — Close RepVGG-A0 config optimisation** *(P&R confirmed 2026-06-11)*  
+  4×N=32 overrides (stages_1_1/2/3 C_in=96 + stages_3_0 C_in=192→1280) within 512-DSP budget.  
+  P&R result: 501 DSP, 828 RAM10K, 156.7 MHz fmax (+0.285 ns @ 150 MHz target), ~1.50 FPS @ 150 MHz.  
+  Key finding: timing wall is routing congestion (98% DSP utilization), not MAC tree logic depth.  
+  Balanced tree in `QLinearConvCore` confirmed correct but didn't change fmax — efx_map already generates  
+  balanced carry-lookahead internally. Net gain: **+9.4% FPS at 150 MHz** vs N=16 baseline.  
+  N=32 pays off on Ti375 where 501/1344 DSPs (37%) leaves routing slack.
+
+- [x] **Step 2 — DepthwiseConv core** *(5/5 tests passing; DS-CNN-S P&R validated 206.9 MHz)*  
+  `DepthwiseConvCore` / `DepthwiseConvPlugin` implemented, tested, and end-to-end validated via DS-CNN-S P&R.  
+  Unlocks: MobileNetV3-Small (Ti90 SWAP-C target), DS-CNN-S (KWS) ✅, EfficientNet-Lite0.
+
+- [x] **Step 3 — Residual Add op** *(5/5 tests passing; compiler dispatch wired)*  
+  `AddCore` / `AddPlugin` implemented and tested. MobileNetV2 compiles to RTL (BRAM overflow at 224×224 — needs smaller input or Ti375+).  
+  Unlocks: ResNet-18 (need export), MobileNetV2 (need ≤64×64 export or larger device).
+
+- [x] **Step 4 — Auto N-sweep build-time optimiser** *(implemented; RepVGG-A0 +1.77x FPS, DS-CNN-S +1.13x FPS)*  
+  `ModelCycleEstimator.optimizeMacPar()` — greedy knapsack over (cycles saved / DSP cost) ratio.  
+  `optimizeReport()` prints human-readable table + JSON override snippet ready for config files.  
+  `PrintNOptimize` demo runner validates against RepVGG-A0 (Ti180) and DS-CNN-S (Ti180 + Ti90).  
+  `maxN` parameter guards against N=32 timing regression (set to 16 on Ti180 by default).
+
+- [x] **Step 5 — Output-channel parallelism P** *(sim 5/5; P&R confirmed Ti180M484)*  
+  `QLinearConvCore` now accepts `outParallelism: Int = 1` (P). P×N weight ROM banks, P parallel  
+  accumulator+requant pipelines, sequential P-channel emission. P=1 is bit-identical to prior code.  
+  `ModelCycleEstimator` updated: `dspCostOf` = P×(N+4) per layer; `estimate` accepts `outParOf`.  
+  P&R (Ti180M484, DS-CNN-S P=4): +0.609 ns slack @ 150 MHz, 230 DSP, 286 RAM10K, +1.30× FPS.  
+  WeightStream requires P=1 (noted; P>1 WeightStream is future work).  
+  DeviceSpec corrected to datasheet values (Ti180M484: 512 DSP usable, 1280 RAM10K).
+
+---
+
 ## ── CURRENT STATUS & COMPLETED MILESTONES ──
 
-- [x] **Flat-Plugin Architecture Implementation**: Solidified separate stateless `Core` computations and structural `FiberPlugin` negotiation layers.
-- [x] **Stage 4 Memory Optimization**: Completed 100% single-port BRAM-friendly `readSync` sequential memory mapping for spatial and dense layers (`QLinearConvCore` and `QLinearLinearCore`). Removed legacy raw asynchronous LUT memory inflation.
-- [x] **Integration Testing Harness (`it:test`)**: Implemented `GoldenIntegrationTest` (detects RTL-source drift) and `TopLevelSimIntegrationTest` (streams a 6x6x1 feed simulation with cycle-latency measurement).
-- [x] **Native Scala-ONNX Compiler**: Embedded `sbt-protoc` and `ScalaPB` directly into SBT. Parsed the model on-the-fly inside Scala during elaboration.
-- [x] **On-The-Fly Post-Training Quantization (PTQ)**: Implemented symmetric INT8 quantizers, real scale factor resolution, bias scaling, and multidimensional matrix transpositions in `OnnxCompiler.compileModel`.
+- [x] **Flat-Plugin Architecture**: Stateless `Core` + `FiberPlugin` + stage-boundary trait pattern. All operators follow this pattern.
+- [x] **Stage 4 BRAM Optimization**: `readSync` throughout Conv and Linear Cores; BRAM primitives confirmed in P&R on T20 (172 MHz) and Tz50 (280 MHz).
+- [x] **macParallelism**: N-banked MAC array in `QLinearConvCore`; verified in sim (N=1 default; scales to any divisor of C_in).
+- [x] **Native ONNX compiler**: `OnnxFrontend` (graph walk → `LayerSpec` IR) + `IrBackend` (op-dispatch registry + symbol table). General frontend — not MNIST-specific.
+- [x] **Faithful shapes**: `auto_pad` SAME convolutions and general `kernel_shape`/`strides` pooling. MNIST top-1: 80% → **100% (5/5)**.
+- [x] **DAG wiring**: `ConcatCore`/`ConcatPlugin` (fan-in, 4/4), `StreamForkCore`/`StreamForkPlugin` (fan-out, 4/4), `GlobalAveragePoolCore`/`GlobalAveragePoolPlugin` (5/5). Fire-module topology expressible.
+- [x] **Per-channel requant**: `QLinearConvCore` accepts `weightScales: Option[Array[Float]]`; per-channel requant ROMs + variable barrel shifter (3/3 tests). Needed for all modern INT8 exports.
+- [x] **QOperator frontend**: `lowerQuantized` reads scales/zero-points directly off QLinearConv nodes; Q/DQ alias folding; SqueezeNet structural IR tests (4/4).
+- [x] **ConvEngineBench**: Synthesizable per-channel conv benchmark component; P&R validated on Tz50.
+- [x] **Hardware target updated**: Primary target is now **Efinix Titanium** (Ti90–Ti375, 16 nm, embedded LPDDR4x). See `BENCHMARKS_TOPAZ.md` §4.
+- [x] **Model target list curated**: Tier 1–4 models selected with public sources and operator gap analysis. See `ARCHITECTURE_DIRECTION.md` §8.
 
 ---
 
@@ -46,22 +88,56 @@ This roadmap acts as a stable handover and tracking checklist for future develop
 > non-visual models. The paradigms below (DSP mapping, ASIC packaging, stochastic) remain
 > valid long-term R&D but are **secondary** to landing the general frontend.
 
-### 🔵 Phase 0 (ACTIVE): General ONNX Frontend
-**Goal**: Replace the hand-written MNIST translation in `OnnxCompiler` with a real
-graph walk → small Scala IR (`Seq[LayerSpec]`) → op-registry backend, keeping the MNIST
-output bit-identical so the validation suite stays green. See ARCHITECTURE_DIRECTION.md §9.
+### ✅ Phase 0 (DONE): General ONNX Frontend
+`OnnxFrontend` + `LayerSpec` IR + `IrBackend` op-registry. MNIST bit-identical. Done.
 
-- [x] **Backend seam** — `LayerSpec` IR + `IrBackend` op-dispatch registry + symbol-table wiring.
-- [x] **Frontend** — `OnnxFrontend` walks the graph generically (op sequence, weights, biases, shapes); float-model activation scales supplied via an explicit `Calibration` (pre-quantized models read scales off nodes).
-- [x] **Faithful shapes** — convolutions honor `auto_pad`/`pads` (conv padding added to `QLinearConvCore` via a zero-initialised buffer) and pooling honors real `kernel_shape`/`strides` (general window added to `MaxPoolCore`). MNIST now compiles to the true SAME-conv / 3×3-pool topology, lifting top-1 from **80% → 100% (5/5)** — proving the old miss was the VALID approximation, not quantization noise. (Padded pooling and conv dilations ≠ 1 are still TODO.)
+---
 
-### 🟢 Phase 2 (R&D): Hardware DSP Customization (Altera BFloat16 & AMD DSP48)
-**Goal**: Provide alternative math plugins so that physical FPGA synthesis tools can map math operations natively to hard silicon blocks instead of soft logic.
+### 🔵 Phase 1 (LARGELY DONE): SqueezeNet end-to-end + Titanium benchmarks
+
+**Open item — asymmetric-input bias correction:**
+`lowerQuantized` must fold `−z_x · Σw[oc]` into each conv's biases at elaboration time.
+SqueezeNet input zero-point = 115; zero points are currently hardcoded to 0 in several
+`QuantParams(inScale, 0)` callsites. P&R is validated but end-to-end inference accuracy
+on ImageNet has not been measured — this may mask a numeric error. ~10-line frontend change.
+
+- [x] Add bias correction loop to `OnnxFrontend.lowerQuantized`; validate with ImageNet sample
+  Implemented `zpBiasCorrect`: folds `−zp * Σw[oc]` into int32 biases for QLinearConv, DepthwiseConv, and QGemm.  
+  Verified by SqueezeNetCompileTest (new "zero-point bias correction" test computes expected correction  
+  from raw ONNX data and asserts LayerSpec biases match). Full ImageNet accuracy requires a live inference run.
+- [x] Add elaboration test: SqueezeNet generates Verilog cleanly (IrBackend full pass)
+- [x] Export QARepVGG-A0 INT8 from paper PyTorch code; add to `models/`
+- [x] Synthesize + P&R: SqueezeNet (171.5 MHz, 512 DSP) and RepVGG-A0 (173.3 MHz, 435 DSP) on Ti180
+
+**Target hardware**: Efinix Titanium Ti180M484 (512 DSPs, 1,280 RAM10K, embedded LPDDR4x).  
+Results: see `docs/BENCHMARKS_TITANIUM.md`.
+
+---
+
+### 🟡 Phase 2 (NEXT): DepthwiseConv + DS-CNN-S
+**Goal**: Add `DepthwiseConvCore`/`DepthwiseConvPlugin`; compile and simulate DS-CNN-S
+(~24 KB INT8) from ARM ML-examples TFLite export. First BRAM-only non-vision benchmark.
+
+- [ ] `DepthwiseConvCore` — grouped conv, groups = C_in, weight `[C, 1, kH, kW]`
+- [ ] DS-CNN-S ONNX export from ARM ML-examples
+- [ ] End-to-end sim + accuracy check vs 92.2% reference
+- [ ] P&R on Ti90 (smallest LPDDR4x part); report utilization + latency
+
+---
+
+### 🟠 Phase 2.5 (MEDIUM): LPDDR4x Weight Streaming
+**Goal**: AXI4 weight-DMA controller reading from Titanium embedded LPDDR4x into
+double-buffered on-chip BRAM staging. Enables models > on-chip BRAM (QARepVGG, MobileNet).
+
+---
+
+### 🟢 Phase 4 (R&D): Hardware DSP Customization (Altera BFloat16 & AMD DSP48)
+**Goal**: Alternative math backends using hard silicon blocks. Secondary to the INT8 compiler track.
 
 - [ ] **Math Abstraction Layer (`MathPlugin`)**
-  - Introduce a selectable trait `MathEngine` defining raw multiplication interfaces.
-  - Implement **Intel/Altera Agilex / Stratix 10 BFloat16 mode**: Instantiate Intel native dot-product MAC macros.
-  - Implement **AMD/Xilinx UltraScale+ DSP48E2 dual-INT8 mode**: Utilize cascading instructions (`A*B + C`) inside a single physical DSP slice in parallel.
+  - Selectable `MathEngine` trait defining raw multiplication interfaces.
+  - Intel/Altera Agilex / Stratix 10 BFloat16 dot-product MAC macros.
+  - AMD/Xilinx UltraScale+ DSP48E2 dual-INT8 cascading (`A*B + C`) mode.
 
 ---
 

@@ -14,9 +14,12 @@ import spinalnn.util.PrefixArea
 object ReLUCore {
 
   case class Config(
-    periphName: String = "relu"
-    // Future: leakySlope: Float = 0.0f  for leaky ReLU variant
-  )
+    periphName: String = "relu",
+    clampMax:   Int    = ActivationDType.maxVal   // 127 for ReLU, round(6/outScale) for ReLU6
+  ) {
+    require(clampMax >= 0 && clampMax <= ActivationDType.maxVal,
+      s"clampMax $clampMax out of [0, ${ActivationDType.maxVal}]")
+  }
 
   case class Io(activationOut: Stream[Activation])
 
@@ -29,11 +32,11 @@ object ReLUCore {
 
       activationOut.valid         := activationIn.valid
       activationIn.ready          := activationOut.ready
-      activationOut.payload.value := Mux(
-        activationIn.payload.value < S(0, ActivationDType.bits bits),
-        S(0, ActivationDType.bits bits),
-        activationIn.payload.value
-      )
+      val clamped = activationIn.payload.value
+      activationOut.payload.value :=
+        Mux(clamped < S(0,             ActivationDType.bits bits), S(0,               ActivationDType.bits bits),
+        Mux(clamped > S(cfg.clampMax,  ActivationDType.bits bits), S(cfg.clampMax,    ActivationDType.bits bits),
+            clamped))
     }
 
     Io(activationOut = logic.activationOut)

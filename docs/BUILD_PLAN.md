@@ -49,9 +49,28 @@ One operator per Core + Plugin. Composed in Params. Generated from ONNX.
 
 - [x] ONNX parser -- implemented in-JVM as `compiler/OnnxCompiler.scala` (ScalaPB), compiled live during elaboration via `Params.onnx`. Reads INT8 ONNX, applies symmetric PTQ, transposes weights, and emits the concrete plugin graph. (Supersedes the originally-planned standalone `tools/onnx_to_params.py`.)
 - [x] General frontend/backend seam -- `OnnxCompiler` now delegates to `OnnxFrontend` (graph walk -> `LayerSpec` IR, with shape inference + quant resolution) and `IrBackend` (IR -> plugins via an op-dispatch registry + symbol table). Adding an operator = one `LayerSpec` case + one backend case. See [ARCHITECTURE_DIRECTION.md](ARCHITECTURE_DIRECTION.md).
-- [x] Faithful shapes -- convolutions honor `auto_pad`/`pads` (conv padding added to `QLinearConvCore` via a zero-initialised input buffer) and pooling honors real `kernel_shape`/`strides` (general window in `MaxPoolCore`). MNIST now compiles to the true SAME-conv / 3x3-pool topology; top-1 rose from 80% to 100% (5/5). (Padded pooling and conv dilations != 1 remain TODO.)
-- [ ] SqueezeNet INT8 elaborates cleanly from generated Params
-- [ ] Add GlobalAvgPool, Concat stub operators to support SqueezeNet topology
+- [x] Faithful shapes -- convolutions honor `auto_pad`/`pads` (conv padding added to `QLinearConvCore` via a zero-initialised input buffer) and pooling honors real `kernel_shape`/`strides` (general window in `MaxPoolCore`). MNIST now compiles to the true SAME-conv / 3x3-pop topology; top-1 rose from 80% to 100% (5/5). (Padded pooling and conv dilations != 1 remain TODO.)
+- [x] DAG operators -- `ConcatCore`/`ConcatPlugin` (fan-in, 4/4 tests), `StreamForkCore`/`StreamForkPlugin` (fan-out, 4/4 tests), `GlobalAveragePoolCore`/`GlobalAveragePoolPlugin` (5/5 tests). Fan-in + fan-out fully proven; fire-module topology expressible.
+- [x] Per-channel requant -- `QLinearConvCore` accepts `weightScales: Option[Array[Float]]`; per-output-channel requant ROMs + variable barrel shifter; per-tensor fallback byte-identical to before (3/3 tests). `lowerQuantized` in `OnnxFrontend` reads per-channel weight scales from QOperator nodes.
+- [x] QOperator frontend (`lowerQuantized`) -- reads scales/zero-points directly off QLinearConv nodes; Q/DQ alias folding; per-Concat output-quant override; SqueezeNet structural IR tests pass (4/4).
+- [ ] **NEXT: Asymmetric-input bias correction** -- add `−z_x · Σw[oc]` fold into biases inside `lowerQuantized` (elaboration-time, no RTL change). Unblocks SqueezeNet end-to-end Verilog generation.
+- [ ] SqueezeNet INT8 elaborates cleanly -- Verilog generation test (no sim; 224x224x3 is billions of cycles)
+
+### Stage 5.5: Operator Expansion + Tier-2 Models
+*DepthwiseConv and Add unlock the next two model tiers. Hardware target: Efinix Titanium.*
+
+- [ ] `DepthwiseConvCore` + `DepthwiseConvPlugin` -- grouped conv with groups = C_in. Weight shape `[C, 1, kH, kW]`. Reuses QLinearConvCore FSM structure; no cross-channel accumulation. Unlocks DS-CNN-S and MobileNetV1.
+- [ ] DS-CNN-S (KWS) end-to-end -- export INT8 ONNX from ARM ML-examples TFLite; compile + simulate; report latency on Ti90 class hardware. First non-vision, BRAM-only benchmark.
+- [ ] QARepVGG-A0 INT8 -- export from QARepVGG paper PyTorch code; no new operators needed (pure 3x3 conv chain). Compile + P&R on Ti180; report ImageNet accuracy vs latency vs resource cost.
+- [ ] `Add` (elementwise, two upstream Handles) -- second fan-in op, reuses `Seq[Handle]` pattern from ConcatPlugin. Unlocks MobileNetV2 and residual skip connections.
+- [ ] MobileNetV2 INT8 -- `qualcomm/MobileNet-v2-Quantized` (HuggingFace); needs DepthwiseConv + Add + ReLU6. P&R on Ti180 with LPDDR4x weight streaming.
+
+### Stage 6: LPDDR4x Weight Streaming
+*Enables any model whose weights exceed on-chip BRAM. Target: Efinix Titanium Ti90+.*
+
+- [ ] Weight-DMA controller -- AXI4 master; sequential burst reads from embedded LPDDR4x into double-buffered on-chip staging BRAM. Layer-boundary trigger from FSM.
+- [ ] Weight-loading mode in `QLinearConvCore` -- accept weights from BRAM staging buffer instead of ROM init. Controlled by `BuildEnv` flag.
+- [ ] SqueezeNet on Ti180 with LPDDR4x -- end-to-end compile + P&R with weight streaming. Benchmark vs Coral/Hailo/DPU from `BENCHMARKS_TOPAZ.md`.
 
 ### Stage 6: Validation
 *End-to-end inference verified correct against reference runtime.*

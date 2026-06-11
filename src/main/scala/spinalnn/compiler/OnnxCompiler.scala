@@ -6,6 +6,7 @@ import _root_.onnx.onnx.ModelProto
 import _root_.onnx.onnx.GraphProto
 import _root_.onnx.onnx.TensorProto
 import spinal.lib.misc.plugin._
+import spinalnn.target.TargetConfig
 import spinalnn.types._
 import spinalnn.util._
 
@@ -60,8 +61,7 @@ object OnnxCompiler {
   }
 
   /** Unpacks 32-bit integer values (e.g. standard biases, indices). */
-  def extractIntData(tensor: TensorProto): Array[Int] = {
-    if (tensor.int32Data.nonEmpty) {
+  def extractIntData(tensor: TensorProto): Array[Int] = {    if (tensor.int32Data.nonEmpty) {
       tensor.int32Data.toArray
     } else if (tensor.rawData.isDefined) {
       val rawBytes = tensor.getRawData.toByteArray
@@ -75,6 +75,15 @@ object OnnxCompiler {
     } else {
       throw new IllegalArgumentException(s"Tensor '${tensor.getName}' contains no readable 32-bit integer data.")
     }
+  }
+
+  /** Unpacks signed INT8 values from an ONNX TensorProto (pre-quantized weights). The
+    * raw bytes are the int8 values directly; Java's signed `Byte` already carries the
+    * correct [-128, 127] interpretation. */
+  def extractInt8Bytes(tensor: TensorProto): Array[Byte] = {
+    if (tensor.rawData.isDefined) tensor.getRawData.toByteArray
+    else if (tensor.int32Data.nonEmpty) tensor.int32Data.map(_.toByte).toArray
+    else throw new IllegalArgumentException(s"Tensor '${tensor.getName}' contains no readable INT8 data.")
   }
 
   /** Transposes weight matrices from ONNX [outCh, C_in, kH, kW] format to
@@ -168,11 +177,21 @@ object OnnxCompiler {
     * approximation (auto_pad and general pooling not yet honored). See
     * docs/ARCHITECTURE_DIRECTION.md section 11.
     */
-  def compileModel(filePath: String, buildEnv: BuildEnv = BuildEnv(), emitLogits: Boolean = false): Seq[FiberPlugin] = {
+  def compileModel(
+      filePath:   String,
+      target:     TargetConfig = TargetConfig.default,
+      emitLogits: Boolean      = false
+  ): Seq[FiberPlugin] = {
     val model = loadModel(filePath)
-    val specs = OnnxFrontend.lower(model, OnnxFrontend.MnistCalibration, emitLogits)
-    IrBackend.build(specs, buildEnv)
+    val specs =
+      if (OnnxFrontend.isQuantized(model)) OnnxFrontend.lowerQuantized(model, emitLogits)
+      else OnnxFrontend.lower(model, OnnxFrontend.MnistCalibration, emitLogits)
+    IrBackend.build(specs, target)
   }
+
+  /** Legacy overload: accepts a raw `BuildEnv`. Wraps it in a default `TargetConfig`. */
+  def compileModel(filePath: String, buildEnv: BuildEnv, emitLogits: Boolean): Seq[FiberPlugin] =
+    compileModel(filePath, TargetConfig.default.copy(options = TargetConfig.default.options.copy(buildMode = buildEnv.mode)), emitLogits)
 
   /** Prints a summary of nodes, inputs, outputs, and initializers in the model. */
   def inspectModel(filePath: String): Unit = {

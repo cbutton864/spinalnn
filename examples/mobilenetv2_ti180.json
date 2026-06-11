@@ -1,0 +1,12 @@
+{
+  "device":        "Ti180M484",
+  "model":         "models/mobilenetv2-12-int8.onnx",
+  "emitLogits":    true,
+  "buildMode":     "flat",
+  "macParallelism": "8",
+  "weightMode":    "stream",
+  "memoryStrategy": "line",
+  "bramBudgetPct":  80,
+  "targetFreqMhz":  150,
+  "outputDir":      "rtl/mobilenetv2"
+}

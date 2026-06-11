@@ -12,10 +12,17 @@ of work. Each phase is independently useful and keeps the existing tests green.
 
 ## 1. Scope (read this first)
 
-- **Not tied to the Efinix T20.** The T20 is a convenient small bring-up target,
-  not the design ceiling. spinalnn targets the whole range — from a tiny Trion
-  running a 1D biometric model, to a large Agilex / UltraScale+ running a vision
-  backbone. Treat any T20-specific number in the docs as one data point, not the goal.
+- **Primary hardware target: Efinix Titanium (FNX).** Ti90 through Ti375 are the
+  reference parts — 16 nm, embedded LPDDR4x on-package (1 × 32-bit channel, up to
+  2 Gb / 3,000 Mbps), 336–1,344 DSP blocks, 860 KB–3.4 MB on-chip BRAM, AXI4
+  interface to the LPDDR controller. Trion T20 / Topaz Tz50 remain valid bring-up
+  and benchmark reference points. Larger parts (Xilinx UltraScale+, Intel Agilex)
+  are long-term stretch targets, not the current focus.
+- **Embedded LPDDR4x changes the memory story.** On-package latency (~10–20 ns vs
+  40–80 ns off-chip) and a wide internal bus mean weight-streaming overhead is
+  negligible when double-buffered. This unlocks models whose weights exceed on-chip
+  BRAM without board-level DDR routing complexity. All Titanium parts from Ti90 up
+  carry this interface; no external DDR chip is required.
 - **Primary input is pre-quantized ONNX (QOperator).** A QLinearConv node carries
   `x_scale`, `x_zero_point`, `w_scale`, `w_zero_point`, `y_scale`, `y_zero_point`
   inline. Read them directly — no calibration, no guessing. This is the clean path
@@ -23,10 +30,11 @@ of work. Each phase is independently useful and keeps the existing tests green.
 - **Float ONNX + manual calibration is the secondary path.** The current
   quantize-on-the-fly logic in `OnnxCompiler` stays as a convenience for float models;
   it is not the primary route.
-- **Goal:** compile as many *reasonable* pre-quantized models as practical — vision
-  (MNIST → SqueezeNet → YOLO-class) and non-visual (audio keyword spotting, ECG / IMU
-  biometrics, anomaly detection). "Reasonable" is bounded by the fit knobs in §6, not
-  by any one chip.
+- **Goal:** compile a curated set of publicly available pre-quantized models — from
+  tiny BRAM-only 1D models (KWS, biometrics) up to LPDDR4x-enabled vision backbones
+  (SqueezeNet, MobileNetV2, QARepVGG). Benchmark each against the competitor landscape
+  in §model-targets. "Reasonable" is bounded by the fit knobs in §6 and the operator
+  set in §8, not by any one chip or domain.
 
 ---
 
@@ -176,14 +184,62 @@ toggles flat vs hierarchical. Default: stream conv/pool, buffer FC/reductions.
 
 ---
 
-## 8. Model families → operators needed (priority order)
+## 8. Model targets and operator roadmap (priority order)
 
-| Family | New operators needed | Why this order |
+Models are ordered by operator complexity and hardware requirements, not by size alone.
+Every model listed has a publicly available INT8 ONNX file or a clear export path from
+public code. Operator gaps are additive — each tier reuses all operators from the tier
+above it.
+
+### Tier 1 — Existing operators, BRAM-only (Ti90+, no DDR streaming needed)
+
+| Model | Source | Params (INT8) | Task | Accuracy | Operators needed |
+|---|---|---|---|---|---|
+| **SqueezeNet 1.0 int8** | `onnxmodelzoo/squeezenet1.0-12-int8` (HuggingFace) — *already in `models/`* | ~1.2 MB | ImageNet top-1 | 57.5% | QLinearConv, MaxPool, Concat, GlobalAvgPool, Softmax — **all implemented** |
+| **QARepVGG-A0 int8** | Export from [QARepVGG paper code](https://arxiv.org/abs/2212.01593) (PyTorch → ONNX) | ~8 MB | ImageNet top-1 | 70.4% INT8 (vs 72.2% FP32, < 2% drop) | Conv (3×3 only), ReLU, GlobalAvgPool, Linear — **all implemented** |
+
+SqueezeNet is already on disk and needs only the asymmetric-input bias correction to
+elaborate correctly (§12). QARepVGG-A0 after reparameterization is a pure 3×3 conv
+chain with ReLU — zero new operators, high accuracy, excellent quantization behavior
+(quantization-aware training was the design goal). These are the two immediate targets.
+
+### Tier 2 — DepthwiseConv operator, BRAM-only or LPDDR4x (Ti90+)
+
+| Model | Source | Params (INT8) | Task | Accuracy | New operators |
+|---|---|---|---|---|---|
+| **DS-CNN-S** (KWS) | ARM ML-examples GitHub (TFLite → ONNX export) | ~24 KB | Google Speech Commands 12-class | 92.2% | `DepthwiseConv` (grouped conv, groups = C_in) |
+| **MobileNetV1 int8** | `onnxmodelzoo/mobilenetv2-7` INT8 variant via Intel Neural Compressor | ~4 MB | ImageNet top-1 | ~70.9% | `DepthwiseConv` |
+
+DS-CNN-S is the smallest useful real model — 24 KB fits in any Titanium part's BRAM
+with room to spare, making it the first fully BRAM-only, no-DDR benchmark. It also
+breaks the vision-only framing immediately.
+
+### Tier 3 — Add (residual), LPDDR4x weight streaming (Ti90+)
+
+| Model | Source | Params (INT8) | Task | Accuracy | New operators |
+|---|---|---|---|---|---|
+| **MobileNetV2 int8** | `qualcomm/MobileNet-v2-Quantized` (HuggingFace) | ~3.4 MB | ImageNet top-1 | 71.8% | `DepthwiseConv` + `Add` (elementwise residual) + `ReLU6` |
+| **ResNet-18 int8** | ONNX model zoo / Intel NC | ~11 MB | ImageNet top-1 | 69.7% | `Add` (residual skip connections) |
+
+`Add` is the second fan-in op after `Concat` — it reuses the `Seq[Handle]` multi-input
+wiring already proven in `ConcatPlugin`.
+
+### Tier 4 — Streaming dataflow + LPDDR4x weight streaming (Ti180+, north star)
+
+| Model | Source | Params (INT8) | Task | Notes |
+|---|---|---|---|---|
+| **EfficientNet-Lite4 int8** | `onnxmodelzoo/efficientnet-lite4-11-int8` (HuggingFace) | ~13 MB | ImageNet top-1 80.4% | Needs DepthwiseConv + `Squeeze-Excite` (Mul + Sigmoid) |
+| **YOLO-NAS nano int8** | Deci AI / SuperGradients (PyTorch → ONNX) | ~20 MB | COCO object detection | Needs `Resize`/`Upsample`; NMS stays off-chip on host |
+
+### Operator gap summary
+
+| Operator | Unlocks | Status |
 |---|---|---|
-| **Non-visual 1D** (KWS, ECG, IMU biometrics) | Conv1D (degenerate 2D: `cols=1`), small GRU/TCN cell, `Add` | **Highest near-term ROI.** Tiny, fits every FPGA, real edge use, mostly reuses existing Cores. |
-| **SqueezeNet int8** (the only real pre-quantized model on disk) | `Concat`, `GlobalAveragePool`, 1×1 conv (a Conv special case) | Proves DAG wiring (§5) + the frontend (§4) on a non-toy graph. |
-| **ResNet-class** | residual `Add`, BN-folded conv, strided conv | Establishes skip connections and deeper graphs. |
-| **YOLO-class** | `Sigmoid`/`SiLU` (LUT activation), `Resize`/`Upsample`, multi-output heads | Needs the streaming schedule (§7) to fit; **NMS stays off-chip on the host** — standard practice. |
+| `DepthwiseConv` (grouped conv, groups = C_in) | DS-CNN-S, MobileNetV1/V2 | **Next to implement** |
+| `Add` (elementwise, two upstream Handles) | MobileNetV2, ResNet, RepVGG training graphs | After DepthwiseConv |
+| `ReLU6` (clamp at 6) | MobileNetV2 | Trivial ReLU variant |
+| `Sigmoid` / `HardSigmoid` | EfficientNet SE blocks | LUT activation |
+| `Resize` / `Upsample` (nearest) | YOLO necks | Phase 4 |
 
 Biometrics and other 1D signal models are called out first deliberately: they are the
 most useful *and* the easiest, and they break the "vision-only / MNIST-only" framing
@@ -193,23 +249,39 @@ immediately.
 
 ## 9. Phased roadmap (incremental — every phase ships something)
 
-- **Phase 0 — Frontend refactor (no hardware change).** Split `OnnxCompiler` into
-  frontend (graph walk → `LayerSpec` IR, with shape inference and quant resolution) and
-  backend (IR → plugins via the op registry). Add the pre-quantized scale-reading path.
-  Output stays bit-identical to today's MNIST so `GoldenIntegrationTest` and the
-  validation suite stay green. This de-risks everything after it.
-- **Phase 1 — Fan-in + SqueezeNet.** Add `Seq[Handle]` multi-input wiring; add `Concat`
-  and `GlobalAveragePool`; run `squeezenet1.0-12-int8` end-to-end.
-  *(In progress: fan-in `ConcatCore`/`ConcatPlugin` and fan-out
-  `StreamForkCore`/`StreamForkPlugin` done + tested 4/4 each; still need
-  `GlobalAveragePool`, the QOperator pre-quant scale-read path, and `LayerSpec.Concat`
-  + multi-input backend wiring.)*
-- **Phase 2 — Non-visual 1D.** Add Conv1D and a small recurrent/TCN cell; ship a keyword-
-  spotting or biometric example.
-- **Phase 3 — Streaming schedule.** Introduce the per-stage line-buffer dataflow for
-  conv/pool; reductions stay buffered.
-- **Phase 4 — Folding + big models.** FINN-style PE/SIMD folding for YOLO/ResNet-class;
-  NMS off-chip.
+- **Phase 0 — Frontend refactor.** ✅ **DONE.** `OnnxFrontend` + `LayerSpec` IR +
+  `IrBackend` op-registry. MNIST output bit-identical; validation suite green.
+
+- **Phase 1 — DAG operators + quant generality.**
+  *Structural work done:* `ConcatCore`/`ConcatPlugin` (4/4), `StreamForkCore`/
+  `StreamForkPlugin` (4/4), `GlobalAveragePoolCore`/`GlobalAveragePoolPlugin` (5/5),
+  per-channel requant in `QLinearConvCore` (3/3), `lowerQuantized` frontend for
+  QOperator graphs (SqueezeNet structural tests 4/4).
+  *Remaining:* asymmetric-input bias correction (`−z_x·Σw` folded into biases at
+  elaboration time) → then SqueezeNet elaborates end-to-end, Verilog generation test.
+
+- **Phase 1.5 — First Tier-1 hardware benchmarks (Titanium target).**
+  Synthesize and P&R SqueezeNet on Tz50 (timing/area reference) and Ti180 (embedded
+  LPDDR4x target). Export QARepVGG-A0 INT8 from paper code; compile and P&R.
+  These produce the first real benchmark numbers for models beyond MNIST.
+
+- **Phase 2 — DepthwiseConv + Tier-2 models.**
+  Add `DepthwiseConv` Core/Plugin (grouped conv, groups = C_in). Compile DS-CNN-S
+  (KWS) from ARM ML-examples TFLite export; run end-to-end in simulation. First fully
+  BRAM-only non-vision benchmark, fits any Titanium part.
+
+- **Phase 2.5 — LPDDR4x weight streaming.**
+  Add weight-DMA controller: AXI4 master, sequential burst reads from embedded LPDDR4x
+  into on-chip staging BRAM (double-buffered). Enables any model whose weights exceed
+  on-chip BRAM. Target Titanium Ti90+ (embedded LPDDR4x on-package, no external DDR).
+
+- **Phase 3 — Add (residual) + streaming dataflow.**
+  Elementwise `Add` plugin (second fan-in op, reuses `Seq[Handle]` wiring). Then
+  per-stage line-buffer schedule for conv/pool — drops activation BRAM from `O(H·W·C)`
+  to `O(k·W·C)`. Unlocks MobileNetV2, ResNet, 224×224 inputs without activation LPDDR.
+
+- **Phase 4 — Folding + detector-class models.**
+  FINN-style PE/SIMD folding; `Resize`/`Upsample`; YOLO-NAS nano on Ti180+. NMS off-chip.
 
 ---
 
@@ -254,3 +326,70 @@ analysis: the miss was the VALID approximation distorting feature maps, **not** 
 quantization noise. Pre-quantized graphs that rely on SAME padding can now elaborate
 faithfully. (Padded *pooling* and conv `dilations` ≠ 1 remain unsupported — add when a
 model needs them.)
+
+---
+
+## 12. Quantization-generality axis (the real lever for cutting-edge models)
+
+Structurally we are in good shape: `Concat` (fan-in), `StreamFork` (fan-out), and
+`GlobalAveragePool` give us the vocabulary for DAGs. The next frontier is **not** a pile
+of exotic operators — it is **quantization fidelity**. Today every Core bakes in three
+assumptions: *symmetric* INT8, *zero-point = 0*, and *one scale per layer (per-tensor)*.
+Modern quantized models break all three.
+
+**Measured ground truth — `squeezenet1.0-12-int8.onnx` (the only real pre-quantized model
+on disk).** Inspecting the graph (26 `QLinearConv`, 8 `Concat`, 3 `MaxPool`, 1
+`QLinearGlobalAveragePool`, 1 `Softmax`; Q/DQ pairs appear *only* around the Concats,
+because the two expand branches carry different scales) shows it needs the full
+quant-generality stack at once:
+
+1. **uint8 activations.** Activation tensors are UINT8 `[0,255]` (zero-point 0 post-ReLU),
+   but our `Activation` is `SInt(8)` `[-128,127]`. A uint8 200 simply does not fit. Options:
+   widen the stream element, or remap uint8→int8 (subtract 128) at the QuantizeLinear
+   boundaries and carry the offset in the requant. **Real impedance mismatch, not cosmetic.**
+2. **Asymmetric input zero-point.** `data_0_zero_point = 115`. With *symmetric weights*
+   (`z_w = 0`) the cross-term collapses: `(x−z_x)(w) = xw − z_x·w`, so the `−z_x·Σw`
+   correction folds into the per-output-channel bias at elaboration time. The datapath
+   already subtracts zero-point; the **frontend must compute the bias correction.**
+3. **Per-channel weight scales.** *All 26* conv weight tensors carry a **per-output-channel**
+   scale vector (e.g. conv1 `w_scale` is shape `[64]`). This is the single biggest INT8
+   accuracy lever and is now the default in PyTorch FX / TensorRT / ONNX QDQ exports.
+   `RequantScale` is currently one `(multiplier, shift)` per layer; this becomes a **vector
+   indexed by output channel**, and the Conv/Linear requant FSM reads the per-channel entry.
+4. **Q/DQ folding.** SqueezeNet is *QOperator* form, but most modern exports are *QDQ*
+   (a float graph sprinkled with QuantizeLinear/DequantizeLinear). We must fold Q/DQ around
+   Concat anyway, so a general Q/DQ folder pays off immediately for both forms.
+
+**Implication.** Finishing SqueezeNet end-to-end *is* the cutting-edge-quant work in
+miniature — uint8 + asymmetric input + per-channel requant land together. That reframes the
+"is SqueezeNet a gentle first model?" question: it is not. Two honest paths:
+- **(a) Land quant-generality on SqueezeNet directly** — highest payoff, but couples the
+  DAG-wiring proof to three quant changes at once.
+- **(b) Decouple:** first prove the DAG wiring (Concat/Fork/GAP in a real `Params` profile)
+  on a **symmetric-int8, per-tensor** graph (e.g. a re-exported CIFAR/RepVGG-S or a
+  synthetic fire module), then add uint8 + per-channel as an isolated quant milestone.
+
+**Target models, honestly ranked for this axis:**
+
+| Target | Quant reality | Verdict |
+|---|---|---|
+| **QARepVGG-S** | reparam → linear `3×3 conv → ReLU` chain; quant-aware so per-channel int8 behaves | **Near-ideal first real backbone** once per-channel requant exists. Vanilla RepVGG quantizes badly — use the QA variant. |
+| **MobileNet / EfficientNet-lite int8** | depthwise/grouped conv + per-channel + uint8 | High edge ROI; needs a depthwise Core (a *cheaper* conv: no cross-channel accumulate). |
+| **ResNet-18 int8** | residual `Add` (two different input scales → requant), per-channel | Establishes skip connections; `Add` is the next fan-in op after Concat. |
+| **YOLO-NAS** | quant-friendly by design, but detector: FPN/PAN neck (heavy concat/upsample/multi-scale), `Resize`/`Upsample`, ~12M params, NMS | **Phase-4 north star.** Too big for on-chip ROM (needs weight streaming, §7) and needs `Upsample` we lack; NMS stays off-chip. |
+
+**Sequencing (folds into the §9 roadmap, doesn't replace it):**
+1. QOperator scale-read frontend, **designed for zero-point + per-channel from the start**
+   (even where a model only exercises a subset).
+2. **Per-channel requant** in Conv/Linear (vector `RequantScale`) — the accuracy unlock.
+3. uint8 activation handling + asymmetric-input bias correction + Q/DQ folding.
+4. **Elementwise `Add`** (residual) → ResNet / RepVGG training graphs.
+5. **Depthwise/grouped conv** + nearest **`Upsample`** → MobileNet/EfficientNet-lite and
+   detector necks.
+6. **Weight streaming (off-chip) + line-buffer dataflow (§7) + tiling** → the gate to
+   detector-class models. *This is the memory ceiling, separate from operator coverage:
+   small backbones (RepVGG-A0, MobileNet, SqueezeNet) fit with on-chip weights; YOLO-class
+   does not.*
+
+The throughline: the structural vocabulary is largely built. The remaining distance to
+"cutting-edge" is **quant fidelity first, memory scale second** — not operator sprawl.

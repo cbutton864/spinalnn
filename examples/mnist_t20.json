@@ -1,0 +1,11 @@
+{
+  "device": "T20F169",
+  "model": "models/mnist-8.onnx",
+  "emitLogits": false,
+  "buildMode": "flat",
+  "macParallelism": "auto",
+  "memoryStrategy": "auto",
+  "bramBudgetPct": 80,
+  "targetFreqMhz": 100,
+  "outputDir": "rtl/mnist_t20_flat"
+}

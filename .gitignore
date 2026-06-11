@@ -27,6 +27,15 @@ Thumbs.db
 # Downloaded models (large binary files -- use tools/download_models.py to fetch)
 models/*.onnx
 models/*.tar.gz
+models/*.onnx.data
+models/*.data
+
+# Backup archives
+*.zip
+src/*.zip
+
+# Physical implementation/PNR benchmark workspaces
+benchmark_*/
 
 # Generated Params (produced by tools/onnx_to_params.py -- do not commit)
 src/main/scala/spinalnn/generated/

@@ -4,6 +4,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import spinal.core._
 import spinal.core.sim._
 import spinalnn.ops.linear.QLinearLinearCore
+import spinalnn.target.WeightStream
 import spinalnn.testhelpers.QLinearLinearHarness
 import spinalnn.types._
 import scala.collection.mutable
@@ -160,5 +161,64 @@ class QLinearLinearCoreTest extends AnyFunSuite {
         assert(out == Seq(15, 15), s"Frame $frame: expected Seq(15,15), got $out")
       }
     }
+  }
+
+  // Pack weight bytes into 64-byte (512-bit) beats and feed them continuously.
+  // weightsPerNeuron = inNeurons (bytes per output neuron, one entry per FC row).
+  def feedWeightStream(dut: QLinearLinearHarness, weights: Array[Byte], weightsPerNeuron: Int): Unit = {
+    val stride   = ((weightsPerNeuron + 63) / 64) * 64
+    val numNeurs = weights.length / weightsPerNeuron
+    var neuron   = 0
+    while (true) {
+      val nBase = neuron * weightsPerNeuron
+      val buf   = Array.fill[Byte](stride)(0)
+      Array.copy(weights, nBase, buf, 0, weightsPerNeuron)
+      var beatOff = 0
+      while (beatOff < stride) {
+        var beatVal = BigInt(0)
+        for (b <- 0 until 64) { beatVal = beatVal | (BigInt(buf(beatOff + b) & 0xff) << (b * 8)) }
+        dut.weightIn.valid   #= true
+        dut.weightIn.payload #= beatVal
+        dut.clockDomain.waitSamplingWhere(dut.weightIn.ready.toBoolean)
+        beatOff += 64
+      }
+      neuron = (neuron + 1) % numNeurs
+    }
+  }
+
+  // ── Test 6: WeightStream matches WeightRom ────────────────────────────────
+  // 2-output-neuron layer; streaming the weight matrix gives same results.
+  test("WeightStream: linear layer matches WeightRom output") {
+    val ws = Array(1, 0, 0, 0, 1, 0).map(_.toByte)  // identity-like, 2×3
+    val romCfg = QLinearLinearCore.Config(
+      periphName = "wsl_ref", inNeurons = 3, outNeurons = 2,
+      inputQuant = idQ, weightQuant = idQ, outputQuant = idQ,
+      weights = ws, biases = Array(0, 0)
+    )
+    val streamCfg = romCfg.copy(periphName = "wsl_linear", weightMode = WeightStream)
+
+    var romOut: Seq[Int]    = Nil
+    var streamOut: Seq[Int] = Nil
+
+    compile(romCfg).doSim("wsl_ref") { dut =>
+      dut.clockDomain.forkStimulus(10)
+      dut.io.activationIn.valid #= false; dut.io.activationOut.ready #= false
+      dut.clockDomain.waitSampling(2)
+      val s = fork(driveInputs(dut, Seq(3, 5, 7)))
+      romOut = collectOutputs(dut, 2); s.join()
+    }
+
+    compile(streamCfg).doSim("wsl_linear") { dut =>
+      dut.clockDomain.forkStimulus(10)
+      dut.io.activationIn.valid #= false; dut.io.activationOut.ready #= false
+      dut.weightIn.valid #= false; dut.weightIn.payload #= 0
+      dut.clockDomain.waitSampling(2)
+      val wf = fork(feedWeightStream(dut, streamCfg.weights, streamCfg.inNeurons))
+      val s  = fork(driveInputs(dut, Seq(3, 5, 7)))
+      streamOut = collectOutputs(dut, 2); s.join(); wf.terminate()
+    }
+
+    assert(streamOut == romOut,
+      s"WeightStream linear mismatch.\n  rom:    $romOut\n  stream: $streamOut")
   }
 }

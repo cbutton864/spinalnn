@@ -7,36 +7,76 @@ import spinalnn.ops.input.InputPlugin
 import spinalnn.ops.linear.{FlattenPlugin, QLinearLinearCore, QLinearLinearPlugin}
 import spinalnn.ops.output.NetworkOutputPlugin
 import spinalnn.ops.pool.{MaxPoolCore, MaxPoolPlugin}
+import spinalnn.target.TargetConfig
 import spinalnn.types._
 import spinalnn.util._
 
 // Network topology profiles. Add new profiles here as needed.
-// The ONNX parser (Stage 5) will generate profiles directly from trained models,
+// The ONNX parser (Stage 5) generates profiles directly from trained models,
 // replacing the hand-coded configurations below.
 sealed trait NetworkProfile
-case object SmallProfile extends NetworkProfile   // 6x6x1 -- fast elaboration for tests
-case object MnistProfile  extends NetworkProfile  // 28x28x1 -- full MNIST-scale topology
-case object OnnxProfile   extends NetworkProfile  // Natively compiled MNIST ONNX model with full real weights
-case object OnnxLogitsProfile extends NetworkProfile // OnnxProfile tapped at linear1 -- emits 10 raw INT8 logits (diagnostics)
+case object SmallProfile extends NetworkProfile   // 6x6x1 — fast elaboration for tests
+case object MnistProfile  extends NetworkProfile  // 28x28x1 — zero-weight MNIST topology
+case object OnnxProfile   extends NetworkProfile  // Compiled MNIST ONNX with real weights
+case object OnnxLogitsProfile extends NetworkProfile // OnnxProfile tapped at linear1 — raw INT8 logits
+case object SqueezeNetProfile   extends NetworkProfile // 224x224x3 — SqueezeNet 1.0 INT8
+case object MobileNetV2Profile  extends NetworkProfile // 224x224x3 — MobileNetV2 INT8
 
-// Central configuration. plugins() is a def -- fresh instances on every call.
+/** Compile an arbitrary ONNX file. Use `emitLogits = true` for multi-class models (>255 classes). */
+case class OnnxPathProfile(path: String, emitLogits: Boolean = false) extends NetworkProfile
+
+/** Compile a hand-built `Seq[LayerSpec]` directly through IrBackend.
+  * Used by functional tests that build tiny models in Scala without an ONNX file. */
+case class SpecProfile(specs: Seq[spinalnn.compiler.LayerSpec]) extends NetworkProfile
+
+/**
+ * Central compile configuration: target device/options + network topology.
+ *
+ * `plugins` is a def — fresh plugin instances on every call (required by SpinalHDL FiberPlugin).
+ * `buildEnv` is derived from `target.options` for backward compatibility with existing plugin APIs.
+ *
+ * Convenience constructors in the companion object cover the common cases:
+ *   Params.onnx               — MNIST ONNX, Ti180M484, flat build, 150 MHz
+ *   Params.onnx.hierarchical  — same, hierarchical build
+ *   Params.squeezenet         — SqueezeNet, Ti180M484, flat build
+ */
 case class Params(
-  buildEnv: BuildEnv      = BuildEnv(),
-  profile:  NetworkProfile = MnistProfile
+  target:  TargetConfig  = TargetConfig.default,
+  profile: NetworkProfile = MnistProfile
 ) {
+  def buildEnv: BuildEnv = target.buildEnv
+
   def plugins: Seq[FiberPlugin] = profile match {
-    case SmallProfile => Params.smallPlugins(buildEnv)
-    case MnistProfile => Params.mnistPlugins(buildEnv)
-    case OnnxProfile  => spinalnn.compiler.OnnxCompiler.compileModel("models/mnist-8.onnx", buildEnv)
-    case OnnxLogitsProfile => spinalnn.compiler.OnnxCompiler.compileModel("models/mnist-8.onnx", buildEnv, emitLogits = true)
+    case SmallProfile         => Params.smallPlugins(buildEnv)
+    case MnistProfile         => Params.mnistPlugins(buildEnv)
+    case OnnxProfile          => spinalnn.compiler.OnnxCompiler.compileModel("models/mnist-8.onnx", target)
+    case OnnxLogitsProfile    => spinalnn.compiler.OnnxCompiler.compileModel("models/mnist-8.onnx", target, emitLogits = true)
+    case SqueezeNetProfile    => spinalnn.compiler.OnnxCompiler.compileModel("models/squeezenet1.0-12-int8.onnx",  target, emitLogits = true)
+    case MobileNetV2Profile   => spinalnn.compiler.OnnxCompiler.compileModel("models/mobilenetv2-12-int8.onnx",   target, emitLogits = true)
+    case OnnxPathProfile(path, logits) => spinalnn.compiler.OnnxCompiler.compileModel(path, target, emitLogits = logits)
+    case SpecProfile(specs)            => spinalnn.compiler.IrBackend.build(specs, target)
   }
+
+  // ── Convenience fluent builders ─────────────────────────────────────────
+  def hierarchical: Params = copy(target = target.hierarchical)
+  def flat:         Params = copy(target = target.flat)
+  def withTarget(t: TargetConfig): Params = copy(target = t)
+  def withFreq(mhz: Int):          Params = copy(target = target.withFreq(mhz))
+  def withDevice(name: String):    Params = copy(target = target.withDevice(name))
 }
 
 object Params {
-  def small = Params(profile = SmallProfile)
-  def mnist = Params(profile = MnistProfile)
-  def onnx  = Params(profile = OnnxProfile)
-  def onnxLogits = Params(profile = OnnxLogitsProfile)
+  def small       = Params(profile = SmallProfile)
+  def mnist       = Params(profile = MnistProfile)
+  def onnx        = Params(profile = OnnxProfile)
+  def onnxLogits  = Params(profile = OnnxLogitsProfile)
+  def squeezenet  = Params(profile = SqueezeNetProfile)
+  def mobilenetv2 = Params(profile = MobileNetV2Profile)
+  def fromOnnx(path: String, emitLogits: Boolean = false) =
+    Params(profile = OnnxPathProfile(path, emitLogits))
+
+  def fromSpecs(specs: Seq[spinalnn.compiler.LayerSpec]): Params =
+    Params(profile = SpecProfile(specs))
 
   // ── Small: 6x6x1 -> Conv3x3 -> Pool2x2 -> Linear -> Softmax ─────────────
   // Fast elaboration for CI and smoke tests.
@@ -71,8 +111,7 @@ object Params {
 
   // ── MNIST: 28x28x1 -> Conv5x5x8 -> ReLU -> Pool -> Conv5x5x16 -> ReLU ->
   //          Pool -> Flatten -> Linear256x10 -> Softmax ─────────────────────
-  // Full MNIST-scale CNN topology. Weights are zero-initialized here.
-  // Stage 5 ONNX parser will replace this with weights from a trained model.
+  // Full MNIST-scale CNN topology with zero-initialised weights.
   def mnistPlugins(buildEnv: BuildEnv): Seq[FiberPlugin] = {
     val idQ = QuantParams(1.0f, 0)
 
