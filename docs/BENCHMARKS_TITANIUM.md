@@ -33,14 +33,24 @@ Best result per design configuration. Full run history in `pnr_results.tsv`.
 | Date | Label | N Strategy | LUT4 | DSP48 | FF | RAM10K | fmax (MHz) | FPS | Latency (ms) | Notes |
 |:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|:---|
 | 2026-06-10 | N1_singleclock | Global N=1 | 31,804 | 135 | 26,764 | 331 | 197.9 | ~0.1 | ~10,000 | Stream baseline; WeightRom |
-| **2026-06-10** | **N16_balanced_tree** | **N=16 / conv1=N=3** | **39,377** | **512** | **34,908** | **630** | **171.5** | **~4.4** | **~225** | **Best; balanced tree MAC; conv1 override** |
+| **2026-06-10** | **N16_balanced_tree** | **N=16 / conv1=N=3** | **39,377** | **512** | **34,908** | **630** | **171.5** | **~4.4** | **~225** | **Best FPS; balanced tree MAC; conv1 N=3 override; MemLineBuffer explicit** |
+| 2026-06-15 | ws_n16_phase1_dma | N=16, conv1=N=1 (fallback) | 39,947 | 510 | 35,625 | 625 | 176.0 | ~3.1 | ~320 | Phase 1 512-bit DMA beats; MemAuto line-buffer fix; conv1 N=3 override pending |
 
-**Design config for N16_balanced_tree:**
+**Design config for N16_balanced_tree (current FPS champion):**
 - `macParallelism: 16`, `conv1_1_quantized` override → `N=3` (WeightRom fallback, 64%3≠0)
 - `weightMode: stream`, `memoryStrategy: line`, `targetFreqMhz: 150`
 - Balanced tree `treeReduce` in Stage 2 of `QLinearConvLineCore` replaces left-fold — critical for timing closure
 
-**Device utilization at current best:**
+**Design config for ws_n16_phase1_dma (2026-06-15):**
+- `macParallelism: 16`, no conv1 override (N=1 fallback; conv1 bottleneck at 46% of cycles)
+- `weightMode: stream`, `memoryStrategy: auto`, `targetFreqMhz: 150`
+- Phase 1 DMA: `WeightDmaCore` now outputs `Stream[Bits(512 bits)]` per fire (was `Stream[SInt(8 bits)]`); conv cores drain N bytes/cycle from shift register
+- IrBackend fix: WeightStream mode always routes through `QLinearConvLineCore` (avoids H×W×C_in full-frame BRAM)
+- IrBackend fix: MaxPool under `MemAuto` always uses `MaxPoolLineCore` (avoids full-frame pool BRAM; saves ~1,840 RAM10K on SqueezeNet)
+- New bench script: `spinalnn.bench.GenSqueezeNetBench` generates ws_n1 and ws_n16 RTL variants
+- Adding conv1 N=3 override expected to recover ~4.4–4.5 FPS at the higher 176 MHz fmax
+
+**Device utilization at current best (N16_balanced_tree, Jun 10):**
 
 | Resource | Used | Available | % |
 |:---|---:|---:|---:|
@@ -50,6 +60,12 @@ Best result per design configuration. Full run history in `pnr_results.tsv`.
 | EFX_RAM10K | 630 | 1,280 | 49% |
 
 DSP budget is the active constraint. LUT4, FF, BRAM all have ample headroom.
+
+**Conv1 bottleneck analysis:**
+- conv1 (C_in=3, 224×224, 3×3) falls back to N=1 at MacParFixed(16) since 64%3≠0
+- conv1 consumes 46% of total inference cycles at N=1 (23.8M of 54.7M)
+- Fix: `MacParPerLayer("conv1_1_quantized" → 3)` — uses N=3 (3%3=0), 3× faster, costs 3 DSPs vs 1
+- At N=3 conv1, total cycles ≈ 38.8M; at 176 MHz → **~4.5 FPS** (next P&R target)
 
 ---
 
@@ -103,6 +119,31 @@ First DWConv-validated model. Input: 49×10×1 MFCC spectrogram, 12-class output
 |:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|:---|
 | 2026-06-10 | dscnn_s_N8 | N=8, stem N=1 | 1 | 9,368 | 86 | 8,872 | 128 | 206.9 | ~186 | ~5.4 | Baseline; WeightStream; DWConv P&R |
 | **2026-06-11** | **dscnn_s_N8_P4** | **N=8, stem N=1** | **4** | **11,619** | **230** | **9,644** | **286** | **≥150** | **~176** | **~5.7** | **P=4 on 4 PWConv; +0.609 ns slack; WeightRom** |
+
+---
+
+## DS-CNN-S INT8 — Keyword Spotting — Efinix Ti90J484
+
+First Ti90 benchmark. Identical model; smallest Titanium part with LPDDR4x. Device: Ti90J484 (484-pin BGA, Efinity 2025.2 name). Corresponds to Ti90 Standard with 336 DSP / 672 RAM10K.
+
+End-to-end accuracy validated in sim (3/3 MFCC inputs match ONNX Runtime, 2026-06-14).
+
+| Date | Label | N Strategy | P | LUT4 | DSP48 | FF | RAM10K | fmax (MHz) | Slack @ 150 MHz | Notes |
+|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|:---|
+| **2026-06-14** | **dscnn_s_ti90_N8_ws** | **N=8, stem N=1** | **1** | **9,429** | **86** | **8,874** | **144** | **199.4** | **+1.652 ns** | **WeightStream; LineBuffer; Ti90J484** |
+
+**Device utilization (Ti90J484 — 336 DSP / 672 RAM10K available):**
+
+| Resource | Used | Available | % |
+|:---|---:|---:|---:|
+| EFX_LUT4 | 9,429 | ~92,534 | 10% |
+| EFX_DSP48 | **86** | 336 | **26%** |
+| EFX_FF | 8,874 | ~92,534 | 10% |
+| EFX_RAM10K | 144 | 672 | **21%** |
+
+Ample headroom on all resources — 74% DSP and 79% BRAM unused. Room to add N=16 on PWConv layers (~109 DSP, per auto-sweep) or P=4 (~190 DSP, per Ti180 P=4 result).
+
+**Benchmark project:** `benchmark_dscnn_s_ti90/spinalnn_dscnn_s_ti90.xml` (Ti90J484, timing.sdc 150 MHz).
 
 **Device utilization (P=4 config):**
 

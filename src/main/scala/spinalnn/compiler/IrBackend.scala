@@ -31,9 +31,14 @@ import scala.collection.mutable
 object IrBackend {
 
   /** True when the line-buffer conv core should be used for a given conv layer.
-    * QLinearConvLineCore supports all kernelH >= 1 (including 1×1 streaming).
-    * macParallelism must be 1 (line core constraint). */
+    * QLinearConvLineCore supports all kernelH >= 1 (including 1×1 streaming) and N>1.
+    *
+    * WeightStream always routes through the line-buffer core: the full-buffer QLinearConvCore
+    * stores H×W×C_in activations in N-banked BRAMs, consuming far more RAM10K than the device
+    * has. QLinearConvLineCore uses (kH-1) row-buffer rows instead (zero rows for 1×1), which
+    * is proportional to a single row, not the full feature map. */
   private def useLineBuffer(target: TargetConfig, s: LayerSpec.Conv, resolvedN: Int): Boolean = {
+    if (target.options.weightMode == WeightStream) return true
     target.options.memoryStrategy match {
       case MemFullBuffer => false
       case MemLineBuffer => true
@@ -45,15 +50,20 @@ object IrBackend {
     }
   }
 
-  /** True when the line-buffer MaxPool core should be used for a given pool layer. */
+  /** True when the line-buffer MaxPool core should be used for a given pool layer.
+    *
+    * Under MemAuto the line-buffer core is always preferred for non-degenerate
+    * pooling (poolH > 1).  The full-buffer MaxPoolCore buffers the entire
+    * H×W×C feature map (e.g. pool1 at 112×112×96 = 9.6 Mbit ≈ 942 RAM10K);
+    * the line-buffer core stores only kH rows (e.g. 3 × 112 × 96 = 25 RAM10K
+    * at N=1, and fewer when N > 1 thanks to wide packing).  The BRAM budget
+    * check is intentionally omitted for MemAuto: the full-buffer pool can blow
+    * through the entire device BRAM in a single layer. */
   private def useMaxPoolLineBuffer(target: TargetConfig, s: LayerSpec.MaxPool): Boolean = {
     if (s.poolH <= 1) return false  // degenerate pool: line buffer not beneficial
     target.options.memoryStrategy match {
       case MemFullBuffer => false
-      case MemLineBuffer => true
-      case MemAuto =>
-        val bufBits = s.inputShape.size.toLong * 8L
-        !target.fitsInBram(bufBits)
+      case MemLineBuffer | MemAuto => true
     }
   }
 

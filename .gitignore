@@ -39,3 +39,9 @@ benchmark_*/
 
 # Generated Params (produced by tools/onnx_to_params.py -- do not commit)
 src/main/scala/spinalnn/generated/
+
+# Editor / Temporary backups
+*.swp
+*.swo
+*~
+.history/

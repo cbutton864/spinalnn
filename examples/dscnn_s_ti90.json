@@ -1,0 +1,12 @@
+{
+  "device":         "Ti90M225",
+  "model":          "models/dscnn_s-int8.onnx",
+  "emitLogits":     true,
+  "buildMode":      "flat",
+  "macParallelism": "8",
+  "weightMode":     "stream",
+  "memoryStrategy": "line",
+  "bramBudgetPct":  80,
+  "targetFreqMhz":  150,
+  "outputDir":      "rtl/dscnn_s_ti90"
+}

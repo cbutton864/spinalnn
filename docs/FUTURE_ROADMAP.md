@@ -114,20 +114,41 @@ Results: see `docs/BENCHMARKS_TITANIUM.md`.
 
 ---
 
-### 🟡 Phase 2 (NEXT): DepthwiseConv + DS-CNN-S
+### ✅ Phase 2 (DONE): DepthwiseConv + DS-CNN-S
 **Goal**: Add `DepthwiseConvCore`/`DepthwiseConvPlugin`; compile and simulate DS-CNN-S
 (~24 KB INT8) from ARM ML-examples TFLite export. First BRAM-only non-vision benchmark.
 
-- [ ] `DepthwiseConvCore` — grouped conv, groups = C_in, weight `[C, 1, kH, kW]`
-- [ ] DS-CNN-S ONNX export from ARM ML-examples
-- [ ] End-to-end sim + accuracy check vs 92.2% reference
-- [ ] P&R on Ti90 (smallest LPDDR4x part); report utilization + latency
+- [x] `DepthwiseConvCore` — grouped conv, groups = C_in, weight `[C, 1, kH, kW]`
+- [x] DS-CNN-S ONNX export from ARM ML-examples
+- [x] End-to-end sim + accuracy check vs 92.2% reference
+- [x] P&R on Ti90 (smallest LPDDR4x part); report utilization + latency
+- [ ] **Open:** DS-CNN-S N=16 + P=2 on Ti90 (next P&R run; expected ~1.5× over N=8 P=1)
 
 ---
 
-### 🟠 Phase 2.5 (MEDIUM): LPDDR4x Weight Streaming
+### 🟠 Phase 2.5: LPDDR4x Weight Streaming
 **Goal**: AXI4 weight-DMA controller reading from Titanium embedded LPDDR4x into
 double-buffered on-chip BRAM staging. Enables models > on-chip BRAM (QARepVGG, MobileNet).
+
+**Phase 1 (512-bit DMA beats) — DONE 2026-06-15:**
+- [x] `WeightDmaCore` outputs `Stream[Bits(512 bits)]` per fire (was `Stream[SInt(8 bits)]`)
+- [x] All conv/linear cores drain N bytes/cycle from 512-bit shift register
+- [x] N-banked weight BRAMs (N=16 lanes) for parallel load; `stepsPerBeat = 64/N`
+- [x] `effectiveWeightMode` fallback to WeightRom when `64 % N ≠ 0` (e.g. conv1 C_in=3)
+- [x] IrBackend: WeightStream always routes through `QLinearConvLineCore` (no full-frame BRAM)
+- [x] IrBackend: MaxPool under MemAuto always uses line-buffer core (eliminates ~1,840 RAM10K)
+- [x] P&R validated: 176 MHz, 510/512 DSP, 625/1280 RAM10K, ~3.1 FPS (conv1 N=1; N=3 override pending)
+- [x] `WeightStreamN4Test` sim test passes (64/64 outputs match reference)
+- [x] `GenSqueezeNetBench` utility generates ws_n1 / ws_n16 RTL variants
+
+**Phase 2 (DMA clock domain) — PENDING:**
+- [ ] PLL-derived synchronous clocks: DMA domain (fast) vs compute domain (150 MHz)
+- [ ] `StreamFifoCC` bridge between domains in `WeightDmaPlugin`
+- [ ] `BuildEnv` carries `dmaClockDomain` + `computeClockDomain`
+
+**Phase 3 (double-buffer) — PENDING:**
+- [ ] Ping-pong weight BRAMs: load channel K+1 while computing K
+- [ ] Hides load latency on layers where load ≥ compute cycles
 
 ---
 
