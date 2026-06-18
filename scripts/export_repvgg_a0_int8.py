@@ -12,6 +12,7 @@ Usage:
     python scripts/export_repvgg_a0_int8.py [--output models/repvgg_a0-int8.onnx] [--num-cal 50]
 """
 import argparse
+import glob
 import os
 import numpy as np
 import torch
@@ -31,15 +32,47 @@ PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
 class RandomCalibReader(CalibrationDataReader):
     """Feed random normal tensors as calibration data.
 
-    Calibration quality is poor compared to real ImageNet images, but scale/
-    zero-point estimates are structurally valid and sufficient for compiler
-    validation purposes.
+    WARNING: random-noise activations have a wildly different distribution
+    from real images (which are spatially smooth / low-frequency), so the
+    output-quantization scale derived from this calibration is degenerate
+    in practice (collapses many classes to the same logit). Prefer
+    ImageCalibReader when any real images are available.
     """
     def __init__(self, input_name: str, n: int = 50):
         self._iter = iter([
             {input_name: np.random.randn(1, 3, 224, 224).astype(np.float32)}
             for _ in range(n)
         ])
+
+    def get_next(self):
+        return next(self._iter, None)
+
+
+class ImageCalibReader(CalibrationDataReader):
+    """Feed real preprocessed images as calibration data.
+
+    Uses the same RGB / [0,1] / ImageNet-mean-std preprocessing the model
+    was trained with, so calibration sees activation statistics representative
+    of real inference inputs (unlike RandomCalibReader's Gaussian noise).
+    """
+    def __init__(self, input_name: str, image_paths):
+        from PIL import Image
+        mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+        std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
+        samples = []
+        for path in image_paths:
+            img = Image.open(path).convert("RGB")
+            w, h = img.size
+            scale = 256 / min(w, h)
+            img = img.resize((max(224, int(w * scale)), max(224, int(h * scale))), Image.BILINEAR)
+            w2, h2 = img.size
+            left, top = (w2 - 224) // 2, (h2 - 224) // 2
+            img = img.crop((left, top, left + 224, top + 224))
+            arr = np.array(img, dtype=np.float32) / 255.0
+            arr = (arr - mean) / std
+            arr = arr.transpose(2, 0, 1)[np.newaxis].astype(np.float32)
+            samples.append({input_name: arr})
+        self._iter = iter(samples)
 
     def get_next(self):
         return next(self._iter, None)
@@ -64,7 +97,11 @@ def main():
     )
     parser.add_argument(
         "--num-cal", type=int, default=50,
-        help="Number of random calibration samples (default: 50)",
+        help="Number of random calibration samples (default: 50, ignored if --cal-images-dir given)",
+    )
+    parser.add_argument(
+        "--cal-images-dir", default=None,
+        help="Directory of real images (jpg/png) to use for calibration instead of random noise",
     )
     args = parser.parse_args()
 
@@ -126,14 +163,27 @@ def main():
 
     _oq.ONNXQuantizer._requantize_weight = _patched_requantize
 
-    print(f"[4/4] Static PTQ (QLinearConv, per-channel, {args.num_cal} random samples) ...")
     sess_fp32 = onnxruntime.InferenceSession(prep_path, providers=["CPUExecutionProvider"])
     in_name = sess_fp32.get_inputs()[0].name
+
+    if args.cal_images_dir:
+        image_paths = sorted(
+            glob.glob(os.path.join(args.cal_images_dir, "*.jpg"))
+            + glob.glob(os.path.join(args.cal_images_dir, "*.jpeg"))
+            + glob.glob(os.path.join(args.cal_images_dir, "*.png"))
+        )
+        if not image_paths:
+            raise ValueError(f"No images found in {args.cal_images_dir}")
+        print(f"[4/4] Static PTQ (QLinearConv, per-channel, {len(image_paths)} real images) ...")
+        calib_reader = ImageCalibReader(in_name, image_paths)
+    else:
+        print(f"[4/4] Static PTQ (QLinearConv, per-channel, {args.num_cal} random samples) ...")
+        calib_reader = RandomCalibReader(in_name, args.num_cal)
 
     quantize_static(
         prep_path,
         args.output,
-        RandomCalibReader(in_name, args.num_cal),
+        calib_reader,
         quant_format=QuantFormat.QOperator,   # QLinearConv — matches SpinalNN frontend
         activation_type=QuantType.QUInt8,     # unsigned activations (post-ReLU range 0..255)
         weight_type=QuantType.QInt8,          # signed weights per output channel

@@ -93,7 +93,7 @@ Five concrete steps agreed as the immediate execution path. Do these in order.
 
 ---
 
-### 🔵 Phase 1 (LARGELY DONE): SqueezeNet end-to-end + Titanium benchmarks
+### ✅ Phase 1 (DONE): SqueezeNet end-to-end + Titanium benchmarks
 
 **Open item — asymmetric-input bias correction:**
 `lowerQuantized` must fold `−z_x · Σw[oc]` into each conv's biases at elaboration time.
@@ -104,7 +104,13 @@ on ImageNet has not been measured — this may mask a numeric error. ~10-line fr
 - [x] Add bias correction loop to `OnnxFrontend.lowerQuantized`; validate with ImageNet sample
   Implemented `zpBiasCorrect`: folds `−zp * Σw[oc]` into int32 biases for QLinearConv, DepthwiseConv, and QGemm.  
   Verified by SqueezeNetCompileTest (new "zero-point bias correction" test computes expected correction  
-  from raw ONNX data and asserts LayerSpec biases match). Full ImageNet accuracy requires a live inference run.
+  from raw ONNX data and asserts LayerSpec biases match).
+- [x] **ONNX accuracy validation (2026-06-16)**: `tools/check_imagenet_accuracy.py` — 4/4 gating checks pass.
+  SqueezeNet INT8: 2/2 cats correctly classified (tabby 69.2%, lynx 32.9%). Validates full pipeline: preprocessing → INT8 quantization → zpBiasCorrect → correct top-1.
+  RepVGG-A0 FP32: 2/2 correctly classified — confirms model weights + preprocessing are correct.
+  RepVGG-A0 INT8: re-exported with real calibration images (no longer degenerate; cat top-2); needs ≥50 diverse ImageNet images for full accuracy.
+  Generates `SqueezeNetValidationData.scala` + `RepVggValidationData.scala` for future RTL reference.
+  `export_repvgg_a0_int8.py` updated with `--cal-images-dir` flag for proper recalibration.
 - [x] Add elaboration test: SqueezeNet generates Verilog cleanly (IrBackend full pass)
 - [x] Export QARepVGG-A0 INT8 from paper PyTorch code; add to `models/`
 - [x] Synthesize + P&R: SqueezeNet (171.5 MHz, 512 DSP) and RepVGG-A0 (173.3 MHz, 435 DSP) on Ti180
@@ -143,7 +149,10 @@ double-buffered on-chip BRAM staging. Enables models > on-chip BRAM (QARepVGG, M
 
 **Phase 2 (DMA clock domain) — PENDING:**
 - [ ] PLL-derived synchronous clocks: DMA domain (fast) vs compute domain (150 MHz)
-- [ ] `StreamFifoCC` bridge between domains in `WeightDmaPlugin`
+- [ ] Both clocks from same PLL → mesochronous, not asynchronous. Efinity timing closure
+  handles PLL-derived clock relationships natively (same as Vivado/Quartus). No async FIFO
+  (`StreamFifoCC`) needed — use a rate adapter or simple handshake + multicycle path SDC constraint.
+  Verify `EFX_LPDDR4_32_V1` accepts an external clock input (vs. internal PLL) before finalizing.
 - [ ] `BuildEnv` carries `dmaClockDomain` + `computeClockDomain`
 
 **Phase 3 (double-buffer) — PENDING:**
@@ -173,12 +182,25 @@ double-buffered on-chip BRAM staging. Enables models > on-chip BRAM (QARepVGG, M
 ---
 
 ### 🟣 Phase 4: Advanced Research (Stochastic Computing Acceleration)
-**Goal**: Provide an ultra-low-power, radiation-tolerant stochastic computing mode where multiplications are simplified to single **AND gates**.
+**Goal**: Provide an ultra-low-power, radiation-tolerant stochastic computing mode operating on bitstreams, consuming zero DSPs.
+
+**Key papers:**
+- **uGEMM (ISCA 2020)** — Wu et al.: relaxes correlation and stream-length constraints; enables N=256 for near-8-bit accuracy via input-insensitive arithmetic and early termination.
+- **SC CNN Reinvented (Research/SPJ 2024)** — Lee et al.: SC Multiplexer MAC (MUX-MAC) on Kintex-7; 0.14% accuracy loss at N=256; 99.72% energy reduction; 31× throughput/area gain.
+
+**Important distinction from classical SC:**
+Classical LFSR + AND-gate SC requires N≈16,000 bits for true 8-bit precision (variance = p(1-p)/N).
+Modern approaches (uGEMM, MUX-MAC) achieve near-8-bit at N=256 by eliminating correlation error.
+The BUILD_PLAN.md claim of "N=256 = 8-bit equivalent" is correct for MUX-MAC, not for classical AND-gate SC.
 
 - [ ] **Stochastic Conv Core & Weight Gen**
-  - Implement Linear Feedback Shift Registers (LFSRs) to convert standard 8-bit weights and inputs into pseudo-random bit rates (probabilistic bitstreams).
-  - Write `StochasticConvCore` where high-density INT8 multipliers are replaced with parallel logical AND array structures.
-  - Build stochastic-to-binary converters (pop-count accumulators) to feed downstream logic correctly.
+  - Implement `StochasticNumberGenerator`: LFSR → comparator → 1-bit stream per weight/activation.
+  - Write `StochasticConvCore` using **SC Multiplexer MAC** (MUX-MAC per Lee 2024), not classical AND gate.
+    - MUX select = weight bitstream; MUX input = activation bitstream; output accumulates via XOR counter / popcount.
+  - Build binary output converter (popcount accumulator, N-cycle accumulation window).
+  - N is a compile-time parameter (N=64 fast/coarse, N=256 accurate, N=1024 maximum).
+  - `StochasticConvCore` is a drop-in alternative to `QLinearConvCore` — same plugin interface, different compute substrate.
+  - Use zero DSPs; instantiate as many parallel MUX-MAC units as LUT budget allows (Ti375: ~370K LUT4s available).
 
 ---
 

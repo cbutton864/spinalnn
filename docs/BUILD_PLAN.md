@@ -42,7 +42,9 @@ One operator per Core + Plugin. Composed in Params. Generated from ONNX.
 
 - [x] Add `ActivationDType` config object to `TensorTypes.scala` (bits, minVal, maxVal, adjBits)
 - [x] Eliminate hardcoded `8 bits`, `-128`, `127`, `9 bits` across all Cores
+- [ ] **W4A8 DSP tiling** — 4-bit weights packed 2-per-byte in LPDDR4x; two W4A8 MACs per DSP via cascade tiling (ACIN/BCIN chain). 2× throughput on body layers at same DSP count; <1% accuracy loss. INT8 activations unchanged — inter-layer interface stays the same. Requires mixed-precision ONNX export (QONNX or per-layer quant override in OnnxFrontend).
 - [ ] Long-term: parameterise `Activation(bits)` and thread through `QuantParams` when a second precision (INT4, BFloat16, stochastic) is actually needed -- interface change, defer until then
+- [ ] **StochasticConvCore** (Phase 4 research) — MUX-MAC SC architecture per Lee et al. 2024; N=256 bitstream; zero DSP cost; uses LUT fabric. See FUTURE_ROADMAP.md §Phase 4 and tinyml_reference.md for paper references.
 
 ### Stage 5: Model Integration
 *ONNX parser automates topology and weight generation from any quantized model.*

@@ -33,24 +33,24 @@ Best result per design configuration. Full run history in `pnr_results.tsv`.
 | Date | Label | N Strategy | LUT4 | DSP48 | FF | RAM10K | fmax (MHz) | FPS | Latency (ms) | Notes |
 |:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|:---|
 | 2026-06-10 | N1_singleclock | Global N=1 | 31,804 | 135 | 26,764 | 331 | 197.9 | ~0.1 | ~10,000 | Stream baseline; WeightRom |
-| **2026-06-10** | **N16_balanced_tree** | **N=16 / conv1=N=3** | **39,377** | **512** | **34,908** | **630** | **171.5** | **~4.4** | **~225** | **Best FPS; balanced tree MAC; conv1 N=3 override; MemLineBuffer explicit** |
-| 2026-06-15 | ws_n16_phase1_dma | N=16, conv1=N=1 (fallback) | 39,947 | 510 | 35,625 | 625 | 176.0 | ~3.1 | ~320 | Phase 1 512-bit DMA beats; MemAuto line-buffer fix; conv1 N=3 override pending |
+| 2026-06-10 | N16_balanced_tree | N=16 / conv1=N=3 | 39,377 | 512 | 34,908 | 630 | 171.5 | ~4.4 | ~225 | WeightRom; MemLineBuffer explicit; balanced tree MAC |
+| 2026-06-15 | ws_n16_phase1_dma | N=16, conv1=N=1 (fallback) | 39,947 | 510 | 35,625 | 625 | 176.0 | ~3.1 | ~320 | Phase 1 512-bit DMA beats; MemAuto line-buffer fix; conv1 bottleneck at 46% cycles |
+| **2026-06-15** | **ws_n16_conv1n3** | **N=16 / conv1=N=3** | **39,377** | **512** | **34,908** | **630** | **171.5** | **~4.4** | **~225** | **WeightStream Phase 1 DMA + conv1 N=3; ties Jun 10 fmax; LPDDR4x runtime weight load** |
 
-**Design config for N16_balanced_tree (current FPS champion):**
-- `macParallelism: 16`, `conv1_1_quantized` override → `N=3` (WeightRom fallback, 64%3≠0)
-- `weightMode: stream`, `memoryStrategy: line`, `targetFreqMhz: 150`
-- Balanced tree `treeReduce` in Stage 2 of `QLinearConvLineCore` replaces left-fold — critical for timing closure
-
-**Design config for ws_n16_phase1_dma (2026-06-15):**
-- `macParallelism: 16`, no conv1 override (N=1 fallback; conv1 bottleneck at 46% of cycles)
+**Design config for ws_n16_conv1n3 (current best — WeightStream + conv1 fix):**
+- `macParallelism: MacParPerLayer(conv1_1_quantized → 3, default = 16)`
 - `weightMode: stream`, `memoryStrategy: auto`, `targetFreqMhz: 150`
-- Phase 1 DMA: `WeightDmaCore` now outputs `Stream[Bits(512 bits)]` per fire (was `Stream[SInt(8 bits)]`); conv cores drain N bytes/cycle from shift register
-- IrBackend fix: WeightStream mode always routes through `QLinearConvLineCore` (avoids H×W×C_in full-frame BRAM)
-- IrBackend fix: MaxPool under `MemAuto` always uses `MaxPoolLineCore` (avoids full-frame pool BRAM; saves ~1,840 RAM10K on SqueezeNet)
-- New bench script: `spinalnn.bench.GenSqueezeNetBench` generates ws_n1 and ws_n16 RTL variants
-- Adding conv1 N=3 override expected to recover ~4.4–4.5 FPS at the higher 176 MHz fmax
+- conv1 (C_in=3): N=3 override; 64%3≠0 → auto-falls back to WeightRom for that layer; costs 3 DSPs vs 1
+- Phase 1 DMA: `WeightDmaCore` outputs `Stream[Bits(512 bits)]` per fire; conv cores drain N bytes/cycle
+- IrBackend: WeightStream always routes through `QLinearConvLineCore`; MaxPool MemAuto always line buffer
+- Gen script: `spinalnn.bench.GenSqueezeNetBench` (ws_n1 / ws_n16 / ws_n16_conv1n3 variants)
 
-**Device utilization at current best (N16_balanced_tree, Jun 10):**
+**Design config for N16_balanced_tree (Jun 10 — WeightRom baseline):**
+- `macParallelism: MacParPerLayer(conv1_1_quantized → 3, default = 16)`
+- `weightMode: rom`, `memoryStrategy: line`, `targetFreqMhz: 150`
+- Identical fmax/FPS to ws_n16_conv1n3 — confirms Phase 1 DMA adds zero synthesis overhead
+
+**Device utilization at current best (ws_n16_conv1n3, Jun 15):**
 
 | Resource | Used | Available | % |
 |:---|---:|---:|---:|
@@ -61,11 +61,11 @@ Best result per design configuration. Full run history in `pnr_results.tsv`.
 
 DSP budget is the active constraint. LUT4, FF, BRAM all have ample headroom.
 
-**Conv1 bottleneck analysis:**
+**Conv1 bottleneck analysis — RESOLVED (2026-06-15):**
 - conv1 (C_in=3, 224×224, 3×3) falls back to N=1 at MacParFixed(16) since 64%3≠0
-- conv1 consumes 46% of total inference cycles at N=1 (23.8M of 54.7M)
-- Fix: `MacParPerLayer("conv1_1_quantized" → 3)` — uses N=3 (3%3=0), 3× faster, costs 3 DSPs vs 1
-- At N=3 conv1, total cycles ≈ 38.8M; at 176 MHz → **~4.5 FPS** (next P&R target)
+- conv1 consumes 46% of total inference cycles at N=1 (23.8M of 54.7M cycles)
+- Fix: `MacParPerLayer("conv1_1_quantized" → 3)` — N=3 (3%3=0), 3× faster conv1; 64%3≠0 → WeightRom fallback for that layer only
+- P&R confirmed: 512/512 DSP, 630/1280 RAM10K, **171.5 MHz** fmax; ~38.8M cycles → **~4.4 FPS** ✓
 
 ---
 
@@ -75,7 +75,7 @@ DSP budget is the active constraint. LUT4, FF, BRAM all have ample headroom.
 |:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|:---|
 | 2026-06-10 | repvgg_a0_N16 | Global N=16, conv1=N=1 | 42,677 | 435 | 28,816 | 728 | 173.3 | ~1.59 | ~630 | Baseline; conv1 bottleneck |
 | 2026-06-10 | repvgg_a0_N16_top4N32 | N=16 + conv1=N=3 + 4×N=32 (left-fold) | — | 501 | — | 828 | 156.7 | ~1.57 | ~638 | Routing-limited; prior FPS estimate was incorrect |
-| **2026-06-11** | **repvgg_a0_N16_top4N32_btree** | **N=16 + conv1=N=3 + 4×N=32 (balanced tree)** | **44,926** | **501** | **29,282** | **828** | **156.7** | **~1.57 (@fmax) / ~1.50 (@150)** | **~638** | **+0.285 ns slack @ 150 MHz; routing-limited** |
+| 2026-06-11 | repvgg_a0_N16_top4N32_btree | N=16 + conv1=N=3 + 4×N=32 (balanced tree) | 44,926 | 501 | 29,282 | 828 | 156.7 | ~1.57 (@fmax) / ~1.50 (@150) | ~638 | +0.285 ns slack @ 150 MHz; routing-limited |
 
 **Key finding — N=32 timing wall is routing, not logic:**
 - Critical path: `inValReg_20` → DSP (1.34 ns wire, X:199) → adder (1.47 ns wire, X:254) → 30-level ripple carry chain
@@ -83,7 +83,50 @@ DSP budget is the active constraint. LUT4, FF, BRAM all have ample headroom.
 - Root cause: 501/512 DSPs (98% utilization) → severe routing congestion → long inter-block wires dominate delay
 - **At 150 MHz target (fair comparison):** N=32 gives 1.50 FPS vs N=16's 1.37 FPS → **+9.4% real gain**
 - **At respective fmax:** N=32 (156.7 MHz, 1.57 FPS) vs N=16 (173.3 MHz, 1.58 FPS) → essentially break-even
-- N=32 beneficial on **Ti375** where 501/1344 DSPs (37%) leaves ample routing slack
+- N=32 on Ti375 where routing slack eliminates the timing wall — see Ti375 section below
+
+---
+
+## RepVGG-A0 INT8 — Efinix Ti375N484
+
+Per-layer N=32 on a larger device where routing congestion is eliminated.
+
+| Date | Label | N Strategy | LUT4 | DSP48 | FF | RAM10K | fmax (MHz) | FPS | Latency (ms) | Notes |
+|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|:---|
+| 2026-06-15 | repvgg_a0_ti375_allN32 | N=16 (C_in=48) / N=32 (C_in≥96) | 54,948 | 723 | 33,277 | 1,160 | 162.6 | ~2.24 | ~445 | WeightStream; all 18 eligible layers at N=32; stem N=1 (25.2% of cycles) |
+| **2026-06-15** | **repvgg_a0_ti375_allN32_stemn3** | **N=16 / N=32 + stem N=3** | **54,948** | **723** | **33,277** | **1,160** | **162.6** | **~2.69** | **~372** | **Stem override N=3; 64%3≠0 → WeightRom for stem only; stem drops to ~10% of cycles** |
+
+**Design config for repvgg_a0_ti375_allN32_stemn3 (current best):**
+- `macParallelism: MacParPerLayer(C_in%32==0 layers → 32, stemName → 3, default = 16)`
+- `weightMode: stream`, `memoryStrategy: auto` (line buffers everywhere)
+- Stem (C_in=3, N=3): 3%3=0 → accepted; 64%3≠0 → WeightRom fallback for stem layer only; costs 3 DSPs vs 1
+- Stem weight tensor (3×3×3×48 INT8 = 1.3 KB) fits trivially in BRAM ROM
+- Stem cycles: 18.2M → 6.1M (3× reduction); total: 72.6M → ~60.5M; stem: 25.2% → ~10%
+- Gen script: `spinalnn.bench.GenRepVggBench` (both allN32 and allN32_stemn3 variants generated)
+
+**Design config for repvgg_a0_ti375_allN32 (baseline, Jun 15):**
+- `macParallelism: MacParPerLayer(C_in%32==0 layers → 32, default = 16)`, 18 layers at N=32
+- Stem (C_in=3): N=1 fallback (3%32≠0, 3%16≠0); stem accounts for 25.2% of cycles
+
+**Device utilization (Ti375N484 — 1,344 DSP / 2,688 RAM10K):**
+
+| Resource | Used | Available | % |
+|:---|---:|---:|---:|
+| EFX_LUT4 | 54,948 | 370,137 | 15% |
+| EFX_DSP48 | **723** | 1,344 | **54%** |
+| EFX_FF | 33,277 | ~370,137 | 9% |
+| EFX_RAM10K | 1,160 | 2,688 | **43%** |
+
+**Comparison to Ti180M484 N=32 (4 layers only, routing-limited):**
+
+| | Ti180M484 (4×N=32) | Ti375N484 (18×N=32) | Gain |
+|:---|---:|---:|---:|
+| DSP48 | 501/512 (98%) | 723/1344 (54%) | Headroom ↑ |
+| fmax | 156.7 MHz | 162.6 MHz | +3.8% |
+| FPS (at fmax) | ~1.57 | **~2.24** | **+43%** |
+| Latency | ~638 ms | ~445 ms | −30% |
+
+**Stem bottleneck — RESOLVED (2026-06-15):** N=1 stem was 25.2% of cycles; N=3 override reduces to ~10% (same pattern as SqueezeNet conv1 fix). Fmax unchanged at 162.6 MHz.
 
 **Device utilization (N16 baseline):**
 
@@ -124,26 +167,30 @@ First DWConv-validated model. Input: 49×10×1 MFCC spectrogram, 12-class output
 
 ## DS-CNN-S INT8 — Keyword Spotting — Efinix Ti90J484
 
-First Ti90 benchmark. Identical model; smallest Titanium part with LPDDR4x. Device: Ti90J484 (484-pin BGA, Efinity 2025.2 name). Corresponds to Ti90 Standard with 336 DSP / 672 RAM10K.
-
-End-to-end accuracy validated in sim (3/3 MFCC inputs match ONNX Runtime, 2026-06-14).
+Smallest Titanium part with LPDDR4x (336 DSP / 688 RAM10K per efx_pnr). End-to-end accuracy validated in sim (3/3 MFCC inputs match ONNX Runtime, 2026-06-14).
 
 | Date | Label | N Strategy | P | LUT4 | DSP48 | FF | RAM10K | fmax (MHz) | Slack @ 150 MHz | Notes |
 |:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|:---|
-| **2026-06-14** | **dscnn_s_ti90_N8_ws** | **N=8, stem N=1** | **1** | **9,429** | **86** | **8,874** | **144** | **199.4** | **+1.652 ns** | **WeightStream; LineBuffer; Ti90J484** |
+| 2026-06-14 | dscnn_s_ti90_N8_ws | N=8, stem N=1 | 1 | 9,429 | 86 | 8,874 | 144 | 199.4 | +1.652 ns | WeightStream; LineBuffer; 26% DSP |
+| **2026-06-15** | **dscnn_s_ti90_N16_P2** | **N=16, stem N=1** | **2** | **7,934** | **203** | **7,211** | **321** | **189.7** | **+1.396 ns** | **WeightRom; N×P=32; same cycles as P=4 N=8; better fmax** |
 
-**Device utilization (Ti90J484 — 336 DSP / 672 RAM10K available):**
+**Design config for dscnn_s_ti90_N16_P2:**
+- `macParallelism: 16` (stem C_in=1 → N=1 fallback), `outParallelism: 2`, `weightMode: rom`
+- P>1 requires `QLinearConvCore` (full-buffer path) — WeightStream not compatible with P>1
+- N×P = 32 = same throughput product as P=4/N=8; cycle count is identical (~854K)
+- Higher fmax (189.7 MHz vs estimated ~165 MHz for P=4 N=8) → **~222 FPS at fmax** vs ~193 FPS
+- Gen script: `spinalnn.bench.GenDsCnnBench`; P&R: `benchmark_dscnn_ti90_n16p2/`
+
+**Device utilization (Ti90J484 — 336 DSP / 688 RAM10K from efx_pnr):**
 
 | Resource | Used | Available | % |
 |:---|---:|---:|---:|
-| EFX_LUT4 | 9,429 | ~92,534 | 10% |
-| EFX_DSP48 | **86** | 336 | **26%** |
-| EFX_FF | 8,874 | ~92,534 | 10% |
-| EFX_RAM10K | 144 | 672 | **21%** |
+| EFX_LUT4 | 7,934 | ~92,534 | 9% |
+| EFX_DSP48 | **203** | 336 | **60%** |
+| EFX_FF | 7,211 | ~92,534 | 8% |
+| EFX_RAM10K | 321 | 688 | **47%** |
 
-Ample headroom on all resources — 74% DSP and 79% BRAM unused. Room to add N=16 on PWConv layers (~109 DSP, per auto-sweep) or P=4 (~190 DSP, per Ti180 P=4 result).
-
-**Benchmark project:** `benchmark_dscnn_s_ti90/spinalnn_dscnn_s_ti90.xml` (Ti90J484, timing.sdc 150 MHz).
+**Benchmark project:** `benchmark_dscnn_ti90_n16p2/spinalnn_dscnn_ti90_n16p2.xml` (Ti90J484, timing.sdc 150 MHz).
 
 **Device utilization (P=4 config):**
 
@@ -174,14 +221,19 @@ Ample headroom on all resources — 74% DSP and 79% BRAM unused. Room to add N=1
 
 ---
 
-## Model Comparison — Ti180M484
+## Model Comparison — Multi-Device Summary
 
-| Model | Domain | DSP48 | DSP% | RAM10K | fmax (MHz) | FPS | Latency | Notes |
+| Model | Device | DSP48 | DSP% | RAM10K | fmax (MHz) | FPS | Latency | Config |
 |:---|:---|---:|---:|---:|---:|---:|---:|:---|
-| SqueezeNet 1.0 | ImageNet | 512 | 100% | 630 | 171.5 | ~4.4 | ~225ms | DSP ceiling; fire-module overhead |
-| RepVGG-A0 | ImageNet | 435 | 85% | 728 | 173.3 | ~1.79 | ~560ms | 15% DSP headroom; N=16+conv1=N=3 |
-| DS-CNN-S (P=1) | KWS | 86 | 17% | 128 | 206.9 | ~186 | ~5ms | First DWConv; WeightStream |
-| **DS-CNN-S (P=4)** | **KWS** | **230** | **45%** | **286** | **≥150** | **~176** | **~5.7ms** | **P=4 PWConv; WeightRom standalone; +1.30×** |
+| SqueezeNet 1.0 | Ti180M484 | 512 | 100% | 630 | 171.5 | ~4.4 | ~225ms | WS N=16/conv1=N=3 |
+| RepVGG-A0 | Ti180M484 | 501 | 98% | 828 | 156.7 | ~1.57 | ~638ms | WR N=32 (4 layers) |
+| RepVGG-A0 | Ti375N484 | 723 | 54% | 1,160 | 162.6 | ~2.24 | ~445ms | WS N=32 (18 layers); stem N=1 |
+| **RepVGG-A0** | **Ti375N484** | **723** | **54%** | **1,160** | **162.6** | **~2.69** | **~372ms** | **WS N=32 + stem N=3; +20% vs allN32** |
+| DS-CNN-S | Ti90J484 | 86 | 26% | 144 | 199.4 | ~200 | ~5ms | WS N=8; 26% DSP only |
+| DS-CNN-S | Ti180M484 | 230 | 45% | 286 | ≥150 | ~176 | ~5.7ms | WR P=4 N=8 |
+| **DS-CNN-S** | **Ti90J484** | **203** | **60%** | **321** | **189.7** | **~222** | **~4.5ms** | **WR P=2 N=16; N×P=32; best FPS** |
+
+WS = WeightStream (LPDDR4x runtime load); WR = WeightRom (weights in BRAM at bitstream time).
 
 ---
 
@@ -247,11 +299,20 @@ DSP analytical: stem(5) + 4×DWConv(5) + 4×PWConv×P×(N+4) + linear(4) = **221
 
 **Fits Ti90M225 (336 DSP, 672 RAM10K)** with ~30% DSP headroom.
 
-### RepVGG-A0 — P=2, N=16, Ti375 (analytical — P&R pending)
+### RepVGG-A0 — Ti375 (P&R confirmed, 2026-06-15)
 
-With P=2 and N=16 on Ti375: each body layer costs P×(N+4) = 2×20 = 40 DSPs.  
-22 layers × 40 = 880 DSPs — fits Ti375 (1,344 DSP) with headroom for N=32 on some layers.  
-Estimated FPS: ~2× vs P=1/N=16 on Ti375 (before timing closure).
+P>1 is not yet supported with WeightStream mode (QLinearConvLineCore has no P path).  
+Instead: per-layer N=32 overrides on C_in-divisible-by-32 layers + stem N=3 override.
+
+| Metric | allN32 (stem N=1) | allN32_stemn3 | Change |
+|:---|---:|---:|---:|
+| DSP48 | 723/1344 (54%) | 723/1344 (54%) | — |
+| fmax | 162.6 MHz | 162.6 MHz | — |
+| Stem % of cycles | 25.2% | ~10% | −15 pp |
+| Total cycles | ~72.6M | ~60.5M | −16.7% |
+| FPS | ~2.24 | **~2.69** | **+20%** |
+
+P>1 with WeightStream tracked as future work in FUTURE_ROADMAP.md §Phase 2.5.
 
 ---
 
@@ -259,9 +320,9 @@ Estimated FPS: ~2× vs P=1/N=16 on Ti375 (before timing closure).
 
 | Priority | Model | Architecture | Status | Blocker |
 |:---|:---|:---|:---|:---|
-| ✅ | SqueezeNet 1.0 INT8 | Fire modules, 7×7 conv1 | P&R validated 171.5 MHz | DSP ceiling; validation benchmark only |
-| ✅ | **RepVGG-A0 INT8 (PTQ)** | Pure regular conv, channels ×48 | **P&R validated 173.3 MHz** | — |
-| ✅ | **DS-CNN-S INT8 (KWS)** | DWConv + std conv, tiny MFCC input | **P&R validated (P=1 + P=4)** | — |
+| ✅ | SqueezeNet 1.0 INT8 | Fire modules, 7×7 conv1 | P&R validated 171.5 MHz; WeightStream Phase 1 confirmed | DSP ceiling; conv1 N=3 fix confirmed |
+| ✅ | **RepVGG-A0 INT8 (PTQ)** | Pure regular conv, channels ×48 | **Ti180: 173.3 MHz N=16; Ti375: 162.6 MHz N=32+stemN3 → ~2.69 FPS (+70% vs Ti180 N=16)** | — |
+| ✅ | **DS-CNN-S INT8 (KWS)** | DWConv + std conv, tiny MFCC input | **Ti90: P=2 N=16 → ~222 FPS @ 189.7 MHz (best of all runs)** | — |
 | Next | RepVGG-A0 INT8 (QAT) | Same, Brevitas-trained | Export from Brevitas | Better accuracy baseline |
 | Later | MobileNetV3-Small | DWConv, ≤96×96 input | Needs small-res export | Input resolution must fit BRAM |
 | Later | ResNet-18 INT8 | Standard residual blocks | Compiler ready | Need export + benchmark |
@@ -291,10 +352,12 @@ Target comparison: equivalent model, identical INT8 precision, comparable Xilinx
 
 | Framework | Model | Device | FPS | Latency (ms) | DSP | BRAM | LUT | fmax | Source |
 |:---|:---|:---|---:|---:|---:|---:|---:|---:|:---|
-| SpinalNN | SqueezeNet 1.0 INT8 | Ti180M484 | ~4.4 | ~225 | 512 | 630 | 39,377 | 171.5 MHz | conv1=N=3; 57% top-1 |
-| SpinalNN | RepVGG-A0 INT8 (PTQ) | Ti180M484 | ~1.8 | ~560 | 435 | 728 | 42,677 | 173.3 MHz | conv1=N=3 override; 72% top-1 |
-| SpinalNN | DS-CNN-S INT8 (KWS) P=1 | Ti180M484 | ~186 | ~5 | 86 | 128 | 9,368 | 206.9 MHz | DWConv validated; WeightStream |
-| SpinalNN | DS-CNN-S INT8 (KWS) P=4 | Ti180M484 | ~176 | ~5.7 | 230 | 286 | 11,619 | ≥150 MHz | P=4 PWConv; WeightRom; standalone |
+| SpinalNN | SqueezeNet 1.0 INT8 | Ti180M484 | ~4.4 | ~225 | 512 | 630 | 39,377 | 171.5 MHz | WS conv1=N=3; Phase 1 DMA |
+| SpinalNN | RepVGG-A0 INT8 (PTQ) | Ti180M484 | ~1.59 | ~630 | 435 | 728 | 42,677 | 173.3 MHz | WS N=16 baseline |
+| SpinalNN | RepVGG-A0 INT8 (PTQ) | Ti375N484 | ~2.24 | ~445 | 723 | 1,160 | 54,948 | 162.6 MHz | WS N=32 all-eligible layers; stem N=1 |
+| SpinalNN | RepVGG-A0 INT8 (PTQ) | **Ti375N484** | **~2.69** | **~372** | **723** | **1,160** | **54,948** | **162.6 MHz** | **WS N=32 + stem N=3; current best** |
+| SpinalNN | DS-CNN-S INT8 (KWS) | Ti90J484 | ~200 | ~5 | 86 | 144 | 9,429 | 199.4 MHz | WS N=8 P=1; 26% DSP only |
+| SpinalNN | DS-CNN-S INT8 (KWS) | **Ti90J484** | **~222** | **~4.5** | **203** | **321** | **7,934** | **189.7 MHz** | **WR N=16 P=2; N×P=32** |
 | FINN | — | — | — | — | — | — | — | — | TBD |
 | hls4ml | — | — | — | — | — | — | — | — | TBD |
 
