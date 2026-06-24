@@ -6,3 +6,11 @@ date	label	benchmark	ram_blocks	fmax_mhz
 2026-06-10_0841	repvgg_a0_N16	benchmark_repvgg_a0	728	173.310
 2026-06-10_1506	repvgg_a0_N16_top4N32	benchmark_repvgg_a0	828	156.691
 2026-06-10_2214	dscnn_s_N8	benchmark_dscnn_s	128	206.868
+2026-06-20_2131	mnist_w4a8_int8_n1	benchmark_mnist_w4a8_int8_n1	26	296.648
+2026-06-20_2131	mnist_w4a8_int8_n8	benchmark_mnist_w4a8_int8_n8	34	252.270
+2026-06-20_2131	mnist_w4a8_w4a8_n8	benchmark_mnist_w4a8_w4a8_n8	44	254.842
+2026-06-20_2152	squeezenet_sqz_int8_n16_ws	benchmark_sqz_int8_n16_ws	629	173.792
+2026-06-20_2152	squeezenet_sqz_w4a8_n16_wr	benchmark_sqz_w4a8_n16_wr	1214	184.094
+2026-06-21_1516	sc_N255_ti180	benchmark_mnist_sc_n255	21	143.968
+2026-06-21_2209	sc_N255_actbuf_ti180	benchmark_mnist_sc_n255	27	177.620
+2026-06-21_2210	sc_N255_actbuf_ti60	benchmark_mnist_sc_n255_ti60	27	176.305

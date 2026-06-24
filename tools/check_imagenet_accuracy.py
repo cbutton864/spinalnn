@@ -236,6 +236,7 @@ def check_model(model_path, model_name, preprocessor_key, images, labels, quanti
 
 def write_scala_validation_data(class_name, filename, results, model_name):
     """Write a Scala validation data object with int8 input bytes + expected labels."""
+    import base64
     results = [r for r in results if "int8_bytes" in r]
     if not results:
         return
@@ -248,13 +249,26 @@ def write_scala_validation_data(class_name, filename, results, model_name):
         f"object {class_name} {{",
     ]
     for i, r in enumerate(results):
-        bytes_str = ", ".join(str(b) for b in r["int8_bytes"])
+        # Base64 avoids the JVM <clinit> 64KB bytecode limit from 150K-byte inline literals.
+        # Split into ≤50K-char chunks to also stay under the 65535-byte UTF8 constant pool limit.
+        uint8_data = bytes((b + 256) % 256 for b in r["int8_bytes"])
+        b64_str = base64.b64encode(uint8_data).decode('ascii')
+        chunk_size = 50000  # must be multiple of 4 (Base64 group size)
+        chunks = [b64_str[j:j+chunk_size] for j in range(0, len(b64_str), chunk_size)]
+        if len(chunks) == 1:
+            input_rhs = f'java.util.Base64.getDecoder.decode("{chunks[0]}")'
+        else:
+            # String-literal concatenation gets constant-folded by scalac, hitting the
+            # 65535-byte UTF8 constant pool limit. Decode each chunk independently instead.
+            d = 'java.util.Base64.getDecoder'
+            decode_calls = ',\n      '.join(f'{d}.decode("{c}")' for c in chunks)
+            input_rhs = f'Array.concat(\n      {decode_calls})'
         logits_str = ", ".join(f"{x:.6f}f" for x in r["logits"])
         lines += [
             f"",
             f"  // {r['description']} — top-1 class {r['top1']}",
             f"  val sample_{i}_label: Int = {r['top1']}",
-            f"  val sample_{i}_input: Array[Byte] = Array({bytes_str})",
+            f"  val sample_{i}_input: Array[Byte] = {input_rhs}",
             f"  val sample_{i}_logits: Array[Float] = Array({logits_str})",
         ]
     lines.append("}")

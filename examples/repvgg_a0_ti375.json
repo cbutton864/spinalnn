@@ -1,0 +1,14 @@
+{
+  "device":          "Ti375N484",
+  "model":           "models/repvgg_a0-int8.onnx",
+  "emitLogits":      true,
+  "macParallelism":  "32",
+  "macParByChannels": {
+    "3":  3,
+    "48": 48
+  },
+  "weightMode":      "stream",
+  "memoryStrategy":  "line",
+  "targetFreqMhz":   150,
+  "outputDir":       "rtl/repvgg_a0_ti375"
+}

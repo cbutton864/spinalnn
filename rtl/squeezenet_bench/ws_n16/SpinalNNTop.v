@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.14.0    git head : 95a5e6c65c54acfc4707c8fe6ef8b5d297cfcbde
 // Component : SpinalNNTop
-// Git hash  : 52ddfab59386b8a4c4144f32c449d01fe7d5158c
+// Git hash  : 2a28d67f812283e9523dab32418f3514768d807f
 
 `timescale 1ns/1ps
 

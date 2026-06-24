@@ -42,15 +42,26 @@ object QLinearConvLineCore {
     biases:          Array[Int],
     weightScales:    Option[Array[Float]] = None,
     weightMode:      WeightMode           = WeightRom,
-    macParallelism:  Int                  = 1
+    macParallelism:  Int                  = 1,
+    weightBits:      Int                  = 8
   ) {
     require(kernelH >= 1, s"QLinearConvLineCore requires kernelH >= 1 (got $kernelH)")
     require(macParallelism >= 1, s"macParallelism must be >= 1 (got $macParallelism)")
     require(inputShape.channels % macParallelism == 0,
       s"C_in (${inputShape.channels}) must be divisible by macParallelism ($macParallelism)")
+    require(weightBits == 8 || weightBits == 4,
+      s"weightBits must be 8 (INT8) or 4 (INT4), got $weightBits")
+    if (weightBits == 4) {
+      require(weightQuant.zeroPoint == 0,
+        s"W4A8 requires symmetric weight quantization (zeroPoint must be 0, got ${weightQuant.zeroPoint})")
+    }
     if (weightMode == WeightStream) {
-      require(64 % macParallelism == 0,
-        s"macParallelism ($macParallelism) must divide 64 for WeightStream beat-drain")
+      if (weightBits == 4)
+        require(128 % macParallelism == 0,
+          s"macParallelism ($macParallelism) must divide 128 for W4A8 WeightStream beat-drain")
+      else
+        require(64 % macParallelism == 0,
+          s"macParallelism ($macParallelism) must divide 64 for INT8 WeightStream beat-drain")
     }
     require(weights.length == outputShape.channels * kernelH * kernelW * inputShape.channels,
       s"weights.length ${weights.length} != ${outputShape.channels * kernelH * kernelW * inputShape.channels}")
@@ -87,7 +98,8 @@ object QLinearConvLineCore {
       if (weightMode == WeightStream) weightsPerCh / N else wRomSize / N
     val totalMacs:    Int = kernelH * kernelW * C_in   // MACs per output pixel
     val stepsPerComp: Int = kernelH * kernelW * CN     // compute steps = totalMacs / N
-    val stepsPerBeat: Int = if (weightMode == WeightStream) 64 / N else 0
+    // INT8: 1 byte/weight → 64 bytes/beat → 64/N steps. W4A8: 1 nibble/weight → 128 nibbles/beat → 128/N steps.
+    val stepsPerBeat: Int = if (weightMode == WeightStream) 512 / (N * weightBits) else 0
   }
 
   case class Io(activationOut: Stream[Activation], weightIn: Stream[Bits] = null)
@@ -133,18 +145,21 @@ object QLinearConvLineCore {
       // zp repeated N times for padding / init writes
       val zpWideBits = Cat(Seq.fill(N)(B(zp.toInt & 0xFF, 8 bits)))
 
-      // ── 1 wide weight mem (N×8 bits) ─────────────────────────────────────
-      // Replaces N narrow 8-bit RAMs.  Address i stores weights[i*N..i*N+N-1]
-      // (bank b was weights[i*N+b], same logical mapping, now packed).
-      // For WeightRom all data is baked in; for WeightStream loaded per inference.
-      val weightMem: Mem[Bits] = Mem(Bits(N * 8 bits), cfg.wBufSizePerBank)
+      // ── 1 wide weight mem (N × weightBits bits) ──────────────────────────
+      // For INT8 (weightBits=8): N×8 bits wide, same as before.
+      // For INT4 (weightBits=4): N×4 bits wide — halves BRAM vs INT8 at same depth.
+      // Address i stores weights[i*N .. i*N+N-1], each weightBits wide.
+      // Bank b at bits [b*weightBits + weightBits-1 : b*weightBits].
+      val wBits_  = cfg.weightBits                  // local alias (avoid keyword clash)
+      val wMask   = (1L << wBits_) - 1L             // 0xFF for INT8, 0xF for INT4
+      val weightMem: Mem[Bits] = Mem(Bits(N * wBits_ bits), cfg.wBufSizePerBank)
       if (cfg.weightMode == WeightRom) {
         weightMem.setName(s"${cfg.periphName}_weightRom")
         val initData = Seq.tabulate(cfg.wBufSizePerBank) { i =>
           (0 until N).foldLeft(BigInt(0)) { (acc, b) =>
             val idx = i * N + b
-            val w = if (idx < cfg.weights.length) cfg.weights(idx).toLong & 0xFFL else 0L
-            acc | (BigInt(w) << (b * 8))
+            val w = if (idx < cfg.weights.length) cfg.weights(idx).toLong & wMask else 0L
+            acc | (BigInt(w) << (b * wBits_))
           }
         }
         weightMem.initBigInt(initData, allowNegative = false)
@@ -280,9 +295,11 @@ object QLinearConvLineCore {
       val rowReads2D: Vec[Vec[SInt]] = Vec(rowWideReads.map { wide =>
         Vec(Seq.tabulate(N) { b => wide(b * 8 + 7 downto b * 8).asSInt })
       })
-      // One wide weight read; N byte lanes extracted combinationally.
+      // One wide weight read; N weightBits-wide lanes extracted combinationally.
       val wDataRaw: Bits = weightMem.readSync(wAddrComb.resized)
-      val wValsRaw: Seq[SInt] = Seq.tabulate(N) { b => wDataRaw(b * 8 + 7 downto b * 8).asSInt }
+      val wValsRaw: Seq[SInt] = Seq.tabulate(N) { b =>
+        wDataRaw(b * wBits_ + wBits_ - 1 downto b * wBits_).asSInt
+      }
 
       val biasVal     = biasRom.readSync(outChReg.resized)
       val reqMultVal  = if (cfg.perChannelRequant) reqMultRom.readSync(outChReg.resized)  else null
@@ -291,10 +308,18 @@ object QLinearConvLineCore {
       // ── Pipeline registers ────────────────────────────────────────────────
       val curSlotReg = Reg(UInt(slotBits bits))                init 0
       val inValRegs: Vec[SInt] = Vec(Reg(SInt(ActivationDType.bits bits)) init 0, N)
-      val wValRegs:  Vec[SInt] = Vec(Reg(SInt(ActivationDType.bits bits)) init 0, N)
+      // wValRegs is weightBits wide: 8 bits for INT8, 4 bits for INT4.
+      val wValRegs:  Vec[SInt] = Vec(Reg(SInt(wBits_ bits)) init 0, N)
       curSlotReg.setName(s"${cfg.periphName}_curSlotReg")
       inValRegs.zipWithIndex.foreach { case (r,i) => r.setName(s"${cfg.periphName}_inValReg_$i") }
       wValRegs.zipWithIndex.foreach  { case (r,i) => r.setName(s"${cfg.periphName}_wValReg_$i") }
+
+      // W4A8: per-lane LUT product registers inserted between Stage 1 and treeReduce.
+      // Stage 1.5 computes shift-and-add per lane → lutProdRegs.
+      // Stage 2 (shifted by 1 vs INT8) treeReduces lutProdRegs → prodSumReg.
+      val lutProdRegs: Vec[SInt] = if (wBits_ == 4) Vec(Reg(SInt(32 bits)) init 0, N) else null
+      if (wBits_ == 4 && lutProdRegs != null)
+        lutProdRegs.zipWithIndex.foreach { case (r,i) => r.setName(s"${cfg.periphName}_lutProdReg_$i") }
 
       // ── Accumulator and requant pipeline ──────────────────────────────────
       val accumReg        = Reg(SInt(32 bits)) init 0
@@ -444,12 +469,13 @@ object QLinearConvLineCore {
               wBeatStepReg  := 0
             }
           } otherwise {
-            // Write N bytes (low bits of beat buf) to wide weight RAM, advance address.
+            // Write N lanes (N×weightBits low bits) to weight RAM per step; shift beat buf.
+            // INT8: N×8 bits/step, 64/N steps/beat. W4A8: N×4 bits/step, 128/N steps/beat.
             when(wStepReg < U(cfg.weightsPerCh / N)) {
-              weightMem.write(wStepReg.resized, wBeatBuf(N * 8 - 1 downto 0))
+              weightMem.write(wStepReg.resized, wBeatBuf(N * wBits_ - 1 downto 0))
               wStepReg := wStepReg + 1
             }
-            wBeatBuf     := (wBeatBuf >> (8 * N)).resized
+            wBeatBuf     := (wBeatBuf >> (wBits_ * N)).resized
             wBeatStepReg := wBeatStepReg + 1
             when(wBeatStepReg === U(cfg.stepsPerBeat - 1)) {
               wBeatDraining := False
@@ -481,7 +507,28 @@ object QLinearConvLineCore {
         stateReg := sCompute
       }
 
-      // ── COMPUTE (3-stage pipelined MAC × N) ───────────────────────────────
+      // ── COMPUTE ──────────────────────────────────────────────────────────
+      // INT8 (weightBits=8): 3-stage pipeline, total T+2 cycles.
+      //   Stage 0 (0..T-1): present addresses.
+      //   Stage 1 (1..T):   latch inValRegs, wValRegs.
+      //   Stage 2 (2..T+1): DSP multiply + treeReduce → prodSumReg.
+      //   Stage 3 (3..T+2): accumulate; last cycle → requant.
+      //
+      // INT4/W4A8 (weightBits=4): 4-stage pipeline, total T+3 cycles.
+      //   Stage 0 (0..T-1): same.
+      //   Stage 1 (1..T):   same latch.
+      //   Stage 1.5 (2..T+1): LUT shift-and-add per lane → lutProdRegs (no treeReduce yet).
+      //   Stage 2 (3..T+2): treeReduce(lutProdRegs) → prodSumReg.
+      //   Stage 3 (4..T+3): accumulate; last cycle → requant.
+      //
+      // Splitting Stage 2 into two pipeline stages keeps LUT depth under control
+      // (no DSP inference, no single-cycle N-input product tree).
+      def treeReduce(xs: Seq[SInt]): SInt = xs match {
+        case Seq(x)    => x
+        case Seq(a, b) => a + b
+        case _         => treeReduce(xs.grouped(2).map(g => if (g.size == 2) g(0) + g(1) else g(0)).toSeq)
+      }
+
       when(stateReg === sCompute) {
         compCycleReg := compCycleReg + 1
 
@@ -501,7 +548,6 @@ object QLinearConvLineCore {
         }
 
         // Stage 1: capture readSync results for all N banks.
-        // rowReads2D indexed by curSlotReg generates a hardware MUX over K_H options.
         when(compCycleReg >= 1 && compCycleReg <= U(T)) {
           for (b <- 0 until N) {
             inValRegs(b) := (if (K_H == 1) rowReads2D(0)(b) else rowReads2D(curSlotReg)(b))
@@ -509,33 +555,63 @@ object QLinearConvLineCore {
           }
         }
 
-        // Stage 2: N parallel zero-point-adjusted MACs, reduce to partial sum.
-        // Balanced-tree reduction gives log2(N) adder levels instead of the
-        // N-1 levels of a left-fold, halving the combinational depth for N≥4.
-        when(compCycleReg >= 2 && compCycleReg <= U(T + 1)) {
-          val inZP = S(cfg.inputQuant.zeroPoint.toLong,  ActivationDType.adjBits bits)
-          val wZP  = S(cfg.weightQuant.zeroPoint.toLong, ActivationDType.adjBits bits)
-          val partials = (0 until N).map { b =>
-            val inAdj = inValRegs(b).resize(ActivationDType.adjBits) - inZP
-            val wAdj  = wValRegs(b).resize(ActivationDType.adjBits) - wZP
-            (inAdj * wAdj).resize(32)
+        if (wBits_ == 4) {
+          // ── W4A8: Stage 1.5 — per-lane LUT shift-and-add ─────────────────
+          // wValRegs(b) is SInt(4 bits) [-8..7]; wZP=0 (symmetric), so wAdj = wValRegs(b).
+          // inAdj = inValRegs(b) - inZP (9-bit signed).
+          // Decompose: inAdj * wAdj = inAdj*(−8*w3 + 4*w2 + 2*w1 + w0) via Mux+shift.
+          // Results in lutProdRegs (32-bit) for treeReduce in the next stage.
+          when(compCycleReg >= 2 && compCycleReg <= U(T + 1)) {
+            val inZP = S(cfg.inputQuant.zeroPoint.toLong, ActivationDType.adjBits bits)
+            for (b <- 0 until N) {
+              val inAdj = inValRegs(b).resize(ActivationDType.adjBits) - inZP
+              val wB    = wValRegs(b).asBits    // 4-bit 2's complement
+              val a     = inAdj.resize(32)
+              val pp0   = Mux(wB(0), a,                        S(0, 32 bits))
+              val pp1   = Mux(wB(1), (a << 1).resize(32),      S(0, 32 bits))
+              val pp2   = Mux(wB(2), (a << 2).resize(32),      S(0, 32 bits))
+              val pp3   = Mux(wB(3), (-(a << 3)).resize(32),   S(0, 32 bits))
+              lutProdRegs(b) := (pp0 + pp1 + pp2 + pp3).resize(32)
+            }
           }
-          def treeReduce(xs: Seq[SInt]): SInt = xs match {
-            case Seq(x)     => x
-            case Seq(a, b)  => a + b
-            case _          => treeReduce(xs.grouped(2).map(g => if (g.size == 2) g(0) + g(1) else g(0)).toSeq)
-          }
-          prodSumReg := treeReduce(partials).resize(32)
-        }
 
-        // Stage 3: accumulate; transition on the last MAC.
-        when(compCycleReg >= 3 && compCycleReg <= U(T + 2)) {
-          val accumNew = (accumReg + prodSumReg).resize(32)
-          accumReg := accumNew
-          when(compCycleReg === U(T + 2)) {
-            accumRequantReg := accumNew
-            compCycleReg    := 0
-            stateReg        := sRequant
+          // ── W4A8: Stage 2 — treeReduce lutProdRegs ───────────────────────
+          when(compCycleReg >= 3 && compCycleReg <= U(T + 2)) {
+            prodSumReg := treeReduce(lutProdRegs.toSeq).resize(32)
+          }
+
+          // ── W4A8: Stage 3 — accumulate ────────────────────────────────────
+          when(compCycleReg >= 4 && compCycleReg <= U(T + 3)) {
+            val accumNew = (accumReg + prodSumReg).resize(32)
+            accumReg := accumNew
+            when(compCycleReg === U(T + 3)) {
+              accumRequantReg := accumNew
+              compCycleReg    := 0
+              stateReg        := sRequant
+            }
+          }
+        } else {
+          // ── INT8: Stage 2 — DSP multiply + treeReduce ────────────────────
+          when(compCycleReg >= 2 && compCycleReg <= U(T + 1)) {
+            val inZP     = S(cfg.inputQuant.zeroPoint.toLong,  ActivationDType.adjBits bits)
+            val wZP      = S(cfg.weightQuant.zeroPoint.toLong, ActivationDType.adjBits bits)
+            val partials = (0 until N).map { b =>
+              val inAdj = inValRegs(b).resize(ActivationDType.adjBits) - inZP
+              val wAdj  = wValRegs(b).resize(ActivationDType.adjBits) - wZP
+              (inAdj * wAdj).resize(32)
+            }
+            prodSumReg := treeReduce(partials).resize(32)
+          }
+
+          // ── INT8: Stage 3 — accumulate ────────────────────────────────────
+          when(compCycleReg >= 3 && compCycleReg <= U(T + 2)) {
+            val accumNew = (accumReg + prodSumReg).resize(32)
+            accumReg := accumNew
+            when(compCycleReg === U(T + 2)) {
+              accumRequantReg := accumNew
+              compCycleReg    := 0
+              stateReg        := sRequant
+            }
           }
         }
       }

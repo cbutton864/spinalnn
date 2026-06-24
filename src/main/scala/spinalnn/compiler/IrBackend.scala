@@ -9,13 +9,14 @@ import spinalnn.ops.activation.{ReLUCore, ReLUPlugin, SoftmaxCore, SoftmaxPlugin
 import spinalnn.ops.add.{AddCore, AddPlugin}
 import spinalnn.ops.concat.{ConcatCore, ConcatPlugin}
 import spinalnn.ops.conv.{DepthwiseConvCore, DepthwiseConvPlugin, QLinearConvCore, QLinearConvLineCore, QLinearConvLineCorePlugin, QLinearConvPlugin}
+import spinalnn.ops.sc.{StochasticConvCore, StochasticConvPlugin}
 import spinalnn.ops.fork.{StreamForkCore, StreamForkPlugin}
 import spinalnn.ops.input.InputPlugin
 import spinalnn.ops.linear.{FlattenPlugin, QLinearLinearCore, QLinearLinearPlugin}
 import spinalnn.dma.{WeightDmaCore, WeightDmaPlugin}
 import spinalnn.ops.output.NetworkOutputPlugin
 import spinalnn.ops.pool.{GlobalAveragePoolCore, GlobalAveragePoolPlugin, MaxPoolCore, MaxPoolLineCore, MaxPoolLinePlugin, MaxPoolPlugin}
-import spinalnn.target.{MacParAuto, MacParFixed, MacParPerLayer, MemAuto, MemFullBuffer, MemLineBuffer, WeightMode, WeightRom, WeightStream, TargetConfig}
+import spinalnn.target.{MacParAuto, MacParByChannels, MacParFixed, MacParPerLayer, MemAuto, MemFullBuffer, MemLineBuffer, WeightMode, WeightRom, WeightStream, WeightStochastic, TargetConfig}
 import spinalnn.types._
 import spinalnn.util._
 
@@ -39,6 +40,8 @@ object IrBackend {
     * is proportional to a single row, not the full feature map. */
   private def useLineBuffer(target: TargetConfig, s: LayerSpec.Conv, resolvedN: Int): Boolean = {
     if (target.options.weightMode == WeightStream) return true
+    // W4A8 LUT multiply is only implemented in QLinearConvLineCore, so force it.
+    if (s.weightBits == 4) return true
     target.options.memoryStrategy match {
       case MemFullBuffer => false
       case MemLineBuffer => true
@@ -72,9 +75,10 @@ object IrBackend {
     * `layerName` is used for per-layer lookup and for diagnostic messages. */
   private def macN(target: TargetConfig, inCh: Int, layerName: String): Int = {
     val requested = target.options.macParallelism match {
-      case MacParAuto                      => 1
-      case MacParFixed(n)                  => n
-      case MacParPerLayer(overrides, dflt) => overrides.getOrElse(layerName, dflt)
+      case MacParAuto                          => 1
+      case MacParFixed(n)                      => n
+      case MacParPerLayer(overrides, dflt)     => overrides.getOrElse(layerName, dflt)
+      case MacParByChannels(cm, dflt, lo)      => lo.getOrElse(layerName, cm.getOrElse(inCh, dflt))
     }
     if (inCh % requested == 0) requested
     else {
@@ -87,7 +91,7 @@ object IrBackend {
   /** Resolve the output-channel parallelism P for a conv layer.
     * Falls back to P=1 if C_out is not divisible by the requested P. */
   private def outPar(target: TargetConfig, outCh: Int, layerName: String): Int = {
-    val requested = target.options.resolveOutPar(layerName)
+    val requested = target.options.resolveOutPar(layerName, outCh)
     if (outCh % requested == 0) requested
     else {
       System.err.println(
@@ -99,14 +103,21 @@ object IrBackend {
   /** Resolve the effective weight mode for a single layer.
     *
     * When the global target is WeightStream, a layer whose resolved N does not evenly divide
-    * 64 (the AXI beat width) cannot use the DMA beat-drain path. Such layers automatically
-    * fall back to WeightRom so they can still run at the full requested N — their weights are
-    * typically small enough to ROM into BRAM (e.g. conv1 with C_in=3 has only ~1.7 KB). */
-  private def effectiveWeightMode(globalMode: WeightMode, n: Int, layerName: String): WeightMode =
+    * the beat width cannot use the DMA beat-drain path. Such layers fall back to WeightRom.
+    *
+    * INT8: one byte per weight; beat = 64 bytes; drain step = N bytes → 64 % N == 0 required.
+    * W4A8: one nibble per weight; beat = 128 nibbles; drain step = N nibbles → 128 % N == 0 required.
+    * Both constraints are satisfied by any power-of-2 N ≤ 64 (INT8) or ≤ 128 (W4A8).
+    * Layers that fail the constraint fall back to WeightRom (weights ROM'd into BRAM). */
+  private def effectiveWeightMode(globalMode: WeightMode, n: Int, weightBits: Int, layerName: String): WeightMode =
     globalMode match {
-      case WeightStream if 64 % n != 0 =>
+      case WeightStream if weightBits == 4 && 128 % n != 0 =>
         System.err.println(
-          s"[IrBackend] '$layerName' N=$n: 64%$n≠0, incompatible with WeightStream beat drain — using WeightRom for this layer")
+          s"[IrBackend] '$layerName' W4A8 N=$n: 128%$n≠0, incompatible with W4A8 WeightStream beat drain — using WeightRom")
+        WeightRom
+      case WeightStream if weightBits == 8 && 64 % n != 0 =>
+        System.err.println(
+          s"[IrBackend] '$layerName' N=$n: 64%$n≠0, incompatible with INT8 WeightStream beat drain — using WeightRom for this layer")
         WeightRom
       case mode => mode
     }
@@ -169,72 +180,113 @@ object IrBackend {
         plugins += p; publish(s.name, p.activationOut, s.shape)
 
       case s: LayerSpec.Conv =>
-        val n          = macN(target, s.inputShape.channels, s.name)
-        val pOut       = outPar(target, s.shape.channels, s.name)
-        val layerWMode = effectiveWeightMode(wMode, n, s.name)
-        val p = if (useLineBuffer(target, s, n)) {
-          // Line-buffer core does not support outParallelism > 1 (no P path).
-          if (pOut > 1) System.err.println(
-            s"[IrBackend] '${s.name}': outParallelism=$pOut not supported by LineBuffer core, using P=1")
-          QLinearConvLineCorePlugin(QLinearConvLineCore.Config(
-            periphName     = s.name,
-            inputShape     = s.inputShape,
-            outputShape    = s.shape,
-            kernelH        = s.kernelH,
-            kernelW        = s.kernelW,
-            strideH        = s.strideH,
-            strideW        = s.strideW,
-            padTop         = s.padTop,
-            padBottom      = s.padBottom,
-            padLeft        = s.padLeft,
-            padRight       = s.padRight,
-            inputQuant     = s.inputQuant,
-            weightQuant    = s.weightQuant,
-            outputQuant    = s.outputQuant,
-            weights        = s.weights,
-            biases         = s.biases,
-            weightScales   = s.weightScales,
-            weightMode     = layerWMode,
-            macParallelism = n
-          ), up(s.input), buildEnv)
-        } else {
-          QLinearConvPlugin(QLinearConvCore.Config(
-            periphName       = s.name,
-            inputShape       = s.inputShape,
-            outputShape      = s.shape,
-            kernelH          = s.kernelH,
-            kernelW          = s.kernelW,
-            strideH          = s.strideH,
-            strideW          = s.strideW,
-            padTop           = s.padTop,
-            padBottom        = s.padBottom,
-            padLeft          = s.padLeft,
-            padRight         = s.padRight,
-            inputQuant       = s.inputQuant,
-            weightQuant      = s.weightQuant,
-            outputQuant      = s.outputQuant,
-            weights          = s.weights,
-            biases           = s.biases,
-            weightScales     = s.weightScales,
-            macParallelism   = n,
-            outParallelism   = pOut,
-            weightMode       = layerWMode
-          ), up(s.input), buildEnv)
+        target.options.weightPrecision match {
+
+          // ── Stochastic-computing path (WeightStochastic) ──────────────────
+          // No line buffer, no outParallelism.  weightMode controls ROM vs DMA stream.
+          case WeightStochastic(bitstreamLen) =>
+            if (s.weightScales.isDefined) System.err.println(
+              s"[IrBackend] '${s.name}': per-channel weight scales not yet supported by SC backend, using global scale")
+            val scCfg = StochasticConvCore.Config(
+              periphName   = s.name,
+              inputShape   = s.inputShape,
+              outputShape  = s.shape,
+              kernelH      = s.kernelH,
+              kernelW      = s.kernelW,
+              strideH      = s.strideH,
+              strideW      = s.strideW,
+              padTop       = s.padTop,
+              padBottom    = s.padBottom,
+              padLeft      = s.padLeft,
+              padRight     = s.padRight,
+              inputQuant   = s.inputQuant,
+              weightQuant  = s.weightQuant,
+              outputQuant  = s.outputQuant,
+              weights      = s.weights,
+              biases       = s.biases,
+              bitstreamLen = bitstreamLen,
+              weightMode   = wMode
+            )
+            val p = StochasticConvPlugin(scCfg, up(s.input), buildEnv)
+            plugins += p
+            if (wMode == WeightStream) {
+              // DMA descriptor: actual = nMac packed bytes per oc, stride = 64-byte-aligned.
+              dmaEntries += ((p.weightIn, scCfg.nMac, scCfg.weightsStride, scCfg.C_out))
+            }
+            publish(s.name, p.activationOut, s.shape)
+
+          // ── INT8 / W4A8 path ──────────────────────────────────────────────
+          case _ =>
+            val n          = macN(target, s.inputShape.channels, s.name)
+            val pOut       = outPar(target, s.shape.channels, s.name)
+            val layerWMode = effectiveWeightMode(wMode, n, s.weightBits, s.name)
+            val p = if (useLineBuffer(target, s, n)) {
+              // Line-buffer core does not support outParallelism > 1 (no P path).
+              if (pOut > 1) System.err.println(
+                s"[IrBackend] '${s.name}': outParallelism=$pOut not supported by LineBuffer core, using P=1")
+              QLinearConvLineCorePlugin(QLinearConvLineCore.Config(
+                periphName     = s.name,
+                inputShape     = s.inputShape,
+                outputShape    = s.shape,
+                kernelH        = s.kernelH,
+                kernelW        = s.kernelW,
+                strideH        = s.strideH,
+                strideW        = s.strideW,
+                padTop         = s.padTop,
+                padBottom      = s.padBottom,
+                padLeft        = s.padLeft,
+                padRight       = s.padRight,
+                inputQuant     = s.inputQuant,
+                weightQuant    = s.weightQuant,
+                outputQuant    = s.outputQuant,
+                weights        = s.weights,
+                biases         = s.biases,
+                weightScales   = s.weightScales,
+                weightMode     = layerWMode,
+                macParallelism = n,
+                weightBits     = s.weightBits
+              ), up(s.input), buildEnv)
+            } else {
+              QLinearConvPlugin(QLinearConvCore.Config(
+                periphName       = s.name,
+                inputShape       = s.inputShape,
+                outputShape      = s.shape,
+                kernelH          = s.kernelH,
+                kernelW          = s.kernelW,
+                strideH          = s.strideH,
+                strideW          = s.strideW,
+                padTop           = s.padTop,
+                padBottom        = s.padBottom,
+                padLeft          = s.padLeft,
+                padRight         = s.padRight,
+                inputQuant       = s.inputQuant,
+                weightQuant      = s.weightQuant,
+                outputQuant      = s.outputQuant,
+                weights          = s.weights,
+                biases           = s.biases,
+                weightScales     = s.weightScales,
+                macParallelism   = n,
+                outParallelism   = pOut,
+                weightMode       = layerWMode
+              ), up(s.input), buildEnv)
+            }
+            plugins += p
+            // Register DMA entry only for layers that are actually using WeightStream.
+            // Layers that degraded to WeightRom (e.g. conv1 with N=3, 64%3≠0) are excluded.
+            if (layerWMode == WeightStream) {
+              val numWeights = s.kernelH * s.kernelW * s.inputShape.channels
+              // W4A8 packs 2 nibbles per byte in LPDDR4x; INT8 is 1 byte per weight.
+              val actual = if (s.weightBits == 4) (numWeights + 1) / 2 else numWeights
+              val stride = ((actual + 63) / 64) * 64
+              val handle: Handle[Stream[Bits]] = p match {
+                case lp: QLinearConvLineCorePlugin => lp.weightIn
+                case cp: QLinearConvPlugin         => cp.weightIn
+                case _ => throw new Exception("Unexpected conv plugin type")
+              }
+              dmaEntries += ((handle, actual, stride, s.shape.channels))
+            }
+            publish(s.name, p.activationOut, s.shape)
         }
-        plugins += p
-        // Register DMA entry only for layers that are actually using WeightStream.
-        // Layers that degraded to WeightRom (e.g. conv1 with N=3, 64%3≠0) are excluded.
-        if (layerWMode == WeightStream) {
-          val actual = s.kernelH * s.kernelW * s.inputShape.channels
-          val stride = ((actual + 63) / 64) * 64
-          val handle: Handle[Stream[Bits]] = p match {
-            case lp: QLinearConvLineCorePlugin => lp.weightIn
-            case cp: QLinearConvPlugin         => cp.weightIn
-            case _ => throw new Exception("Unexpected conv plugin type")
-          }
-          dmaEntries += ((handle, actual, stride, s.shape.channels))
-        }
-        publish(s.name, p.activationOut, s.shape)
 
       case s: LayerSpec.DepthwiseConv =>
         val p = DepthwiseConvPlugin(DepthwiseConvCore.Config(

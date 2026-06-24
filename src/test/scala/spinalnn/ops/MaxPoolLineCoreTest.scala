@@ -167,8 +167,11 @@ class MaxPoolLineCoreTest extends AnyFunSuite {
       dut.clockDomain.forkStimulus(period = 10)
       dut.io.activationIn.valid #= false; dut.io.activationIn.payload.value #= 0
       dut.io.activationOut.ready #= false; dut.clockDomain.waitSampling(2)
-      fork(drive(dut, vals1)); line1 = collectLine(dut, out.size)
-      fork(drive(dut, vals2)); line2 = collectLine(dut, out.size)
+      // join() ensures tail rows are fully drained before inference 2 starts.
+      // Without join, drive(vals2) races with drive(vals1)'s tail-row drain:
+      // vals2 bytes get silently consumed as tail-row padding, misaligning inf2.
+      val stim1 = fork(drive(dut, vals1)); line1 = collectLine(dut, out.size); stim1.join()
+      val stim2 = fork(drive(dut, vals2)); line2 = collectLine(dut, out.size); stim2.join()
     }
 
     assert(line1 == ref1, s"inference 1 mismatch\n  ref : $ref1\n  line: $line1")

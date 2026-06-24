@@ -1,7 +1,7 @@
 package spinalnn.compiler
 
 import scala.collection.mutable
-import spinalnn.target.{MacParAuto, MacParFixed, MacParPerLayer, MacParallelism}
+import spinalnn.target.{MacParAuto, MacParByChannels, MacParFixed, MacParPerLayer, MacParallelism}
 
 /** Analytical cycle estimator for a compiled [[LayerSpec]] IR graph.
   *
@@ -99,9 +99,10 @@ object ModelCycleEstimator {
     val total  = layers.map(_.cyclesEst).sum.max(1)
     val withPct = layers.map(l => l.copy(pctOfTotal = 100.0 * l.cyclesEst / total))
     val displayN = policy match {
-      case MacParAuto        => 0
-      case MacParFixed(n)    => n
-      case _: MacParPerLayer => -1
+      case MacParAuto           => 0
+      case MacParFixed(n)       => n
+      case _: MacParPerLayer    => -1
+      case _: MacParByChannels  => -1
     }
     ModelStats(withPct, total, displayN)
   }
@@ -220,9 +221,10 @@ object ModelCycleEstimator {
     * MacParPerLayer map before elaborating hardware. */
   def resolveN(policy: MacParallelism, inCh: Int, layerName: String): Int = {
     val requested = policy match {
-      case MacParAuto                      => 1
-      case MacParFixed(n)                  => n
-      case MacParPerLayer(overrides, dflt) => overrides.getOrElse(layerName, dflt)
+      case MacParAuto                          => 1
+      case MacParFixed(n)                      => n
+      case MacParPerLayer(overrides, dflt)     => overrides.getOrElse(layerName, dflt)
+      case MacParByChannels(cm, dflt, lo)      => lo.getOrElse(layerName, cm.getOrElse(inCh, dflt))
     }
     if (inCh % requested == 0) requested else 1
   }
@@ -250,9 +252,10 @@ object ModelCycleEstimator {
       case c: LayerSpec.Conv =>
         val inCh = c.inputShape.channels
         val requested = policy match {
-          case MacParAuto                      => 1
-          case MacParFixed(n)                  => n
-          case MacParPerLayer(overrides, dflt) => overrides.getOrElse(c.name, dflt)
+          case MacParAuto                          => 1
+          case MacParFixed(n)                      => n
+          case MacParPerLayer(overrides, dflt)     => overrides.getOrElse(c.name, dflt)
+          case MacParByChannels(cm, dflt, lo)      => lo.getOrElse(c.name, cm.getOrElse(inCh, dflt))
         }
         val got  = if (inCh % requested == 0) requested else { totalFallbacks += 1; 1 }
         val note = if (got != requested) "FALLBACK" else if (got > 1) "ok" else ""

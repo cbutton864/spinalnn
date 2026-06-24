@@ -42,9 +42,15 @@ One operator per Core + Plugin. Composed in Params. Generated from ONNX.
 
 - [x] Add `ActivationDType` config object to `TensorTypes.scala` (bits, minVal, maxVal, adjBits)
 - [x] Eliminate hardcoded `8 bits`, `-128`, `127`, `9 bits` across all Cores
-- [ ] **W4A8 DSP tiling** — 4-bit weights packed 2-per-byte in LPDDR4x; two W4A8 MACs per DSP via cascade tiling (ACIN/BCIN chain). 2× throughput on body layers at same DSP count; <1% accuracy loss. INT8 activations unchanged — inter-layer interface stays the same. Requires mixed-precision ONNX export (QONNX or per-layer quant override in OnnxFrontend).
+- [x] **W4A8 (INT4 weights, INT8 activations)** — `weightPrecision: WeightInt4` flag in `CompilerOptions`; symmetric PTQ (`scale = max|w|/7`, ZP=0) applied in `OnnxFrontend.lower()`; weights packed 2-per-nibble in `QLinearConvLineCore` weight ROM (32-bit word for N=8 vs 64-bit for INT8); LUT shift-and-add multiply replaces DSP inference (Stage 1.5 computes N per-lane Mux+shift products → 32-bit `lutProdRegs`; Stage 2 treeReduce; Stage 3 accumulate — T+3 total vs T+2 for INT8). IrBackend forces `QLinearConvLineCore` (line-buffer path) whenever `weightBits==4`, regardless of BRAM budget. MNIST-8 accuracy: 5/5 (100%) in simulation with W4A8 weights. P&R (Ti180M484, 150 MHz target): vs INT8 N=8 baseline → **−9 DSP48** (22→13), **+1,112 LUT4** (916→2,028), +10 RAM10K (line-buffer row bufs outweigh halved weight ROM on this small model); Fmax unchanged at ≈254 MHz. W4A8 is a DSP↔LUT trade: most valuable when DSPs are the bottleneck on larger models. RTL and P&R projects in `rtl/mnist_w4a8/` and `benchmark_mnist_w4a8_*/`. See BENCHMARKS_TITANIUM.md §W4A8.
+  - `lowerQuantized()` W4A8 path: **DONE** — `requantizeInt8ToInt4()` in `OnnxCompiler`; dequant+INT4 requant of embedded INT8 weight bytes; validated via SqueezeNet W4A8 bench.
+  - **W4A8 + WeightStream: DONE (2026-06-20)** — Nibble packing in IrBackend (2 weights/byte in DMA descriptor); `effectiveWeightMode` allows W4A8 WeightStream when 128%N==0; `QLinearConvLineCore` drain logic uses N×4-bit steps (vs N×8 for INT8), `stepsPerBeat=512/(N×weightBits)`; 2 new sim tests pass (VALID + SAME+consecutive inferences). Full suite: 129/129. P&R benchmark pending (SqueezeNet W4A8 N=32 WeightStream on Ti180 — see FUTURE_ROADMAP.md §Phase A).
 - [ ] Long-term: parameterise `Activation(bits)` and thread through `QuantParams` when a second precision (INT4, BFloat16, stochastic) is actually needed -- interface change, defer until then
-- [ ] **StochasticConvCore** (Phase 4 research) — MUX-MAC SC architecture per Lee et al. 2024; N=256 bitstream; zero DSP cost; uses LUT fabric. See FUTURE_ROADMAP.md §Phase 4 and tinyml_reference.md for paper references.
+- [x] **StochasticConvCore** *(Phase B research — sim complete 2026-06-21)*  
+  MUX-MAC SC architecture per Lee et al. 2024; `bitstreamLen=255` default; zero DSP cost; pure LUT fabric.
+  `WeightStochastic(bitstreamLen)` added to `WeightPrecision` in `CompilerOptions`; `StochasticConvPlugin`
+  wires into `IrBackend` Conv dispatch. Sim accuracy: max error ±4 INT8 units at N=255, nMac=4
+  (132/132 tests pass). P&R benchmark (B6) and end-to-end MNIST accuracy (B7) pending — see FUTURE_ROADMAP.md §Phase B.
 
 ### Stage 5: Model Integration
 *ONNX parser automates topology and weight generation from any quantized model.*

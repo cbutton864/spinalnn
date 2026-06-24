@@ -56,7 +56,8 @@ object LayerSpec {
     outputQuant: QuantParams,
     weights:     Array[Byte],
     biases:      Array[Int],
-    weightScales: Option[Array[Float]] = None
+    weightScales: Option[Array[Float]] = None,
+    weightBits:  Int                   = 8
   ) extends LayerSpec
 
   /** Element-wise ReLU or ReLU6. Maps to ReLUPlugin.

@@ -145,6 +145,48 @@ object OnnxCompiler {
     (QuantParams(scale, zeroPoint), bytes)
   }
 
+  /** Quantizes a float array symmetrically to INT4 range [-8, 7].
+    * scale = max(|w|)/7; zero-point is always 0 (symmetric). Weights are stored
+    * as signed bytes (only the low nibble matters; upper nibble is sign-extension).
+    * Pack two weights per byte in BRAM using W4A8 hardware (done in QLinearConvLineCore).
+    */
+  def quantizeSymmetricInt4(floats: Array[Float]): (QuantParams, Array[Byte]) = {
+    if (floats.isEmpty) return (QuantParams(1.0f, 0), Array.emptyByteArray)
+    val maxAbs = floats.map(Math.abs).max
+    val scale  = if (maxAbs == 0.0f) 1.0f else (maxAbs / 7.0f)
+    val bytes = floats.map { f =>
+      val quantized = Math.round(f / scale)
+      val clamped   = Math.max(-8, Math.min(7, quantized))
+      clamped.toByte
+    }
+    (QuantParams(scale, 0), bytes)
+  }
+
+  /** Dequantizes per-channel INT8 weights to float, then requantizes per-channel to INT4.
+    * Returns (newPerChannelScales, int4Bytes) with the same layout as rawW.
+    * Used by lowerQuantized() when weightPrecision == WeightInt4. */
+  def requantizeInt8ToInt4(
+      rawW:    Array[Byte],
+      wScales: Array[Float],
+      outCh:   Int
+  ): (Array[Float], Array[Byte]) = {
+    val sliceSize = rawW.length / outCh
+    val newScales = new Array[Float](outCh)
+    val int4Bytes = new Array[Byte](rawW.length)
+    for (oc <- 0 until outCh) {
+      val start  = oc * sliceSize
+      val floats = Array.tabulate(sliceSize)(i => rawW(start + i).toFloat * wScales(oc))
+      val maxAbs = floats.map(Math.abs).max
+      val scale  = if (maxAbs == 0.0f) 1.0f else maxAbs / 7.0f
+      newScales(oc) = scale
+      for (i <- 0 until sliceSize) {
+        val q = Math.round(floats(i) / scale)
+        int4Bytes(start + i) = Math.max(-8, Math.min(7, q)).toByte
+      }
+    }
+    (newScales, int4Bytes)
+  }
+
   /** Quantizes biases as 32-bit integers scaled by (scaleIn * scaleWeights). */
   def scaleBias(biases: Array[Float], scaleIn: Float, scaleWeights: Float): Array[Int] = {
     val scaleBias = scaleIn * scaleWeights
@@ -184,8 +226,10 @@ object OnnxCompiler {
   ): Seq[FiberPlugin] = {
     val model = loadModel(filePath)
     val specs =
-      if (OnnxFrontend.isQuantized(model)) OnnxFrontend.lowerQuantized(model, emitLogits)
-      else OnnxFrontend.lower(model, OnnxFrontend.MnistCalibration, emitLogits)
+      if (OnnxFrontend.isQuantized(model)) OnnxFrontend.lowerQuantized(model, emitLogits,
+             target.options.weightPrecision)
+      else OnnxFrontend.lower(model, OnnxFrontend.MnistCalibration, emitLogits,
+             target.options.weightPrecision)
     IrBackend.build(specs, target)
   }
 

@@ -1,6 +1,7 @@
 package spinalnn.compiler
 
 import _root_.onnx.onnx.{ModelProto, NodeProto, TensorProto}
+import spinalnn.target.{WeightInt4, WeightInt8, WeightPrecision}
 import spinalnn.types._
 
 import scala.collection.mutable
@@ -35,7 +36,8 @@ object OnnxFrontend {
   val MnistCalibration: Calibration =
     Calibration(1.0f / 127.0f, Seq(4.0f / 127.0f, 8.0f / 127.0f, 16.0f / 127.0f))
 
-  def lower(model: ModelProto, calib: Calibration, emitLogits: Boolean): Seq[LayerSpec] = {
+  def lower(model: ModelProto, calib: Calibration, emitLogits: Boolean,
+            weightPrecision: WeightPrecision = WeightInt8): Seq[LayerSpec] = {
     val graph     = model.getGraph
     val initNames = graph.initializer.map(_.getName).toSet
     val producers = graph.node.flatMap(n => n.output.map(_ -> n)).toMap
@@ -104,7 +106,14 @@ object OnnxFrontend {
           val wT0  = weightInit(n.input(1))
           val dims = wT0.dims.map(_.toInt)                 // ONNX [outCh, inCh, kH, kW]
           val (outCh, inCh, kH, kW) = (dims(0), dims(1), dims(2), dims(3))
-          val (qW, qBytes) = OnnxCompiler.quantizeSymmetric(OnnxCompiler.extractFloatData(wT0))
+          val (qW, qBytes, wBits) = weightPrecision match {
+            case WeightInt4 =>
+              val (q, b) = OnnxCompiler.quantizeSymmetricInt4(OnnxCompiler.extractFloatData(wT0))
+              (q, b, 4)
+            case WeightInt8 | _ =>
+              val (q, b) = OnnxCompiler.quantizeSymmetric(OnnxCompiler.extractFloatData(wT0))
+              (q, b, 8)
+          }
           val weights  = OnnxCompiler.transposeWeights(qBytes, outCh, inCh, kH, kW)
           val strides  = intsAttr(n, "strides").getOrElse(Seq(1, 1))
           val (sH, sW) = (strides(0), strides(1))
@@ -117,7 +126,8 @@ object OnnxFrontend {
           val name     = s"conv$convIdx"
           specs += LayerSpec.Conv(name, prevName, prevShape, outShape,
             kH, kW, sH, sW, padT, padB, padL, padR,
-            QuantParams(inScale, 0), qW, QuantParams(outScale, 0), weights, biases)
+            QuantParams(inScale, 0), qW, QuantParams(outScale, 0), weights, biases,
+            weightBits = wBits)
           prevName = name; prevShape = outShape; inScale = outScale
 
         case "Relu" =>
@@ -210,7 +220,8 @@ object OnnxFrontend {
     *    producing conv's OUTPUT quantization to the Quantize node's (scale, zp); both
     *    branches then share one quantization and Concat becomes a direct int8 concat.
     */
-  def lowerQuantized(model: ModelProto, emitLogits: Boolean): Seq[LayerSpec] = {
+  def lowerQuantized(model: ModelProto, emitLogits: Boolean,
+                     weightPrecision: WeightPrecision = WeightInt8): Seq[LayerSpec] = {
     val graph     = model.getGraph
     val initNames = graph.initializer.map(_.getName).toSet
     val nodes     = graph.node
@@ -360,13 +371,19 @@ object OnnxFrontend {
           val inQuant  = QuantParams(scalarF(n.input(1)), remapZp(n.input(2)))
           val (oScale, oZp) = producerOutQuant.getOrElse(n.output.head, (n.input(6), n.input(7)))
           val outQuant = QuantParams(scalarF(oScale), remapZp(oZp))
-          val wScales  = vecF(n.input(4))
-          val rawW    = OnnxCompiler.extractInt8Bytes(wT)
-          val weights = OnnxCompiler.transposeWeights(rawW, outCh, inChPerGroup, kH, kW)
+          val wScalesRaw  = vecF(n.input(4))
+          val rawW        = OnnxCompiler.extractInt8Bytes(wT)
+          val isDepthwise = group > 1 && group == inShape.channels && outCh == inShape.channels
+          val (wScales, effW, wBits) = weightPrecision match {
+            case WeightInt4 if !isDepthwise =>
+              val (s4, b4) = OnnxCompiler.requantizeInt8ToInt4(rawW, wScalesRaw, outCh)
+              (s4, b4, 4)
+            case _ => (wScalesRaw, rawW, 8)
+          }
+          val weights = OnnxCompiler.transposeWeights(effW, outCh, inChPerGroup, kH, kW)
           val biasRaw = if (n.input.length > 8) OnnxCompiler.extractIntData(init(n.input(8)))
                         else Array.fill(outCh)(0)
           val biases  = zpBiasCorrect(biasRaw, rawW, outCh, inQuant.zeroPoint)
-          val isDepthwise = group > 1 && group == inShape.channels && outCh == inShape.channels
           if (isDepthwise) {
             // Depthwise: outCh = C = inShape.channels, inChPerGroup = 1.
             // weights after transpose: [C, kH, kW, 1] = [C, kH, kW].
@@ -379,7 +396,8 @@ object OnnxFrontend {
             val outShape = TensorShape(outRows, outCols, outCh)
             specs += LayerSpec.Conv(san(n.output.head), san(src), inShape, outShape,
               kH, kW, sH, sW, padT, padB, padL, padR,
-              inQuant, QuantParams(wScales(0), 0), outQuant, weights, biases, Some(wScales))
+              inQuant, QuantParams(wScales(0), 0), outQuant, weights, biases, Some(wScales),
+              weightBits = wBits)
             shapeOf(n.output.head) = outShape
           }
 

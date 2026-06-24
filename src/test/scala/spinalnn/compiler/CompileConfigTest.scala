@@ -5,7 +5,7 @@ import spinalnn.target._
 
 class CompileConfigTest extends AnyFunSuite {
 
-  // ── macParallelismOverrides round-trip ────────────────────────────────────
+  // ── macParallelism / macParallelismOverrides ──────────────────────────────
 
   test("macParallelism=auto with no overrides parses to MacParAuto") {
     val cfg = CompileConfig.fromJson("""{"macParallelism":"auto"}""")
@@ -50,21 +50,69 @@ class CompileConfigTest extends AnyFunSuite {
     }
   }
 
-  // ── dmaFreqMhz round-trip ────────────────────────────────────────────────
+  // ── macParByChannels ──────────────────────────────────────────────────────
 
-  test("dmaFreqMhz absent defaults to None") {
-    val cfg = CompileConfig.fromJson("""{}""")
-    assert(cfg.toTargetConfig.options.dmaFreqMhz == None)
+  test("macParByChannels produces MacParByChannels with correct channelMap and default") {
+    val json = """{
+      "macParallelism": "16",
+      "macParByChannels": { "48": 48, "96": 32, "192": 32 }
+    }"""
+    val tc = CompileConfig.fromJson(json).toTargetConfig
+    tc.options.macParallelism match {
+      case MacParByChannels(cm, dflt, lo) =>
+        assert(dflt == 16)
+        assert(cm == Map(48 -> 48, 96 -> 32, 192 -> 32))
+        assert(lo.isEmpty)
+      case other => fail(s"Expected MacParByChannels, got $other")
+    }
   }
 
-  test("dmaFreqMhz present wires through to CompilerOptions") {
-    val cfg = CompileConfig.fromJson("""{"dmaFreqMhz": 300}""")
-    assert(cfg.toTargetConfig.options.dmaFreqMhz == Some(300))
+  test("macParByChannels with auto default uses default=1") {
+    val json = """{"macParByChannels": { "3": 3, "48": 16 }}"""
+    val tc = CompileConfig.fromJson(json).toTargetConfig
+    tc.options.macParallelism match {
+      case MacParByChannels(cm, dflt, lo) =>
+        assert(dflt == 1)
+        assert(cm == Map(3 -> 3, 48 -> 16))
+        assert(lo.isEmpty)
+      case other => fail(s"Expected MacParByChannels, got $other")
+    }
+  }
+
+  test("macParByChannels with layerOverrides populates MacParByChannels.layerOverrides") {
+    val json = """{
+      "macParallelism": "16",
+      "macParByChannels": { "48": 48 },
+      "macParallelismOverrides": { "special_layer": 1 }
+    }"""
+    val tc = CompileConfig.fromJson(json).toTargetConfig
+    tc.options.macParallelism match {
+      case MacParByChannels(cm, dflt, lo) =>
+        assert(cm == Map(48 -> 48))
+        assert(dflt == 16)
+        assert(lo == Map("special_layer" -> 1))
+      case other => fail(s"Expected MacParByChannels, got $other")
+    }
+  }
+
+  test("macParByChannels round-trip through JSON serialisation") {
+    val original = CompileConfig(
+      macParallelism  = "16",
+      macParByChannels = Map("3" -> 3, "48" -> 48, "96" -> 32)
+    )
+    val roundTripped = CompileConfig.fromJson(CompileConfig.toJson(original))
+    assert(roundTripped == original)
+    roundTripped.toTargetConfig.options.macParallelism match {
+      case MacParByChannels(cm, dflt, _) =>
+        assert(cm == Map(3 -> 3, 48 -> 48, 96 -> 32))
+        assert(dflt == 16)
+      case other => fail(s"Expected MacParByChannels, got $other")
+    }
   }
 
   // ── Full per-layer config matching squeezenet_ti180_perLayer.json ─────────
 
-  test("squeezenet_ti180_perLayer.json parses to correct MacParPerLayer + dmaFreqMhz") {
+  test("squeezenet_ti180_perLayer.json parses to correct MacParPerLayer") {
     val jsonFile = new java.io.File("examples/squeezenet_ti180_perLayer.json")
     assume(jsonFile.exists(), "examples/squeezenet_ti180_perLayer.json not present; skipping")
     val tc = CompileConfig.fromFile(jsonFile.getPath).toTargetConfig
@@ -75,8 +123,7 @@ class CompileConfigTest extends AnyFunSuite {
         assert(overrides.size == 1)
       case other => fail(s"Expected MacParPerLayer, got $other")
     }
-    assert(tc.options.dmaFreqMhz == None)
-    assert(tc.options.weightMode  == WeightStream)
+    assert(tc.options.weightMode == WeightStream)
   }
 
   // ── JSON serialization round-trip ────────────────────────────────────────
@@ -85,7 +132,6 @@ class CompileConfigTest extends AnyFunSuite {
     val original = CompileConfig(
       macParallelism          = "16",
       macParallelismOverrides = Map("conv10_1_quantized" -> 32, "fire8_squeeze1x1_1_quantized" -> 32),
-      dmaFreqMhz              = Some(300),
       weightMode              = "stream"
     )
     val roundTripped = CompileConfig.fromJson(CompileConfig.toJson(original))

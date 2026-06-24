@@ -29,6 +29,9 @@ models/*.onnx
 models/*.tar.gz
 models/*.onnx.data
 models/*.data
+models/*.jpg
+models/*.jpeg
+models/*.png
 
 # Backup archives
 *.zip

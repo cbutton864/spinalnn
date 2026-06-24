@@ -60,6 +60,12 @@ object MaxPoolLineCore {
     val outC = cfg.outputShape.channels
     val D    = cfg.rowBufDepth
 
+    // Number of input rows consumed by the outH pool computations.
+    // consumedRows = K_H + (outH-1)*sH.  Any input rows beyond this index are
+    // tail rows that must be drained without entering the ring buffer.
+    val consumedRows = K_H + (outH - 1) * sH
+    val nTailRows    = H - consumedRows   // 0 when H == consumedRows (e.g. pool1)
+
     val phaseMax       = cfg.windowSize + 2
     // Mem address width = log2Up(D) exactly. log2Up(D+1) overshoots by 1 when D is a power of 2
     // (e.g. D=4 → 3 bits, but Mem[4] expects 2-bit addresses).
@@ -152,10 +158,14 @@ object MaxPoolLineCore {
       readDataReg.setName(s"${cfg.periphName}_readDataReg")
 
       // ── Unified write port per slot ────────────────────────────────────────
+      // Tail rows (realRowsRecvReg >= consumedRows) must not enter the ring buffer.
       for (slot <- 0 until K_H) {
+        val isTailRow: Bool =
+          if (nTailRows > 0) realRowsRecvReg >= U(consumedRows) else False
         val doWrite = stateReg === sReceiveRow &&
                       (rowWrPtrReg === U(slot, slotBits bits)) &&
-                      activationIn.fire
+                      activationIn.fire &&
+                      !isTailRow
         rowBufs(slot).write(rxStepReg.resize(rowBufAddrBits),
                             activationIn.payload.value,
                             doWrite)
@@ -176,18 +186,44 @@ object MaxPoolLineCore {
                                    (rxStepReg + 1).resize(rxStepReg.getWidth))
 
           when(rowEnd) {
-            rowWrPtrReg     := circNext(rowWrPtrReg)
-            realRowsRecvReg := realRowsRecvReg + 1
-
-            when(rowsUntilComputeReg <= 1) {
-              rowsUntilComputeReg := U(sH)
-              // Reset pool counters before entering sPool.
-              krReg    := 0
-              kcReg    := 0
-              phaseReg := 0
-              stateReg := sPool
-            } .otherwise {
-              rowsUntilComputeReg := rowsUntilComputeReg - 1
+            if (nTailRows > 0) {
+              // When stride > 1 and H > consumedRows, tail rows arrive after the
+              // last pool computation.  Drain them without touching the ring buffer.
+              // realRowsRecvReg is NOT reset in sEmit.lastRow so we can detect them.
+              val isTailRow: Bool = realRowsRecvReg >= U(consumedRows)
+              when(isTailRow) {
+                when(realRowsRecvReg === U(H - 1)) {
+                  // Last tail row consumed: full reset for the next inference.
+                  realRowsRecvReg := 0
+                  // rowWrPtrReg / rowsUntilComputeReg were already reset in sEmit.lastRow.
+                } .otherwise {
+                  realRowsRecvReg := realRowsRecvReg + 1
+                }
+              } .otherwise {
+                rowWrPtrReg     := circNext(rowWrPtrReg)
+                realRowsRecvReg := realRowsRecvReg + 1
+                when(rowsUntilComputeReg <= 1) {
+                  rowsUntilComputeReg := U(sH)
+                  krReg    := 0
+                  kcReg    := 0
+                  phaseReg := 0
+                  stateReg := sPool
+                } .otherwise {
+                  rowsUntilComputeReg := rowsUntilComputeReg - 1
+                }
+              }
+            } else {
+              rowWrPtrReg     := circNext(rowWrPtrReg)
+              realRowsRecvReg := realRowsRecvReg + 1
+              when(rowsUntilComputeReg <= 1) {
+                rowsUntilComputeReg := U(sH)
+                krReg    := 0
+                kcReg    := 0
+                phaseReg := 0
+                stateReg := sPool
+              } .otherwise {
+                rowsUntilComputeReg := rowsUntilComputeReg - 1
+              }
             }
           }
         }
@@ -253,12 +289,17 @@ object MaxPoolLineCore {
               outRowReg := Mux(lastRow, U(0, outRowReg.getWidth bits), (outRowReg + 1).resized)
 
               when(lastRow) {
-                // Inference complete: reset all receive-phase state.
-                realRowsRecvReg     := 0
+                // All pool outputs emitted.  Reset ring-buffer control so the
+                // next rows received start a fresh inference.  When nTailRows > 0,
+                // do NOT reset realRowsRecvReg here — it stays at consumedRows so
+                // that sReceiveRow can identify and drain the pending tail rows.
                 rxStepReg           := 0
                 rowsUntilComputeReg := U(K_H)
                 rowWrPtrReg         := U(0, slotBits bits)
-                stateReg            := sReceiveRow
+                if (nTailRows == 0) {
+                  realRowsRecvReg := 0
+                }
+                stateReg := sReceiveRow
               } .otherwise {
                 stateReg := sReceiveRow  // more rows to pool; receive strideH more
               }
